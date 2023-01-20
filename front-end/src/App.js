@@ -1,9 +1,12 @@
 import React from 'react'
+import Nav from './components/Nav'
+import RoutesComp from './RoutesComp';
 
 function App() {
   return (
     <div>
-      <h1>Hello World Checkgit </h1>
+      <Nav />
+      <RoutesComp />
     </div>
   );
 }
