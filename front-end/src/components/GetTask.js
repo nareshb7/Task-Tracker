@@ -15,14 +15,13 @@ const GetTask = () => {
         tech.push(val)
     })
     useEffect(()=> {
-        console.log('useeffcet')
         setTableData(data)
     },[data])
     
     const handleClick = (e)=> {
         const {name, value} = e.target
         console.log(name, value)
-        let sortData = data.filter(val => value !=='All' ?  val.technology == value : value)
+        let sortData = data.filter(val => value !=='All' ?  val.technology === value : value)
         setTableData(sortData)
     }
     console.log(data, 'data')

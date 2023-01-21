@@ -3,26 +3,26 @@ import axios from 'axios'
 
 const AddData = () => {
     const technologies =["React", "Angular", "JavaScript", "CSS"]
-    const [data,setData] = useState({
+    const [status, setStatus] = useState('')
+    const obj ={
         dName:'',
         cName:'',
         technology:'React',
         issue:'',
         time :''
-    })
-    
+    }
+    const [data,setData] = useState(obj)
     const handleSubmit =(e)=> {
         e.preventDefault()
-        console.log(data, 'data')
         data.time = new Date().toLocaleString()
         axios.post("http://localhost:4040/setData", {data: data})
-        .then(data => console.log(data, 'data'))
-        .catch(err => console.log(err, 'err'))
+        .then(data => setStatus('Data Added Sucessfully'))
+        .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
+        setData(obj)
     }
     const handleChange =(e)=> {
         const {name, value} = e.target
         setData({...data, [name]:value})
-        console.log(name, value)
     }
     return (
         <div>
@@ -42,7 +42,7 @@ const AddData = () => {
                 <div>
                     <label>
                         <span>Mention the Technology</span>
-                        <select name='technology' defaultValue="React" onChange={handleChange}>
+                        <select name='technology' value={data.technology} onChange={handleChange}>
                             {
                                 technologies.map((val, idx) => {
                                     return (
@@ -54,12 +54,15 @@ const AddData = () => {
                     </label>
                 </div>
                 <div>
-                    <textarea name='issue' onChange={handleChange}></textarea>
+                    <textarea name='issue' onChange={handleChange} value={data.issue}></textarea>
                 </div>
                 <div>
                     <button type='submit'>Add Data</button>
                 </div>
             </form>
+            <div>
+                <h3>Status : {status}</h3>
+            </div>
         </div>
     )
 }
