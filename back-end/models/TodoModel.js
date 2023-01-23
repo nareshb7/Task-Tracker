@@ -20,6 +20,10 @@ const taskSchema = new mongoose.Schema({
     time : {
         type: String,
         require: true
+    },
+    image : {
+        data:Buffer,
+        contentType: String
     }
 })
 module.exports =  mongoose.model('TaskModel', taskSchema)

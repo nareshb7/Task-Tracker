@@ -4,25 +4,33 @@ import axios from 'axios'
 const AddData = () => {
     const technologies =["React", "Angular", "JavaScript", "CSS"]
     const [status, setStatus] = useState('')
+    const [img, setImg] = useState({})
     const obj ={
         dName:'',
         cName:'',
         technology:'React',
         issue:'',
-        time :''
+        time :'',
     }
     const [data,setData] = useState(obj)
     const handleSubmit =(e)=> {
         e.preventDefault()
+        // let formData = new FormData()
+        // formData.append('file', img)
+        
         data.time = new Date().toLocaleString()
-        axios.post("http://localhost:4040/setData", {data: data})
+        console.log(data, 'submit data')
+        axios.post("http://localhost:3000/setData", {data: data, testImage: img} ,
+            {headers: {
+              "Content-Type": "multipart/form-data",
+            }})
         .then(data => setStatus('Data Added Sucessfully'))
         .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
         setData(obj)
     }
     const handleChange =(e)=> {
         const {name, value} = e.target
-        setData({...data, [name]:value})
+        name === 'images' ? setImg(e.target.files[0]) : setData({...data, [name]:value})
     }
     return (
         <div>
@@ -52,6 +60,9 @@ const AddData = () => {
                             }
                         </select>
                     </label>
+                </div>
+                <div>
+                    <input type='file' name='images'defaultValue={''} onChange={handleChange} />
                 </div>
                 <div>
                     <textarea name='issue' onChange={handleChange} value={data.issue}></textarea>
