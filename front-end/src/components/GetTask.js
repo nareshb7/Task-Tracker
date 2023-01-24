@@ -7,7 +7,7 @@ const GetTask = () => {
     const [data, setData] = useState([])
     const [tableData, setTableData] = useState([])
     useEffect(() => {
-        axios.get('http://localhost:3000/getData')
+        axios.get('http://localhost:4040/getData')
             .then(data => setData(data.data))
             .catch(err => console.log(err, 'err'))
     }, [])

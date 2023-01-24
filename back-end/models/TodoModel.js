@@ -26,4 +26,34 @@ const taskSchema = new mongoose.Schema({
         contentType: String
     }
 })
-module.exports =  mongoose.model('TaskModel', taskSchema)
+
+
+const signinSchema = mongoose.Schema({
+    uName: {
+        type:String,
+        require:true
+    },
+    email:{
+        type:String,
+        require:true
+    }, 
+    mobile:{
+        type:String,
+        require: true
+    },
+    password:{
+        type:String,
+        require:true
+    },
+    conPassword: {
+        type:String,
+        require: true
+    },
+    profileImage : {
+        data: Buffer,
+        contentType:String
+    }
+})
+
+module.exports = SignUpSchema = mongoose.model('UserData', signinSchema)
+module.exports = TaskModel =  mongoose.model('TaskModel', taskSchema)

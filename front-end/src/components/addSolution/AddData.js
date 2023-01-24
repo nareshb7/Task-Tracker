@@ -20,7 +20,7 @@ const AddData = () => {
         
         data.time = new Date().toLocaleString()
         console.log(data, 'submit data')
-        axios.post("http://localhost:3000/setData", {data: data, testImage: img} ,
+        axios.post("http://localhost:4040/setData", {data: data, testImage: img} ,
             {headers: {
               "Content-Type": "multipart/form-data",
             }})

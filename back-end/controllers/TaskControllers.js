@@ -33,3 +33,17 @@ module.exports.getData = async (req,res)=> {
     .catch(err=> res.send(err))
     // await TaskModel.deleteMany()
 }
+const signinStorage = multer({
+    storage: Storage
+}).single('profileImage')
+
+module.exports.signUpData = async (req,res)=> {
+    signinStorage(req,res, (err)=> {
+        if (err){
+            console.log(err)
+        }else {
+            const saveImage = new TaskModel({...data, image: {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }})
+            saveImage.save().then(()=> res.send('Image Added')).catch(err=> res.send('Error Image'))
+        }
+    }) 
+}

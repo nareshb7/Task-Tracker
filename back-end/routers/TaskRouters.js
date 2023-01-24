@@ -27,5 +27,6 @@ const router = Router()
 // })
 router.post('/setData', setData)
 router.get('/getData', getData)
+router.post('/signup', signUpUser)
 
 module.exports = router

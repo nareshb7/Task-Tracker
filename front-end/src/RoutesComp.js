@@ -4,6 +4,9 @@ import AddData from './components/addSolution/AddData'
 import Description from './components/Description'
 import GetTask from './components/GetTask'
 import Home from './components/Home'
+import Login from './components/login/Login'
+import MyProfile from './components/profile/MyProfile'
+import Signup from './components/signup/Signup'
 
 const RoutesComp =()=> {
     return (
@@ -14,6 +17,9 @@ const RoutesComp =()=> {
                 <Route path='adddata' element={<AddData/> } />
                 <Route path='getData' element={<GetTask/> } />
                 <Route path='description' element={<Description/> } />
+                <Route path='signup' element={<Signup /> } />
+                <Route path='login' element={<Login /> } />
+                <Route path='profile' element={<MyProfile/> } />
             </Routes>
         </div>
     )
