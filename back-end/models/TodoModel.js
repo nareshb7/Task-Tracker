@@ -55,5 +55,13 @@ const signinSchema = mongoose.Schema({
     }
 })
 
-module.exports = SignUpSchema = mongoose.model('UserData', signinSchema)
-module.exports = TaskModel =  mongoose.model('TaskModel', taskSchema)
+const currentUserSchema = mongoose.Schema({
+    currentUser : {
+        type: Object,
+        require: true
+    }
+})
+
+module.exports.signUpModel = mongoose.model('UserData', signinSchema)
+module.exports.TaskModel =  mongoose.model('TaskModel', taskSchema)
+module.exports.currentUserModel = mongoose.model('CurrentUser', currentUserSchema)

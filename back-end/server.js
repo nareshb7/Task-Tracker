@@ -1,14 +1,27 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
 require('dotenv').config()
 const cors = require('cors')
 const port = process.env.PORT || 5050
 const app = express()
 
+
+
+// app.use(
+//     fileUpload({
+//         limits: {
+//             fileSize: 10000000,
+//         },
+//         abortOnLimit: true,
+//     })
+// );
+
 app.use(cors())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false}))
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false}))
+
 
 
 mongoose.set('strictQuery', true)

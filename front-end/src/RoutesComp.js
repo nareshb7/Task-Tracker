@@ -14,8 +14,8 @@ const RoutesComp =()=> {
             <Routes>
                 <Route path='/' element={<Navigate to='home' />} />
                 <Route path='home' element={<Home /> } />
-                <Route path='adddata' element={<AddData/> } />
-                <Route path='getData' element={<GetTask/> } />
+                <Route path='addIssue' element={<AddData/> } />
+                <Route path='getIssue' element={<GetTask/> } />
                 <Route path='description' element={<Description/> } />
                 <Route path='signup' element={<Signup /> } />
                 <Route path='login' element={<Login /> } />

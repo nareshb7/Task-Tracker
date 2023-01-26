@@ -2,7 +2,7 @@ const {Router} = require('express')
 const multer = require('multer')
 // const fs = require('fs')
 const TaskModel = require('../models/TodoModel')
-const { setData, getData, uploads } = require('../controllers/TaskControllers')
+const { setData, getData, signUpData, logInUserData, setCurrentUser, getCurrentUser } = require('../controllers/TaskControllers')
 
 
 const router = Router()
@@ -27,6 +27,9 @@ const router = Router()
 // })
 router.post('/setData', setData)
 router.get('/getData', getData)
-router.post('/signup', signUpUser)
+router.post('/signupData', signUpData)
+router.post('/loginData',logInUserData)
+router.post('/setCurrentUser', setCurrentUser)
+router.get('/getCurrentUser', getCurrentUser)
 
 module.exports = router
