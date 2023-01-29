@@ -40,7 +40,7 @@ const UserStorage = multer.diskStorage({
         cb(null, 'users')
     },
     filename: (req,file, cb)=> {
-        cb(null, file.originalname)
+        cb(null, `image-${Date.now()}.${file.originalname}`)
     }
 })
 const signinStorage = multer({
@@ -57,12 +57,12 @@ module.exports.signUpData = async (req,res)=> {
         if (err){
             console.log(err)
         }else {
-            const saveImage = new signUpModel({...data, profileImage: {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }})
+            const saveImage = new signUpModel({...data, profileImage: req.file.filename})
             saveImage.save().then(()=> res.send('Account Created Sucessfully')).catch(err=> res.send('Error Occured'))
         }
     }) 
 }
-
+// {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req,res)=> {
     const {mobile, password} = req.body
     await signUpModel.findOne({mobile : mobile, password: password}).then(data => res.send(data)).catch(err => res.send(err))

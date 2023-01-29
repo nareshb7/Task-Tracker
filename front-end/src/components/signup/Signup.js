@@ -17,6 +17,7 @@ const Signup = () => {
     }
     const handleSubmit =(e)=> {
         e.preventDefault()
+        console.log(data, image, 'signup')
         axios.post('http://localhost:4040/signupData', {data:data,profileImage: image }, {headers: {
             "Content-Type": "multipart/form-data",
           }})

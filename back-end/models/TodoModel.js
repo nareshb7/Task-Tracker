@@ -50,8 +50,8 @@ const signinSchema = mongoose.Schema({
         require: true
     },
     profileImage : {
-        data: Buffer,
-        contentType:String
+        type:String,
+        require: true
     }
 })
 

@@ -31,6 +31,6 @@ mongoose.connect(process.env.MONGODB_URL)
 
 const routes = require('./routers/TaskRouters')
 app.use('/',routes)
-
+app.use('/users', express.static('./users'))
 
 app.listen(port, ()=> console.log(`server is running on ${port}`))
