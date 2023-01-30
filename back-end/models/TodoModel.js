@@ -22,14 +22,22 @@ const taskSchema = new mongoose.Schema({
         require: true
     },
     image : {
-        data:Buffer,
-        contentType: String
+        type:String,
+        require: true
+    },
+    mobile: {
+        type: Number,
+        require:true
     }
 })
 
 
 const signinSchema = mongoose.Schema({
-    uName: {
+    fName: {
+        type:String,
+        require:true
+    },
+    lName: {
         type:String,
         require:true
     },
@@ -38,7 +46,7 @@ const signinSchema = mongoose.Schema({
         require:true
     }, 
     mobile:{
-        type:String,
+        type:Number,
         require: true
     },
     password:{
@@ -63,5 +71,5 @@ const currentUserSchema = mongoose.Schema({
 })
 
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)
-module.exports.TaskModel =  mongoose.model('TaskModel', taskSchema)
+module.exports.TaskModel =  mongoose.model('solutions', taskSchema)
 module.exports.currentUserModel = mongoose.model('CurrentUser', currentUserSchema)

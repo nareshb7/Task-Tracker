@@ -8,7 +8,7 @@ const Storage = multer.diskStorage({
         cb(null, 'uploads')
     },
     filename: (req,file, cb)=> {
-        cb(null, file.originalname)
+        cb(null, `taskimage-${Date.now()}.${file.originalname}`)
     }
 })
 const upload = multer({
@@ -21,12 +21,12 @@ module.exports.setData = async (req,res)=> {
         if(err){
             console.log(err)
         }else {
-            const saveImage = new TaskModel({...data, image: {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }})
+            const saveImage = new TaskModel({...data, image: req.file.filename})
             saveImage.save().then(()=> res.send('Issue Added Sucessfully')).catch(err=> res.send('Error Occured'))
         }
     })
 }
-
+// {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.getData = async (req,res)=> {
     await TaskModel.find({})
     .then(data => res.json(data))
@@ -66,7 +66,6 @@ module.exports.signUpData = async (req,res)=> {
 module.exports.logInUserData = async (req,res)=> {
     const {mobile, password} = req.body
     await signUpModel.findOne({mobile : mobile, password: password}).then(data => res.send(data)).catch(err => res.send(err))
-    // await signUpModel.deleteMany()
 }
 
 module.exports.setCurrentUser = async (req,res)=> {
@@ -74,11 +73,12 @@ module.exports.setCurrentUser = async (req,res)=> {
     await currentUserModel.deleteMany()
     const savedata =await new currentUserModel({currentUser})
     await savedata.save().then(()=> res.send('added user')).catch(err=> res.send(err))
-    
-    
 }
 
 module.exports.getCurrentUser = async (req,res)=> {
     await currentUserModel.find({}).then(data=> res.send(data)).catch(err=> res.send(err))
     
+}
+module.exports.deleteCurrentUser = async (req,res) => {
+    await currentUserModel.deleteMany().then(data=> res.send(data)).catch(err=> res.send(err))
 }
