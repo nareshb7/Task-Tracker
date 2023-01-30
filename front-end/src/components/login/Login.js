@@ -11,28 +11,30 @@ const Login = () => {
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser]= useState({})
     const [error,setError] = useState('')
+    const [response, setResponse] = useState('')
     const handleChange =(e)=> {
         const {name, value } = e.target
         setData({...data, [name]: value})
     }
-    const handleSubmit =(e)=> {
+    const handleSubmit =async (e)=> {
         e.preventDefault()
         axios.post('http://localhost:4040/loginData', data)
         .then(data => setCurrentUser(data.data))
         .catch(err=> console.log(err, 'login err'))
         setData(obj)
     }
-    const loginSucessFunc =()=> {
+    const loginSucessFunc = async ()=> {
         setError('')
         axios.post('http://localhost:4040/setCurrentUser', {currentUser})
-        .then(data => console.log('curentUser set'))
-        .catch(err=> console.log(err, 'curent err'))
+        .then(data => setResponse(data.data))
+        .catch(err=> setResponse(JSON.stringify(err)))
         // navigate('/profile')
     }
     useEffect(()=> {
         delete currentUser._id
+        delete currentUser._v
         if (currentUser) { 
-            currentUser.hasOwnProperty('uName') ? loginSucessFunc() : setError('Data not found')
+            currentUser.hasOwnProperty('fName') ? loginSucessFunc() : setError('')
         }else {
             setError('')
         }
@@ -53,7 +55,7 @@ const Login = () => {
             </div>
         </form>
         <div>
-            <h3> Status: { error} </h3>
+            <h3> Status: { response} </h3>
         </div>
     </div>
   )

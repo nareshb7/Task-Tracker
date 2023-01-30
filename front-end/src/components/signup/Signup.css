@@ -1,0 +1,10 @@
+.signupDiv {
+    background-color: #999;
+    width: 300px;
+    margin: auto;
+    text-align: center;
+}
+.signupDiv input {
+    padding: 10px 20px;
+    margin-block: 10px;
+}

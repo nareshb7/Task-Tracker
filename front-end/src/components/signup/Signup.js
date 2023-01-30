@@ -1,61 +1,139 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import './Signup.css'
 
 const Signup = () => {
-    const obj ={
-        uName: '',
-        email:'',
+    const obj = {
+        fName: '',
+        lName: '',
+        email: '',
         mobile: '',
-        password:'',
-        conPassword:''
+        password: '',
+        conPassword: '',
+        profileImage: ''
+    }
+    const errorObj = {
+        fName: '.',
+        lName: '.',
+        email: '.',
+        mobile: '.',
+        password: '.',
+        conPassword: '.',
+        profileImage: '.'
     }
     const [image, setProfileImage] = useState('')
     const [data, setData] = useState(obj)
-    const handleChange =(e)=> {
-        const {name, value} = e.target
-        name== 'profileImage' ? setProfileImage(e.target.files[0]) : setData({...data, [name]: value})
+    const [errors, setErrors] = useState(errorObj)
+    const [response, setResponse] = useState('')
+    const [isValid, setIsValid] = useState(false)
+    useEffect(() => {
+        const { fName, lName, mobile, password, email, conPassword, profileImage } = errors
+        if (!fName && !lName && !mobile && !email && !password && !conPassword && !profileImage) {
+            setIsValid(true)
+        } else {
+            setIsValid(false)
+        }
+    }, [errors])
+
+
+    const handleChange = (e) => {
+        const imgTypes = ['image/jpeg', 'image/png']
+        const emailpattern = /^[a-z][a-z0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
+        const mobilePattern = /^[0-9]{10}$/
+        const psdPattern = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%&*<>]).{8,}$/
+        const { name, value, files } = e.target
+        name == 'profileImage' ? setProfileImage(files[0]) : setData({ ...data, [name]: value })
+        switch (name) {
+            case 'fName': {
+                value.length > 2 ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Min 2 Chars required' })
+                break;
+            }
+            case 'lName': {
+                value.length > 2 ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Min 2 Chars required' })
+                break;
+            }
+            case 'email': {
+                value.match(emailpattern) ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Enter valid mail' })
+                break;
+            }
+            case 'mobile': {
+                value.match(mobilePattern) ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: '10 digits required' })
+                break;
+            }
+            case 'password': {
+                value.match(psdPattern) ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Must has one capital letter, lowercase letter, digit, and chatracter' })
+                break;
+            }
+            case 'conPassword': {
+                value == data.password ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Password confrim password must be same' })
+                break;
+            }
+            case 'profileImage': {
+                !imgTypes.includes(files[0].type) ? setErrors({ ...errors, [name]: 'Allwoed only jpeg/png files' }) : files[0].size > 1000000 ? setErrors({ ...errors, [name]: 'Image size must be below 1MB' }) : setErrors({ ...errors, [name]: '' })
+                break;
+            }
+            default: {
+                return
+            }
+
+        }
     }
-    const handleSubmit =(e)=> {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(data, image, 'signup')
-        axios.post('http://localhost:4040/signupData', {data:data,profileImage: image }, {headers: {
-            "Content-Type": "multipart/form-data",
-          }})
-        .then(res => console.log(res, 'success'))
-        .catch(err=> console.log(err, 'err'))
+        axios.post('/signupData', { data: data, profileImage: image }, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        })
+            .then(res => setResponse(res.data))
+            .catch(err => setResponse(JSON.stringify(err)))
         setData(obj)
+        setProfileImage('')
+        console.log(data, 'signindata')
     }
-  return (
-    <div>
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Enter your Name :</label>
-                <input type='text' name='uName' value={data.uName} onChange={handleChange}/>
-            </div>
-            <div>
-                <label>Enter your Email :</label>
-                <input type='text' name='email' value={data.email} onChange={handleChange}/>
-            </div>
-            <div>
-                <label>Enter your Mobile NUmber :</label>
-                <input type='text' name='mobile' value={data.mobile} onChange={handleChange}/>
-            </div>
-            <div>
-                <label>Create a Password :</label>
-                <input type='text' name='password' value={data.password} onChange={handleChange}/>
-            </div>
-            <div>
-                <label>Confirm Password :</label>
-                <input type='text' name='conPassword' value={data.conPassword} onChange={handleChange}/>
-            </div>
-            <div>
-                <label>Upload your ProfileImage :</label>
-                <input type='file' name='profileImage' defaultValue={''} onChange={handleChange}/>
-            </div>
-            <div><button type='submit'> Submit </button> </div>
-        </form>
-    </div>
-  )
+    return (
+        <div className='signupDiv'>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    {/* <div><label>Enter your Name :</label></div> */}
+                    <div><input type='text' name='fName' value={data.fName} onChange={handleChange} placeholder='Enter your firstName' required /></div>
+                    <div className='errorMsz'>{errors.fName}</div>
+                </div>
+                <div>
+                    {/* <div><label>Enter your last name :</label></div> */}
+                    <div><input type='text' name='lName' value={data.lName} onChange={handleChange} required placeholder='Enter your lastName' /></div>
+                    <div className='errorMsz'>{errors.lName}</div>
+                </div>
+                <div>
+                    {/* <div><label>Enter your Email :</label></div> */}
+                    <div><input type='text' name='email' value={data.email} onChange={handleChange} required placeholder='Enter your Email' /></div>
+                    <div className='errorMsz'>{errors.email}</div>
+                </div>
+                <div>
+                    {/* <div><label>Enter your Mobile Number :</label></div> */}
+                    <div><input type='text' name='mobile' value={data.mobile} onChange={handleChange} required placeholder='Enter your mobile' /></div>
+                    <div className='errorMsz'>{errors.mobile}</div>
+                </div>
+                <div>
+                    {/* <div><label>Create a Password :</label></div> */}
+                    <div><input type='text' name='password' value={data.password} onChange={handleChange} required placeholder='Enter your password' /></div>
+                    <div className='errorMsz'>{errors.password}</div>
+                </div>
+                <div>
+                    {/* <div><label>Confirm Password :</label></div> */}
+                    <div><input type='text' name='conPassword' value={data.conPassword} onChange={handleChange} required placeholder='Enter your Confrirm Password' /></div>
+                    <div className='errorMsz'>{errors.conPassword}</div>
+                </div>
+                <div>
+                    {/* <div> <label>Upload your ProfileImage :</label></div> */}
+                    <div> <input type='file' name='profileImage' defaultValue={image} onChange={handleChange} required /></div>
+                    <div className='errorMsz'>{errors.profileImage}</div>
+                </div>
+                <div><button type='submit' disabled={!isValid}> Submit </button> </div>
+            </form>
+            <div><h3>Status : {response}</h3></div>
+        </div>
+    )
 }
 
 export default Signup

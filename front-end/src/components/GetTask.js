@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import useAuth from './authentication/Authentication'
 
 const GetTask = () => {
     const navigate = useNavigate()
+    const currentUse = useAuth()
+    const [currentUser, setCurrentUser] = useState({})
     const [data, setData] = useState([])
     const [tableData, setTableData] = useState([])
     useEffect(() => {
-        axios.get('http://localhost:4040/getData')
+        axios.get('/getData')
             .then(data => setData(data.data))
             .catch(err => console.log(err, 'err'))
     }, [])
+
+    useEffect(()=> {
+        setCurrentUser(currentUse)
+    },[currentUse])
     const technologies = new Set(data.map(val => val.technology))
     const tech = []
     technologies.forEach(val => {
@@ -20,13 +27,6 @@ const GetTask = () => {
         setTableData(data)
         console.log(data, 'data')
     }, [data])
-    const getImage = async () => {
-        // const buffer = tableData.length &&  await tableData[0].image.arrayBuffer();
-        // const binaryString = Array.from(new Uint8Array(buffer), byte => String.fromCharCode(byte)).join("");
-        // const theImage = btoa(binaryString);
-        // console.log(theImage, 'theImage')
-    }
-    getImage()
 
     const handleClick = (e) => {
         const { name, value } = e.target
@@ -37,7 +37,12 @@ const GetTask = () => {
     const gotoDesc = (val) => {
         navigate(`/description`, { state: val })
     }
-
+    const editFunc =()=> {
+        console.log('Edit button clicekd')
+    }
+    const deleteFunc =()=> {
+        console.log('delete button Clicekd')
+    }
     return (
         <div>
             <h1>Get Task:</h1>
@@ -47,7 +52,7 @@ const GetTask = () => {
                         <th>Sl. No</th>
                         <th>Developer Name</th>
                         <th>Client Name</th>
-                        <th>Technology
+                        <th><div>Technology</div>
                             <select onClick={handleClick} name='technology'>
                                 <option>All</option>
                                 {
@@ -62,12 +67,12 @@ const GetTask = () => {
                         <th>Issue</th>
                         <th>Date</th>
                         <th>Image</th>
+                        <th>Edit / Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
                         tableData.map((val, idx) => {
-                            const base64String = btoa(String.fromCharCode(...new Uint8Array(val.image.data.data)))
                             return (
                                 <tr key={idx}>
                                     <td>{idx + 1}</td>
@@ -76,7 +81,11 @@ const GetTask = () => {
                                     <td> {val.technology} </td>
                                     <td onClick={() => gotoDesc(val)}> {val.issue}</td>
                                     <td> {val?.time}</td>
-                                    <td><img src={`data: image/png;base64,${base64String}`} style={{width:'100px', height:'100px'}} alt='img' /> </td>
+                                    <td><img src={`/uploads/${val.image}`} style={{width:'100px', height:'100px'}} alt='img' /> </td>
+                                    <td>
+                                        <button onClick={editFunc} disabled={currentUser.mobile !== val.mobile}>Edit</button>
+                                        <button onClick={deleteFunc} disabled={currentUser.mobile !== val.mobile}>Delete</button>
+                                    </td>
                                 </tr>
                             )
                         })

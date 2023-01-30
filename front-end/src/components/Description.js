@@ -7,13 +7,15 @@ const Description = () => {
     if (!data){
         return ''
     }
-    console.log('params', location)
   return (
     <div>
         <h2>Client Name : {data.cName}</h2>
         <h2>Technology : {data.technology}</h2>
         <h2>Issue : {data.issue}</h2>
         <h2>Description: {data.issue}</h2>
+        <div style={{width:'300px', height:'300px'}}>
+          <img src={`/uploads/${data.image}`} style={{width:'100%' , height:'100%'}}/>
+        </div>
     </div>
   )
 }
