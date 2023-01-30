@@ -57,7 +57,7 @@ const AddData = () => {
                 <div>
                     <label>
                         <span>Enter Developer Name :</span>
-                        <input type='text' name='dName' value={isLoggedin.fName} disabled={isLoggedin.fName} onChange={handleChange} required />
+                        <input type='text' name='dName' value={isLoggedin.fName +" "+ isLoggedin.lName} disabled={isLoggedin.fName} onChange={handleChange} required />
                     </label>
                 </div>
                 <div>

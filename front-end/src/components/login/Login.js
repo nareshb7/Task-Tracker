@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '../authentication/Authentication'
 
 const Login = () => {
+    const isLoggedIn = useAuth()
     const navigate = useNavigate()
     const obj ={
         mobile:'',
@@ -10,7 +12,6 @@ const Login = () => {
     }
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser]= useState({})
-    const [error,setError] = useState('')
     const [response, setResponse] = useState('')
     const handleChange =(e)=> {
         const {name, value } = e.target
@@ -24,26 +25,26 @@ const Login = () => {
         setData(obj)
     }
     const loginSucessFunc = async ()=> {
-        setError('')
         axios.post('http://localhost:4040/setCurrentUser', {currentUser})
         .then(data => setResponse(data.data))
         .catch(err=> setResponse(JSON.stringify(err)))
-        // navigate('/profile')
     }
     useEffect(()=> {
         delete currentUser._id
-        delete currentUser._v
-        if (currentUser) { 
-            currentUser.hasOwnProperty('fName') ? loginSucessFunc() : setError('')
-        }else {
-            setError('')
+        delete currentUser.__v
+        if (currentUser.hasOwnProperty('fName')) { 
+            loginSucessFunc()
         }
     },[currentUser])
+    if (isLoggedIn.hasOwnProperty('fName')) {
+        navigate('/profile')
+        return null
+    }
   return (
     <div>
         <form onSubmit={handleSubmit}>
             <div>
-                <label> Enter your mobile: </label>
+                <label>Enter your mobile: </label>
                 <input type='text' name='mobile' value={data.mobile} onChange={handleChange}/>
             </div>
             <div>
