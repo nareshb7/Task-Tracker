@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '../authentication/Authentication'
+import { setCookie } from '../cookieset/CookieComp'
 
 const Login = () => {
     const isLoggedIn = useAuth()
@@ -28,15 +29,17 @@ const Login = () => {
         axios.post('http://localhost:4040/setCurrentUser', {currentUser})
         .then(data => setResponse(data.data))
         .catch(err=> setResponse(JSON.stringify(err)))
+        setCookie(currentUser.mobile, 2)
     }
     useEffect(()=> {
         delete currentUser._id
         delete currentUser.__v
-        if (currentUser.hasOwnProperty('fName')) { 
+        if (Object.keys(currentUser).length> 2) { 
             loginSucessFunc()
         }
     },[currentUser])
-    if (isLoggedIn.hasOwnProperty('fName')) {
+    if (Object.keys(isLoggedIn).length > 2) {
+        console.log('is else entered')
         navigate('/profile')
         return null
     }

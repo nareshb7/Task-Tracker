@@ -53,19 +53,18 @@ const signinStorage = multer({
 module.exports.signUpData = async (req,res)=> {
     signinStorage(req,res, (err)=> {
         const {data} = req.body
-        console.log(req.file, 'file')
         if (err){
             console.log(err)
         }else {
             const saveImage = new signUpModel({...data, profileImage: req.file.filename})
             saveImage.save().then(()=> res.send('Account Created Sucessfully')).catch(err=> res.send('Error Occured'))
         }
-    }) 
+    })
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req,res)=> {
     const {mobile, password} = req.body
-    await signUpModel.findOne({mobile : mobile, password: password}).then(data => res.send(data)).catch(err => res.send(err))
+    await signUpModel.findOne({"mobile" : mobile, "password": password}).then(data => res.send(data)).catch(err => res.send(err))
 }
 
 module.exports.setCurrentUser = async (req,res)=> {
@@ -76,7 +75,9 @@ module.exports.setCurrentUser = async (req,res)=> {
 }
 
 module.exports.getCurrentUser = async (req,res)=> {
-    await currentUserModel.find({}).then(data=> res.send(data)).catch(err=> res.send(err))
+    const result = await currentUserModel.find({})
+    res.send(result)
+    console.log(result, 'result')
     
 }
 module.exports.deleteCurrentUser = async (req,res) => {

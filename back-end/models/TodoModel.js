@@ -28,6 +28,10 @@ const taskSchema = new mongoose.Schema({
     mobile: {
         type: Number,
         require:true
+    },
+    binaryData: {
+        type: String,
+        require: true
     }
 })
 
@@ -59,6 +63,10 @@ const signinSchema = mongoose.Schema({
     },
     profileImage : {
         type:String,
+        require: true
+    },
+    binaryData : {
+        type: String,
         require: true
     }
 })

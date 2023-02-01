@@ -10,7 +10,8 @@ const Signup = () => {
         mobile: '',
         password: '',
         conPassword: '',
-        profileImage: ''
+        profileImage: '',
+        binaryData:''
     }
     const errorObj = {
         fName: '.',
@@ -35,6 +36,20 @@ const Signup = () => {
         }
     }, [errors])
 
+    const convertToBase64 =async (name, file)=> {
+        let result = await new Promise((resolve, reject)=> {
+            const filereader = new FileReader()
+            filereader.readAsDataURL(file)
+            filereader.onload =()=> {
+                resolve(filereader.result)
+            }
+            filereader.onerror =(err)=>{
+                reject(err)
+            } 
+        })
+        setProfileImage(file)
+        setData({...data, "binaryData": result})
+    }
 
     const handleChange = (e) => {
         const imgTypes = ['image/jpeg', 'image/png']
@@ -42,7 +57,7 @@ const Signup = () => {
         const mobilePattern = /^[0-9]{10}$/
         const psdPattern = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%&*<>]).{8,}$/
         const { name, value, files } = e.target
-        name == 'profileImage' ? setProfileImage(files[0]) : setData({ ...data, [name]: value })
+        name == 'profileImage' ? convertToBase64(name,files[0]) : setData({ ...data, [name]: value })
         switch (name) {
             case 'fName': {
                 value.length > 2 ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Min 2 Chars required' })

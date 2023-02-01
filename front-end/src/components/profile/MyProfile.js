@@ -36,7 +36,7 @@ const MyProfile = () => {
           <h2>Password :{currentUser.password.slice(0,2)}{text.padEnd(currentUser.password.length -4,'*')}{currentUser.password.slice(-2)}</h2>
         </div>
         <div>
-        <img src={`/users/${currentUser.profileImage}`} alt='image' style={{width:'200px', height:'200px'}} />
+        <img src={currentUser.binaryData} alt='image' style={{width:'200px', height:'200px'}} />
       </div>
         <div><button onClick={logoutFunc} style={{padding:'10px 20px', border:'none', margin:'10px', fontSize:'16px'}}>Logout</button></div>
       </div>

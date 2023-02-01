@@ -14,7 +14,8 @@ const AddData = () => {
         technology: 'React',
         issue: '',
         time: '',
-        mobile:''
+        mobile:'',
+        binaryData: ''
     }
     let [data, setData] = useState(obj)   
 
@@ -26,10 +27,24 @@ const AddData = () => {
             </div>
         )
     }
+    const convertToBase64 =async (file)=> {
+         let result = await new Promise((resolve,reject)=> {
+            const filereader = new FileReader()
+            filereader.readAsDataURL(file)
+            filereader.onload =() => {
+                resolve(filereader.result)
+            }
+            filereader.onerror =(error)=> {
+                reject(error)
+            }
+         })
+         setImg(file)
+         setData({...data, 'binaryData': result})
+    }
 
-    const handleChange = (e) => {
+    const handleChange =async  (e) => {
         const { name, value } = e.target
-        name === 'images' ? setImg(e.target.files[0]) : setData({ ...data, [name]: value })
+        name === 'images' ? convertToBase64(e.target.files[0]) : setData({ ...data, [name]: value })
     }
 
     const handleSubmit = (e) => {

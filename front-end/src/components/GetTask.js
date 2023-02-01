@@ -81,7 +81,7 @@ const GetTask = () => {
                                     <td> {val.technology} </td>
                                     <td onClick={() => gotoDesc(val)}> {val.issue}</td>
                                     <td> {val?.time}</td>
-                                    <td><img src={`/uploads/${val.image}`} style={{width:'100px', height:'100px'}} alt='img' /> </td>
+                                    <td><img src={val.binaryData} style={{width:'100px', height:'100px'}} alt='img' /> </td>
                                     <td>
                                         <button onClick={editFunc} disabled={currentUser.mobile !== val.mobile}>Edit</button>
                                         <button onClick={deleteFunc} disabled={currentUser.mobile !== val.mobile}>Delete</button>
