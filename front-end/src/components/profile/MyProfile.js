@@ -3,6 +3,7 @@ import axios from 'axios'
 import { NavLink } from 'react-router-dom'
 
 import useAuth from '../authentication/Authentication'
+import { setCookie } from '../cookieset/CookieComp'
 
 const MyProfile = () => {
   const user = useAuth()
@@ -20,10 +21,8 @@ const MyProfile = () => {
   }
   const text =''
   const logoutFunc =()=> {
-    axios.delete('/deletecurrentuser')
-    .then(res => console.log(res, 'suc') )
-    .catch(err => console.log(err,'err'))
-    setCurrentUser('')
+    setCurrentUser({})
+    setCookie("63dab3b51d791ebc7821db51",2)
   }
   return (
     <div>

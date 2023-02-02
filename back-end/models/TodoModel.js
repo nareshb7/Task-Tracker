@@ -32,6 +32,10 @@ const taskSchema = new mongoose.Schema({
     binaryData: {
         type: String,
         require: true
+    },
+    issueTitle: {
+        type:String,
+        require: true
     }
 })
 
@@ -61,10 +65,6 @@ const signinSchema = mongoose.Schema({
         type:String,
         require: true
     },
-    profileImage : {
-        type:String,
-        require: true
-    },
     binaryData : {
         type: String,
         require: true
@@ -73,7 +73,13 @@ const signinSchema = mongoose.Schema({
 
 const currentUserSchema = mongoose.Schema({
     currentUser : {
-        type: Object,
+        type: String,
+        require: true
+    }
+})
+const currentuserID = mongoose.Schema({
+    userID : {
+        type: String,
         require: true
     }
 })
@@ -81,3 +87,4 @@ const currentUserSchema = mongoose.Schema({
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)
 module.exports.TaskModel =  mongoose.model('solutions', taskSchema)
 module.exports.currentUserModel = mongoose.model('CurrentUser', currentUserSchema)
+module.exports.currentID = mongoose.model('currentUserID', currentuserID)

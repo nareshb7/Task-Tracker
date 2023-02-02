@@ -11,7 +11,8 @@ const Signup = () => {
         password: '',
         conPassword: '',
         profileImage: '',
-        binaryData:''
+        binaryData:'',
+        isAdmin:false
     }
     const errorObj = {
         fName: '.',
@@ -95,15 +96,20 @@ const Signup = () => {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        axios.post('/signupData', { data: data, profileImage: image }, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            }
-        })
-            .then(res => setResponse(res.data))
-            .catch(err => setResponse(JSON.stringify(err)))
-        setData(obj)
-        setProfileImage('')
+        if (data.isAdmin === 'false') {
+            axios.post('/api/signupData', { data: data, profileImage: image }, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            })
+                .then(res => setResponse(res.data))
+                .catch(err => setResponse(JSON.stringify(err)))
+            setData(obj)
+            setProfileImage('')
+        } else {
+            alert('You are not a admin')
+        }
+        
         console.log(data, 'signindata')
     }
     return (
@@ -143,6 +149,11 @@ const Signup = () => {
                     {/* <div> <label>Upload your ProfileImage :</label></div> */}
                     <div> <input type='file' name='profileImage' defaultValue={image} onChange={handleChange} required /></div>
                     <div className='errorMsz'>{errors.profileImage}</div>
+                </div>
+                <div>
+                    <label>Are you admin ?</label>
+                    <input type='radio' name='isAdmin' value={true} onChange={handleChange} />Yes
+                    <input type='radio' name='isAdmin' value={false} onChange={handleChange} selected />No
                 </div>
                 <div><button type='submit' disabled={!isValid}> Submit </button> </div>
             </form>

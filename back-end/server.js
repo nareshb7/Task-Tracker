@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGODB_URL)
 .catch(err => console.log(`Error ${err}`))
 
 const routes = require('./routers/TaskRouters')
-app.use('/',routes)
+app.use('/api',routes)
 app.use('/users', express.static('./users'))
 app.use('/uploads',express.static('./uploads'))
 

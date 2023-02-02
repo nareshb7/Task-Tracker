@@ -10,7 +10,7 @@ const GetTask = () => {
     const [data, setData] = useState([])
     const [tableData, setTableData] = useState([])
     useEffect(() => {
-        axios.get('/getData')
+        axios.get('/api/getData')
             .then(data => setData(data.data))
             .catch(err => console.log(err, 'err'))
     }, [])
@@ -79,7 +79,7 @@ const GetTask = () => {
                                     <td> {val.dName}</td>
                                     <td> {val.cName}</td>
                                     <td> {val.technology} </td>
-                                    <td onClick={() => gotoDesc(val)}> {val.issue}</td>
+                                    <td onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                                     <td> {val?.time}</td>
                                     <td><img src={val.binaryData} style={{width:'100px', height:'100px'}} alt='img' /> </td>
                                     <td>

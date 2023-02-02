@@ -7,6 +7,7 @@ import Home from './components/Home'
 import Login from './components/login/Login'
 import MyProfile from './components/profile/MyProfile'
 import Signup from './components/signup/Signup'
+import GetAllUsers from './components/allusers/GetAllUsers'
 
 const RoutesComp =()=> {
     return (
@@ -20,6 +21,7 @@ const RoutesComp =()=> {
                 <Route path='signup' element={<Signup /> } />
                 <Route path='login' element={<Login /> } />
                 <Route path='profile' element={<MyProfile/> } />
+                <Route path='getallusers' element={<GetAllUsers/>} />
             </Routes>
         </div>
     )

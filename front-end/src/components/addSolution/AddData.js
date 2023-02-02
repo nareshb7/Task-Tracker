@@ -15,7 +15,8 @@ const AddData = () => {
         issue: '',
         time: '',
         mobile:'',
-        binaryData: ''
+        binaryData: '',
+        issueTitle:''
     }
     let [data, setData] = useState(obj)   
 
@@ -53,7 +54,7 @@ const AddData = () => {
         data.dName = isLoggedin.fName + " "+ isLoggedin.lName
         data.mobile = isLoggedin.mobile
         console.log(data, 'submit data')
-        axios.post("http://localhost:4040/setData", { data: data, testImage: img },
+        axios.post("/api/setData", { data: data, testImage: img },
             {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -97,6 +98,10 @@ const AddData = () => {
                 </div>
                 <div>
                     <input type='file' name='images' defaultValue={img} onChange={handleChange} required />
+                </div>
+                <div>
+                    <label>Issue Title : </label>
+                    <input type='text' name='issueTitle' value={data.issueTitle} onChange={handleChange} />
                 </div>
                 <div>
                     <label>Describe the issue :  </label>
