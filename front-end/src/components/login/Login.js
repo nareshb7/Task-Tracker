@@ -11,10 +11,6 @@ const Login = () => {
         mobile: '',
         password: ''
     }
-    const adminObj = {
-        mobile: '1234567890',
-        password:'test@1234'
-    }
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
@@ -24,14 +20,6 @@ const Login = () => {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(data, adminObj)
-        if (data.mobile == adminObj.mobile && data.password == adminObj.password) {
-            let val = window.confirm('Are you a Admin??')
-            if (val) {
-                console.log('he is admin')
-            }
-            return 
-        }
         axios.post('/api/loginData', data)
             .then(data => setCurrentUser(data.data))
             .catch(err => console.log(err, 'login err'))
@@ -45,7 +33,11 @@ const Login = () => {
     }
     useEffect(() => {
         if (Object.keys(currentUser).length > 2) {
-            loginSucessFunc()
+            if (currentUser.isActive) {
+                loginSucessFunc()
+            }else {
+                setResponse('Access Denied')
+            }
         }
         console.log(currentUser, 'logincurentuser')
     }, [currentUser])

@@ -17,9 +17,22 @@ const GetAllUsers = () => {
         .then(data => setIssuesList(data.data))
         .catch(err => console.log(err, 'err'))
     }
+    const removeUser =(user)=> {
+        console.log(user, 'user')
+        axios.post('/api/deleteuser', {id : user._id})
+        .then(data=>  console.log(data, 'data suc'))
+        .catch(err => console.log(err, 'err'))
+    }
+    const updateUser =(user)=> {
+        console.log(user, 'update')
+        axios.post('/api/adminupdateuser', {id: user._id})
+        .then(res => console.log(res, 'suc'))
+        .catch(err => console.log(err, 'err'))
+    }
 
   return (
-    <div>
+    <>{
+        currentUser && currentUser.isAdmin ?<div>
         <h1>All Users : </h1>
         <table cellPadding='10' style={{textAlign:'center'}} border='1'>
             <thead>
@@ -30,6 +43,7 @@ const GetAllUsers = () => {
                     <th>Profile Image</th>
                     <th>Is Active</th>
                     <th>Uploaded Issues</th>
+                    <th> Remove User</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,9 +57,13 @@ const GetAllUsers = () => {
                         <td style={{width:'100px', height:'100px'}}>
                             <img src={user.binaryData} alt='image' style={{width:'100%', height:'100%'}} />
                         </td>
-                        <td> Yes </td>
+                        <td> {user.isActive ? 'Yes': 'No'} </td>
                         <td>
                             <button  onClick={()=> uploadedIssues(user.mobile)}>Click Here</button>
+                        </td>
+                        <td>
+                            <button disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={()=> removeUser(user)}>Remove</button>
+                            <button disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={()=> updateUser(user)}>Update</button>
                         </td>
                     </tr>
                 )
@@ -64,7 +82,10 @@ const GetAllUsers = () => {
                 )
             }
         </div>
-    </div>
+    </div> : <h1>You are not a authorised person to access this page</h1>
+    }
+    
+    </> 
   )
 }
 

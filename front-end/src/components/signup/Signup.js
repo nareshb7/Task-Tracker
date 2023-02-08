@@ -12,7 +12,8 @@ const Signup = () => {
         conPassword: '',
         profileImage: '',
         binaryData:'',
-        isAdmin:false
+        isAdmin:false,
+        isActive: true
     }
     const errorObj = {
         fName: '.',
@@ -28,6 +29,7 @@ const Signup = () => {
     const [errors, setErrors] = useState(errorObj)
     const [response, setResponse] = useState('')
     const [isValid, setIsValid] = useState(false)
+    const [otp,setOtp] = useState('')
     useEffect(() => {
         const { fName, lName, mobile, password, email, conPassword, profileImage } = errors
         if (!fName && !lName && !mobile && !email && !password && !conPassword && !profileImage) {
@@ -94,22 +96,47 @@ const Signup = () => {
 
         }
     }
+    const addUser =(creds)=> {
+        axios.post('/api/signupData', { data: creds, profileImage: image }, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        })
+            .then(res => setResponse(res.data))
+            .catch(err => setResponse(JSON.stringify(err)))
+        setData(obj)
+        setProfileImage('')
+    }
+
+    useEffect(()=> {
+        if(otp){
+            setTimeout(()=> {
+                let random = window.prompt('Enter the Email verification code here : ')
+                console.log(random, 'random', otp)
+                if(random==otp){
+                    addUser(data)
+                }
+                setOtp('')
+            },1000)
+        }
+    },[otp])
+    const adminAcVerify =(creds)=>{
+        axios.post('/api/mailverification',{creds})
+        .then(data => {
+            setResponse(data.data.message)
+            setOtp(data.data.psd)
+        })
+        .catch(err => console.log(err,'creds err'))
+        setResponse('verification code is sending to your mail...')
+    }
+    
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (data.isAdmin === 'false') {
-            axios.post('/api/signupData', { data: data, profileImage: image }, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                }
-            })
-                .then(res => setResponse(res.data))
-                .catch(err => setResponse(JSON.stringify(err)))
-            setData(obj)
-            setProfileImage('')
+            addUser(data)
         } else {
-            alert('You are not a admin')
+            adminAcVerify(data)
         }
-        
         console.log(data, 'signindata')
     }
     return (

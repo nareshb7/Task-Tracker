@@ -68,6 +68,12 @@ const signinSchema = mongoose.Schema({
     binaryData : {
         type: String,
         require: true
+    }, isActive: {
+        type: Boolean,
+        require: true
+    }, isAdmin: {
+        type:Boolean, 
+        require: true
     }
 })
 

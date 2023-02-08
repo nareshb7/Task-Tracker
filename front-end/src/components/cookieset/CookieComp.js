@@ -1,6 +1,3 @@
-import React from 'react'
-
-
 export const setCookie = ( cvalue, exdays)=> {
     const d = new Date()
     d.setTime(d.getTime() + (exdays *24*60* 60* 1000))
@@ -19,7 +16,7 @@ export const CookieComp = (id) => {
     if (user) {
         return user
     } else {
-        setCookie('presentTaskUser', "9010586402",2)
+        setCookie("63daa3b51d791ebc7921db51",2)
         return false
     }
   }

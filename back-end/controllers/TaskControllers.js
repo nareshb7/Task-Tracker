@@ -1,6 +1,22 @@
 const multer = require('multer')
+const nodemailer = require('nodemailer')
+
 const fs = require('fs')
 const {TaskModel, signUpModel, currentUserModel, currentID} = require('../models/TodoModel')
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth:{
+        user: 'nareshsit7@gmail.com',
+        pass: 'xdocuqqhhnlwyllg'
+    }
+})
+const options = {
+    from :'narehsit7@gmail.com',
+    to:'',
+    subject: 'Email Verification',
+    text:'Verification Code is : '
+}
 
 // Storage Engine
 const Storage = multer.diskStorage({
@@ -76,11 +92,9 @@ module.exports.setCurrentUser = async (req,res)=> {
 }
 
 module.exports.getCurrentUser = async (req,res)=> {
-    await currentUserModel.find({},{_id:0}).then(data=> res.send(data)).catch(err => res.send(err))
-    
-    
-    
+    await currentUserModel.find({},{_id:0}).then(data=> res.send(data)).catch(err => res.send(err))  
 }
+
 module.exports.deleteCurrentUser = async (req,res) => {
     await currentUserModel.deleteMany().then(data=> res.send(data)).catch(err=> res.send(err))
 }
@@ -101,5 +115,30 @@ module.exports.getAllUsers = async (req,res)=> {
 module.exports.uploadedIssues = async (req,res)=> {
     const {mobile} = req.body
     const result = await TaskModel.find({mobile: mobile})
+    res.send(result)
+}
+module.exports.mailVerification = async (req,res)=> {
+    const {creds} = req.body
+    const random = Math.random().toString(36).slice(2,10)
+    const d = new Date().toLocaleString()
+    options.to = creds.email
+    options.text = `Your confirmation password is : " ${random} " please provide this code on http://localhost:3000/signup sent time : ${d}`
+    // console.log(creds, 'creds', random)
+    transporter.sendMail(options, (err, info)=> {
+        if (err){
+            res.send(err)
+        }
+        res.send({psd: random, message: 'OTP sent to ur mail'})
+    })
+}
+
+module.exports.deleteUser = async (req,res)=> {
+    const {id} = req.body
+    const result = await signUpModel.findByIdAndDelete({_id : id})
+    res.send(result)
+}
+module.exports.updateUser = async (req,res)=> {
+    const {id} = req.body
+    const result = await signUpModel.findByIdAndUpdate({_id : id},{isActive: false})
     res.send(result)
 }
