@@ -25,6 +25,7 @@ const AddData = () => {
             setIsLoggedIn(currentUserVal)
         }
     }, [currentUserVal])
+
     const convertToBase64 = async (file) => {
         let result = await new Promise((resolve, reject) => {
             const filereader = new FileReader()
@@ -36,7 +37,6 @@ const AddData = () => {
                 reject(error)
             }
         })
-        setImg(file)
         setData({ ...data, 'binaryData': result })
     }
 
@@ -51,16 +51,11 @@ const AddData = () => {
         data.dName = isLoggedin.fName + " " + isLoggedin.lName
         data.mobile = isLoggedin.mobile
         console.log(data, 'submit data')
-        axios.post("/api/setData", { data: data, testImage: img },
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                }
-            })
+        axios.post("/api/setData", { "data": data })
             .then(data => setStatus('Data Added Sucessfully'))
             .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
         setData(obj)
-        setImg('')
+        setStatus('Submitting...')
         // console.log('submitted')
     }
     return (

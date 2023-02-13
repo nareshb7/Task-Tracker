@@ -13,35 +13,41 @@ const GetTask = () => {
     const [sortNames , setSortNames] = useState({
         dName: [],
         cName :[],
-        technologies:[]
+        technology:[]
     })
-    
+    const [applyFilters, setApplyFilters] = useState({
+        dName: 'All',
+        cName :'All',
+        technology:'All'
+    })
     const sortList =()=> {
         sortNames.dName = [...new Set(data.map(val => val.dName))]
         sortNames.cName = [...new Set(data.map(val=> val.cName))]
-        sortNames.technologies = [...new Set(data.map(val => val.technology))]
+        sortNames.technology = [...new Set(data.map(val => val.technology))]
     }
 
     const handleClick = (e) => {
         const { name, value } = e.target
+        // setApplyFilters({...applyFilters,[name]: value})
+        applyFilters[name] = value
         console.log(name, value)
-         let sortData =  data.filter(val => value !== 'All' ? val.technology === value : value)
-        // switch(name) {
-        //     case "dName" {
+         let sortData =  data.filter(val => value !== 'All' ? val[name] === applyFilters[name] : value)
+        let sortedData =  data.filter(val => {
+            // if (applyFilters['cName'] == val.cName && applyFilters['technology'] == val.technology){
+            //     console.log('cName972==', val.cName, val.dName, val.technology)
+            //    //return val['cName'] == applyFilters.cName
+            //    return val
+            // }
+           return  Object.values(applyFilters).includes(val.dName && val.cName)
+            // return val
+            
+        } )
+        console.log(sortedData, '972==sorted', applyFilters)
 
-        //     }
-        // }
-        // let sortData =  data.filter(val => {
-        //     switch (name) {
-        //         case 'dName': {
-        //             if (val.dName == value ){
-        //                 return val
-        //             }
-        //         }
-        //     }
-        // })
+
         setTableData(sortData)
     }
+    console.log(applyFilters, 'applyFilters...')
     const gotoDesc = (val) => {
         navigate(`/description`, { state: val })
     }
@@ -52,10 +58,18 @@ const GetTask = () => {
         console.log('delete button Clicekd')
     }
     useEffect(() => {
+        axios.get('/api/getData')
+            .then(data => setData(data.data))
+            .catch(err => console.log(err, 'err'))
+    }, [])
+
+    useEffect(() => {
         if (data.length) {
             setTableData(data)
             setLoading(false)
             sortList()
+        }else {
+            setLoading(true)
         }
     }, [data])
 
@@ -70,11 +84,7 @@ const GetTask = () => {
         }
     },[currentUserVal])
 
-    useEffect(() => {
-        axios.get('/api/getData')
-            .then(data => setData(data.data))
-            .catch(err => console.log(err, 'err'))
-    }, [])
+    
     console.log(loading,'loading....', sortNames)
     return (<>
         <h1>Get Task:</h1>
@@ -86,7 +96,7 @@ const GetTask = () => {
                     <th>Sl. No</th>
                     <th><div>Developer Name</div>
                     <select onClick={handleClick} name='dName'>
-                            <option>All</option>
+                            <option value='All'>All</option>
                             {
                                 sortNames.dName.map((val, idx) => {
                                     return (
@@ -98,7 +108,7 @@ const GetTask = () => {
                     </th>
                     <th><div>Client Name</div>
                     <select onClick={handleClick} name='cName'>
-                            <option>All</option>
+                            <option value='All'>All</option>
                             {
                                 sortNames.cName.map((val, idx) => {
                                     return (
@@ -110,9 +120,9 @@ const GetTask = () => {
                     </th>
                     <th><div>Technology</div>
                         <select onClick={handleClick} name='technology'>
-                            <option>All</option>
+                            <option value='All'>All</option>
                             {
-                                sortNames.technologies.map((val, idx) => {
+                                sortNames.technology.map((val, idx) => {
                                     return (
                                         <option key={idx} value={val}>{val}</option>
                                     )
@@ -128,6 +138,7 @@ const GetTask = () => {
             </thead>
             <tbody>
                 {
+                  tableData.length ? <>{
                     tableData.map((val, idx) => {
                         return (
                             <tr key={idx}>
@@ -146,6 +157,11 @@ const GetTask = () => {
                         )
                     })
                 }
+                  </>  :<tr>
+                    <td colSpan={8}> Loading......</td>
+                  </tr>
+                }
+                
             </tbody>
         </table>
     </div>

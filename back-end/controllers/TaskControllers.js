@@ -32,15 +32,8 @@ const upload = multer({
 }).single('testImage')
 
 module.exports.setData = async (req,res)=> {
-    upload(req,res,(err)=> {
-        const {data} = req.body
-        if(err){
-            console.log(err)
-        }else {
-            const saveImage = new TaskModel({...data, image: req.file.filename})
-            saveImage.save().then(()=> res.send('Issue Added Sucessfully')).catch(err=> res.send('Error Occured'))
-        }
-    })
+    const {data} = req.body
+    await TaskModel.create(data).then(data => res.send('Data Saved Sucessfully')).catch(err => res.send(err))
 }
 // {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.getData = async (req,res)=> {
@@ -79,7 +72,7 @@ module.exports.signUpData = async (req,res)=> {
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req,res)=> {
-    const {mobile, password} = req.body
+    const {mobile} = req.body
     const result = await signUpModel.findOne({"mobile" : mobile})
     res.send(result)
 }
@@ -99,10 +92,6 @@ module.exports.deleteCurrentUser = async (req,res) => {
     await currentUserModel.deleteMany().then(data=> res.send(data)).catch(err=> res.send(err))
 }
 
-// module.exports.setCurrentUserID = async (req,res)=> {
-//     const {id} = req.body
-//     await currentID.create({userID: id}).then(data=> res.send('User ID set')).catch(err=> res.send('User id not set'))
-// }
 module.exports.getParticularUser = async (req,res)=> {
     const {id} = req.body
     const result =await signUpModel.findOne({_id : id})
