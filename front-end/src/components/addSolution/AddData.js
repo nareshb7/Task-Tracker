@@ -20,14 +20,14 @@ const AddData = () => {
     }
     let [data, setData] = useState(obj)   
 
-    if (!isLoggedin.hasOwnProperty('fName')) {
-        return (
-            <div>
-                <h2>U can't add data please login</h2>
-                <div>Click here to <NavLink to='/login' >Login</NavLink></div>
-            </div>
-        )
-    }
+    // if (!isLoggedin.hasOwnProperty('fName')) {
+    //     return (
+    //         <div>
+    //             <h2>U can't add data please login</h2>
+    //             <div>Click here to <NavLink to='/login' >Login</NavLink></div>
+    //         </div>
+    //     )
+    // }
     const convertToBase64 =async (file)=> {
          let result = await new Promise((resolve,reject)=> {
             const filereader = new FileReader()
@@ -68,7 +68,8 @@ const AddData = () => {
     }
 
     return (
-        <div>
+        <>{
+            isLoggedin.hasOwnProperty('fName') ? <div>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>
@@ -114,7 +115,13 @@ const AddData = () => {
             <div>
                 <h3>Status : {status}</h3>
             </div>
-        </div>
+        </div> : <div>
+                <h2>U can't add data please login</h2>
+                <div>Click here to <NavLink to='/login' >Login</NavLink></div>
+            </div>
+        }
+        
+        </>
     )
 }
 

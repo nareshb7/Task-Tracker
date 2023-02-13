@@ -14,7 +14,7 @@ const Description = () => {
         <h2>Issue : {data.issueTitle}</h2>
         <h2>Description: {data.issue}</h2>
         <div style={{width:'300px', height:'300px'}}>
-          <img src={`/uploads/${data.image}`} style={{width:'100%' , height:'100%'}}/>
+          <img src={data.binaryData} style={{width:'100%' , height:'100%'}}/>
         </div>
     </div>
   )

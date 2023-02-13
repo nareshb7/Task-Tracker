@@ -80,7 +80,7 @@ module.exports.signUpData = async (req,res)=> {
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req,res)=> {
     const {mobile, password} = req.body
-    const result = await signUpModel.findOne({"mobile" : mobile, "password": password})
+    const result = await signUpModel.findOne({"mobile" : mobile})
     res.send(result)
 }
 
@@ -138,7 +138,7 @@ module.exports.deleteUser = async (req,res)=> {
     res.send(result)
 }
 module.exports.updateUser = async (req,res)=> {
-    const {id} = req.body
-    const result = await signUpModel.findByIdAndUpdate({_id : id},{isActive: false})
+    const {id, status} = req.body
+    const result = await signUpModel.findByIdAndUpdate({_id : id},{isActive: !status})
     res.send(result)
 }

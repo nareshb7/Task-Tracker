@@ -11,6 +11,7 @@ const Login = () => {
         mobile: '',
         password: ''
     }
+    console.log(isLoggedIn, 'isLoggedin')
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
@@ -21,9 +22,21 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         axios.post('/api/loginData', data)
-            .then(data => setCurrentUser(data.data))
+            .then(res => {
+                if (res.data){
+                    if (res.data.password == data.password ) {
+                        setCurrentUser(res.data)
+                    setData(obj)
+                    } else {
+                        setResponse('Password not matching..')
+                    }
+                    
+                } else {
+                    setResponse('No user found..')
+                }
+            })
             .catch(err => console.log(err, 'login err'))
-        setData(obj)
+        setResponse('Loading......')
     }
     const loginSucessFunc = async () => {
         axios.post('/api/currentuserid', { id: currentUser._id })
@@ -38,8 +51,7 @@ const Login = () => {
             }else {
                 setResponse('Access Denied')
             }
-        }
-        console.log(currentUser, 'logincurentuser')
+        } 
     }, [currentUser])
     return (
         <div>

@@ -19,13 +19,18 @@ const GetAllUsers = () => {
     }
     const removeUser =(user)=> {
         console.log(user, 'user')
-        axios.post('/api/deleteuser', {id : user._id})
+        let cnfrm = window.confirm(`Do you want to delete ${user.fName}'s account ??`)
+        if (cnfrm) {
+            axios.post('/api/deleteuser', {id : user._id})
         .then(data=>  console.log(data, 'data suc'))
         .catch(err => console.log(err, 'err'))
+        }
+        
     }
     const updateUser =(user)=> {
         console.log(user, 'update')
-        axios.post('/api/adminupdateuser', {id: user._id})
+        let status = user.isActive
+        axios.post('/api/adminupdateuser', {id: user._id, status: status})
         .then(res => console.log(res, 'suc'))
         .catch(err => console.log(err, 'err'))
     }
