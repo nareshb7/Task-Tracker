@@ -99,10 +99,10 @@ module.exports.deleteCurrentUser = async (req,res) => {
     await currentUserModel.deleteMany().then(data=> res.send(data)).catch(err=> res.send(err))
 }
 
-module.exports.setCurrentUserID = async (req,res)=> {
-    const {id} = req.body
-    await currentID.create({userID: id}).then(data=> res.send('User ID set')).catch(err=> res.send('User id not set'))
-}
+// module.exports.setCurrentUserID = async (req,res)=> {
+//     const {id} = req.body
+//     await currentID.create({userID: id}).then(data=> res.send('User ID set')).catch(err=> res.send('User id not set'))
+// }
 module.exports.getParticularUser = async (req,res)=> {
     const {id} = req.body
     const result =await signUpModel.findOne({_id : id})
