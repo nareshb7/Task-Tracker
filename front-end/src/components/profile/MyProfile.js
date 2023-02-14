@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, } from 'react-router-dom'
-import { UserContext } from '../../App'
 import { setCookie } from '../cookieset/CookieComp'
 
-const MyProfile = () => {
-  const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
+const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
   const [currentUser, setCurrentUser] = useState({})
   useEffect(() => {
     setCurrentUser(currentUserVal)
