@@ -2,7 +2,7 @@ const multer = require('multer')
 const nodemailer = require('nodemailer')
 
 const fs = require('fs')
-const {TaskModel, signUpModel, currentUserModel, currentID} = require('../models/TodoModel')
+const {TaskModel, signUpModel, currentUserModel, currentID, deletedUsers} = require('../models/TodoModel')
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -124,10 +124,11 @@ module.exports.mailVerification = async (req,res)=> {
 module.exports.deleteUser = async (req,res)=> {
     const {id} = req.body
     const result = await signUpModel.findByIdAndDelete({_id : id})
+    await deletedUsers.create(result).then(res=> console.log('Delete sucess')).catch(err=> console.log('delete error'))
     res.send(result)
 }
 module.exports.updateUser = async (req,res)=> {
     const {id, status} = req.body
-    const result = await signUpModel.findByIdAndUpdate({_id : id},{isActive: !status})
+    const result = await signUpModel.findByIdAndUpdate({_id : id},{isActive: status})
     res.send(result)
 }

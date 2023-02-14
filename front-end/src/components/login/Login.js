@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { setCookie } from '../cookieset/CookieComp'
 import { UserContext } from '../../App'
+import MyProfile from '../profile/MyProfile'
 
 const Login = () => {
     const {currentUserVal, setCurrentUserVal} = useContext(UserContext)
@@ -56,16 +57,16 @@ const Login = () => {
             }
         } 
     }, [currentUser])
-    useEffect(()=> {
-        if(Object.keys(currentUserVal).length > 2) {
-            navigate('/profile')
+    // useEffect(()=> {
+    //     if(Object.keys(currentUserVal).length > 2) {
+    //         navigate('/profile')
             
-        }
-    }, [currentUserVal])
+    //     }
+    // }, [currentUserVal])
     return (
         <div>
             {
-                currentUserVal.hasOwnProperty('fName') ? "Navigating....." : (
+                !currentUserVal.hasOwnProperty('fName') ? (
                     <>
                         <form onSubmit={handleSubmit}>
                             <div>
@@ -84,9 +85,11 @@ const Login = () => {
                             <h3> Status: {response} </h3>
                         </div>
                     </>
-                )
+                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} />
             }
+            {
 
+            }
         </div>
     )
 }
