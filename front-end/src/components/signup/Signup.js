@@ -115,6 +115,7 @@ const Signup = () => {
             } else {
                 setErrors({...errors, 'mobile': 'Try new Mobile number...'})
             }
+            console.log(isValid, 'isValid if')
             result = 'error red'
         } else {
             if (data.isAdmin === 'false') {
