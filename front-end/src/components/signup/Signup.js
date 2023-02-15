@@ -24,7 +24,6 @@ const Signup = () => {
         conPassword: '.',
         profileImage: '.'
     }
-    const [image, setProfileImage] = useState('')
     const [data, setData] = useState(obj)
     const [errors, setErrors] = useState(errorObj)
     const [response, setResponse] = useState('')
@@ -50,7 +49,6 @@ const Signup = () => {
                 reject(err)
             } 
         })
-        setProfileImage(file)
         setData({...data, "binaryData": result})
     }
 
@@ -60,7 +58,7 @@ const Signup = () => {
         const mobilePattern = /^[0-9]{10}$/
         const psdPattern = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%&*<>]).{8,}$/
         const { name, value, files } = e.target
-        name == 'profileImage' ? convertToBase64(name,files[0]) : setData({ ...data, [name]: value })
+        name === 'profileImage' ? convertToBase64(name,files[0]) : setData({ ...data, [name]: value })
         switch (name) {
             case 'fName': {
                 value.length > 2 ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Min 2 Chars required' })
@@ -83,7 +81,7 @@ const Signup = () => {
                 break;
             }
             case 'conPassword': {
-                value == data.password ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Password confrim password must be same' })
+                value === data.password ? setErrors({ ...errors, [name]: '' }) : setErrors({ ...errors, [name]: 'Password confrim password must be same' })
                 break;
             }
             case 'profileImage': {
@@ -97,7 +95,7 @@ const Signup = () => {
         }
     }
     const addUser =(creds)=> {
-        axios.post('/api/signupData', { data: creds, profileImage: image }, {
+        axios.post('/api/signupData', { data: creds}, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }
@@ -105,7 +103,29 @@ const Signup = () => {
             .then(res => setResponse(res.data))
             .catch(err => setResponse(JSON.stringify(err)))
         setData(obj)
-        setProfileImage('')
+    }
+    const verifyData =async (checkdata)=> {
+        console.log('start')
+        let result = ''
+        let res = await axios.get('/api/getallusers')
+        let isValid = await res.data.filter(val => val.email === checkdata.email || val.mobile.toString() === checkdata.mobile)
+        if (isValid.length) {
+            if (isValid[0].email === checkdata.email){
+                setErrors({...errors, "email": 'Try new Email Id.'})
+            } else {
+                setErrors({...errors, 'mobile': 'Try new Mobile number...'})
+            }
+            result = 'error red'
+        } else {
+            if (data.isAdmin === 'false') {
+                addUser(data)
+            } else {
+                adminAcVerify(data)
+            }
+            result = 'newemailid'
+        }
+        return result
+
     }
 
     useEffect(()=> {
@@ -113,7 +133,7 @@ const Signup = () => {
             setTimeout(()=> {
                 let random = window.prompt('Enter the Email verification code here : ')
                 console.log(random, 'random', otp)
-                if(random==otp){
+                if(random == otp){
                     addUser(data)
                 }
                 setOtp('')
@@ -132,12 +152,9 @@ const Signup = () => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (data.isAdmin === 'false') {
-            addUser(data)
-        } else {
-            adminAcVerify(data)
-        }
-        console.log(data, 'signindata')
+        const response = verifyData(data)
+        
+        console.log(data, 'signindata', response, errors)
     }
     return (
         <div className='signupDiv'>
@@ -174,7 +191,7 @@ const Signup = () => {
                 </div>
                 <div>
                     {/* <div> <label>Upload your ProfileImage :</label></div> */}
-                    <div> <input type='file' name='profileImage' defaultValue={image} onChange={handleChange} required /></div>
+                    <div> <input type='file' name='profileImage' defaultValue={data.binaryData} onChange={handleChange} required /></div>
                     <div className='errorMsz'>{errors.profileImage}</div>
                 </div>
                 <div>

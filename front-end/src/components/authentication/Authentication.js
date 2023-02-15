@@ -4,15 +4,8 @@ import {CookieComp} from '../cookieset/CookieComp'
 
 const useAuth = () => {
     const [currentUser, setCurrentUser] = useState({})
-    const [isAlreadyUser, setIsAlreadyUser] = useState('')
     useEffect(()=> {
-        // axios.get('/api/getCurrentUser', {
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        // })
-        //     .then(data => console.log(data, 'data auth'))
-        //     .catch(err => setCurrentUser(JSON.stringify(err)))
+        console.log('authenticating......')
         const userid = CookieComp() 
         if (userid) {
             axios.post('/api/getparticularuser',{id: userid} )
@@ -21,11 +14,6 @@ const useAuth = () => {
         }
         
     }, [])
-    useEffect(()=> {
-        // console.log(currentUser, 'auth')
-        // setIsAlreadyUser(CookieComp())
-    }, [currentUser])
-    // console.log(isAlreadyUser, 'cookie result')
     return currentUser
 }
 
