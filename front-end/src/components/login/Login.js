@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import useAuth from '../authentication/Authentication'
 import { setCookie } from '../cookieset/CookieComp'
+import { UserContext } from '../../App'
+import MyProfile from '../profile/MyProfile'
 
 const Login = () => {
-    const isLoggedIn = useAuth()
+    const {currentUserVal, setCurrentUserVal} = useContext(UserContext)
+    const [isLoggedIn, setIsLoggedIn] = useState({})
     const navigate = useNavigate()
     const obj = {
         mobile: '',
         password: ''
     }
-    console.log(isLoggedIn, 'isLoggedin')
+    console.log('isLoggedin', currentUserVal)
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
@@ -39,9 +41,11 @@ const Login = () => {
         setResponse('Loading......')
     }
     const loginSucessFunc = async () => {
-        axios.post('/api/currentuserid', { id: currentUser._id })
-            .then(data => setResponse(data.data))
-            .catch(err => setResponse(err.message))
+        // axios.post('/api/currentuserid', { id: currentUser._id })
+        //     .then(data => setResponse(data.data))
+        //     .catch(err => setResponse(err.message))
+        setCurrentUserVal(currentUser)
+        setResponse('Login Sucessfully')
         setCookie(currentUser._id, 2)
     }
     useEffect(() => {
@@ -53,10 +57,16 @@ const Login = () => {
             }
         } 
     }, [currentUser])
+    // useEffect(()=> {
+    //     if(Object.keys(currentUserVal).length > 2) {
+    //         navigate('/profile')
+            
+    //     }
+    // }, [currentUserVal])
     return (
         <div>
             {
-                isLoggedIn.hasOwnProperty('fName') ? navigate('/profile') : (
+                !currentUserVal.hasOwnProperty('fName') ? (
                     <>
                         <form onSubmit={handleSubmit}>
                             <div>
@@ -75,9 +85,11 @@ const Login = () => {
                             <h3> Status: {response} </h3>
                         </div>
                     </>
-                )
+                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} />
             }
+            {
 
+            }
         </div>
     )
 }
