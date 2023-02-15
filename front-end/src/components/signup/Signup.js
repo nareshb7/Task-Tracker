@@ -108,7 +108,8 @@ const Signup = () => {
         console.log('start')
         let result = ''
         let res = await axios.get('/api/getallusers')
-        let isValid = await res.data.filter(val => val.email === checkdata.email || val.mobile.toString() === checkdata.mobile)
+        let isValid = await res.data.filter(val => val.email === checkdata.email || val.mobile === checkdata.mobile)
+        console.log(res, 'response ', isValid)
         if (isValid.length) {
             if (isValid[0].email === checkdata.email){
                 setErrors({...errors, "email": 'Try new Email Id.'})
