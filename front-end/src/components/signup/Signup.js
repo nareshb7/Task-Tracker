@@ -13,7 +13,8 @@ const Signup = () => {
         profileImage: '',
         binaryData:'',
         isAdmin:false,
-        isActive: true
+        isActive: true,
+        reqforAdmin: false
     }
     const errorObj = {
         fName: '.',
@@ -117,38 +118,37 @@ const Signup = () => {
             }
             result = 'error red'
         } else {
-            if (data.isAdmin === 'false') {
+            if (data.isAdmin === false) {
                 addUser(data)
-            } else {
-                adminAcVerify(data)
             }
+            
             result = 'newemailid'
         }
         return result
 
     }
 
-    useEffect(()=> {
-        if(otp){
-            setTimeout(()=> {
-                let random = window.prompt('Enter the Email verification code here : ')
-                console.log(random, 'random', otp)
-                if(random == otp){
-                    addUser(data)
-                }
-                setOtp('')
-            },1000)
-        }
-    },[otp])
-    const adminAcVerify =(creds)=>{
-        axios.post('/api/mailverification',{creds})
-        .then(data => {
-            setResponse(data.data.message)
-            setOtp(data.data.psd)
-        })
-        .catch(err => console.log(err,'creds err'))
-        setResponse('verification code is sending to your mail...')
-    }
+    // useEffect(()=> {
+    //     if(otp){
+    //         setTimeout(()=> {
+    //             let random = window.prompt('Enter the Email verification code here : ')
+    //             console.log(random, 'random', otp)
+    //             if(random == otp){
+    //                 addUser(data)
+    //             }
+    //             setOtp('')
+    //         },1000)
+    //     }
+    // },[otp])
+    // const adminAcVerify =(creds)=>{
+    //     axios.post('/api/mailverification',{creds})
+    //     .then(data => {
+    //         setResponse(data.data.message)
+    //         setOtp(data.data.psd)
+    //     })
+    //     .catch(err => console.log(err,'creds err'))
+    //     setResponse('verification code is sending to your mail...')
+    // }
     
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -193,11 +193,6 @@ const Signup = () => {
                     {/* <div> <label>Upload your ProfileImage :</label></div> */}
                     <div> <input type='file' name='profileImage' defaultValue={data.binaryData} onChange={handleChange} required /></div>
                     <div className='errorMsz'>{errors.profileImage}</div>
-                </div>
-                <div>
-                    <label>Are you admin ?</label>
-                    <input type='radio' name='isAdmin' value={true} onChange={handleChange} />Yes
-                    <input type='radio' name='isAdmin' value={false} onChange={handleChange} selected />No
                 </div>
                 <div><button type='submit' disabled={!isValid}> Submit </button> </div>
             </form>

@@ -74,6 +74,9 @@ const signinSchema = mongoose.Schema({
     }, isAdmin: {
         type:Boolean, 
         require: true
+    }, reqforAdmin : {
+        type: Boolean,
+        require: true
     }
 })
 

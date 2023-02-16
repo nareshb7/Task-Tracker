@@ -128,7 +128,8 @@ module.exports.deleteUser = async (req,res)=> {
     res.send(result)
 }
 module.exports.updateUser = async (req,res)=> {
-    const {id, status} = req.body
-    const result = await signUpModel.findByIdAndUpdate({_id : id},{isActive: status})
+    const {id, status, objectType } = req.body
+    console.log(id, status, objectType, 'result')
+    const result = await signUpModel.findByIdAndUpdate({_id : id},{[objectType]: status})
     res.send(result)
 }

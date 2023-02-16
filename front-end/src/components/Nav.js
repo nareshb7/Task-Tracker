@@ -1,7 +1,9 @@
-import React from 'react'
+import React, {useContext, useEffect} from 'react'
 import { NavLink } from 'react-router-dom'
+import { UserContext } from '../App'
 
 const Nav =()=>{
+    const {currentUserVal} = useContext(UserContext)
     return (
         <nav>
             <ul>
@@ -12,8 +14,8 @@ const Nav =()=>{
                 <li><NavLink to='react'>React </NavLink> </li>
                 <li><NavLink to='addIssue'>Add Data</NavLink> </li>
                 <li><NavLink to='getIssue'>Get Data</NavLink> </li>
-                <li><NavLink to='signup'>Sign Up</NavLink> </li>
-                <li><NavLink to='login'>Log In </NavLink> </li>
+                <li style={{display: `${currentUserVal.mobile ? 'none': 'inline-block'}`}}><NavLink to='signup'>Sign Up</NavLink> </li>
+                <li><NavLink to='login'>{currentUserVal.mobile ? "My  Profile":"Login" }</NavLink> </li>
                 <li><NavLink to='getallusers'>Get All Users </NavLink> </li>
             </ul>
         </nav>
