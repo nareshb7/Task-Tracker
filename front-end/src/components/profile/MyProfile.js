@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import { NavLink, } from 'react-router-dom'
 import { setCookie } from '../cookieset/CookieComp'
 
@@ -23,6 +24,14 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
       color: '#888'
     }
   }
+  const reqAdminAccess =()=> {
+    let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
+        if (cnfrm) {
+            axios.post('/api/adminupdateuser', { id: currentUser._id, "objectType": 'reqforAdmin', status: true })
+                .then(res => console.log('applied for admin access'))
+                .catch(err => console.log(err, 'err'))
+        }
+  }
 
   return (
     <div>
@@ -37,7 +46,9 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
           <div>
             <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
           </div>
-          <div><button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button></div>
+          <div>
+            <p style={{ display: `${currentUser.isAdmin ? 'none': 'block'}`}}>Request for <button  onClick={reqAdminAccess}>Admin Access</button></p>
+            <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button></div>
         </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
     </div>
