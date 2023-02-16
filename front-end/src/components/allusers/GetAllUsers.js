@@ -26,7 +26,7 @@ const GetAllUsers = () => {
         axios.get('/api/getallusers')
             .then(data => {
                 setUsers(data.data)
-                const val = users.filter(user => user?.reqforAdmin== true)
+                const val = data.data.filter(user => user?.reqforAdmin== true)
                 console.log(val, 'admin requestlist')
                 setAdminReqData(val)
             })
