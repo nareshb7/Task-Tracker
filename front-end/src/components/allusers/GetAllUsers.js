@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { UserContext } from '../../App'
+import Modal from '../modal/Modal'
 
 const GetAllUsers = () => {
     const { currentUserVal } = useContext(UserContext)
@@ -9,19 +10,26 @@ const GetAllUsers = () => {
     const [currentUser, setCurrentUser] = useState({})
     const [searchVal, setSearchVal] = useState('')
     const [tableData, setTableData] = useState([])
+    const [adminReqData, setAdminReqData] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const tHead =[
         {header:'Sl. No'},
         { header: 'Name', filter: 'fName' },
         { header: 'Email', filter: 'email' },
         { header: 'Mobile', filter: 'mobile' },
         { header: 'Profile Image' },
-        { header: 'Is Active', filter: 'isActive' },
+        { header: 'Active User', filter: 'isActive' },
         { header: 'Uploaded Isues' },
         { header: 'Remove User' }
     ]
     useEffect(() => {
         axios.get('/api/getallusers')
-            .then(data => setUsers(data.data))
+            .then(data => {
+                setUsers(data.data)
+                const val = users.filter(user => user?.reqforAdmin== true)
+                console.log(val, 'admin requestlist')
+                setAdminReqData(val)
+            })
             .catch(err => console.log(err, 'err'))
     }, [])
     useEffect(() => {
@@ -51,7 +59,7 @@ const GetAllUsers = () => {
         let status = user.isActive
         let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id: user._id, status: !status })
+            axios.post('/api/adminupdateuser', { id: user._id, status: !status, "objectType": 'status' })
                 .then(res => setAlert('Updated'))
                 .catch(err => console.log(err, 'err'))
         }
@@ -84,17 +92,21 @@ const GetAllUsers = () => {
         // let searchData = JSON.parse(JSON.stringify(users))
         const searchData = users.filter(val => val.fName.toLowerCase().includes(e.target.value.toLowerCase()) || val.lName.toLowerCase().includes(e.target.value.toLowerCase()) )
         setTableData(searchData)
-
-
     }
+    const adminRequests =()=> {
+        setIsModalOpen(true)
+    }
+
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
                 <h1>All Users : </h1>
                 <div style={{ textAlign: 'end' }}>
+                    <button onClick={adminRequests}>Admin requests <span style={{borderRadius:'50%', backgroundColor:'#888', padding:"5px"}}>{adminReqData.length}</span> </button>
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='search here...' />
                     <button style={{ marginInline: '10px' }} >Search</button>
                 </div>
+                <Modal isOpen={isModalOpen} setModal={setIsModalOpen} header={'Req for Admin Users'} data={adminReqData}/> 
                 {
                     users.length ? (<> <table cellPadding='10' style={{ textAlign: 'center' }} border='1'>
                         <thead>
