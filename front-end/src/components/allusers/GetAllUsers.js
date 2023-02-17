@@ -12,8 +12,8 @@ const GetAllUsers = () => {
     const [tableData, setTableData] = useState([])
     const [adminReqData, setAdminReqData] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const tHead =[
-        {header:'Sl. No'},
+    const tHead = [
+        { header: 'Sl. No' },
         { header: 'Name', filter: 'fName' },
         { header: 'Email', filter: 'email' },
         { header: 'Mobile', filter: 'mobile' },
@@ -26,7 +26,7 @@ const GetAllUsers = () => {
         axios.get('/api/getallusers')
             .then(data => {
                 setUsers(data.data)
-                const val = data.data.filter(user => user?.reqforAdmin== true)
+                const val = data.data.filter(user => user?.reqforAdmin == true && user.isAdmin === false)
                 console.log(val, 'admin requestlist')
                 setAdminReqData(val)
             })
@@ -38,12 +38,12 @@ const GetAllUsers = () => {
     useEffect(() => {
         setTableData(users)
     }, [users])
-    const uploadedIssues = (mobile) => {
-        axios.post('/api/uploadedIssues', { mobile })
+    const uploadedIssues = (email) => {
+        axios.post('/api/uploadedIssues', { email })
             .then(data => setIssuesList(data.data))
             .catch(err => console.log(err, 'err'))
     }
-    const setAlert =(val)=> {
+    const setAlert = (val) => {
         window.alert(`User ${val} Sucessfuly, Refresh the page to see effect.`)
     }
     const removeUser = (user) => {
@@ -59,7 +59,7 @@ const GetAllUsers = () => {
         let status = user.isActive
         let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id: user._id, status: !status, "objectType": 'status' })
+            axios.post('/api/adminupdateuser', { id: user._id, status: !status, "objectType": 'isActive', update:'single' })
                 .then(res => setAlert('Updated'))
                 .catch(err => console.log(err, 'err'))
         }
@@ -87,44 +87,53 @@ const GetAllUsers = () => {
         }
         setTableData(sortData)
     }
-    const handleSearch =(e)=> {
+    const handleSearch = (e) => {
         setSearchVal(e.target.value)
         // let searchData = JSON.parse(JSON.stringify(users))
-        const searchData = users.filter(val => val.fName.toLowerCase().includes(e.target.value.toLowerCase()) || val.lName.toLowerCase().includes(e.target.value.toLowerCase()) )
+        const searchData = users.filter(val => val.fName.toLowerCase().includes(e.target.value.toLowerCase()) || val.lName.toLowerCase().includes(e.target.value.toLowerCase()))
         setTableData(searchData)
     }
-    const adminRequests =()=> {
+    const adminRequests = () => {
         setIsModalOpen(true)
     }
-
+    const requestAcceptFunc = (id, type) => {
+        console.log(id, type)
+        let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
+        if (cnfrm) {
+            axios.post('/api/adminupdateuser', { id, "objectType": 'isAdmin', status: type, update: 'single' })
+                .then(res => console.log('Admin access updated',res))
+                .catch(err => console.log(err, 'Admin access rejected'))
+        }
+    }
+    console.log(issuesList, 'issueslist')
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
                 <h1>All Users : </h1>
                 <div style={{ textAlign: 'end' }}>
-                    <button onClick={adminRequests}>Admin requests <span style={{borderRadius:'50%', backgroundColor:'#888', padding:"5px"}}>{adminReqData.length}</span> </button>
+                    <button onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </button>
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='search here...' />
                     <button style={{ marginInline: '10px' }} >Search</button>
                 </div>
-                <Modal isOpen={isModalOpen} setModal={setIsModalOpen} header={'Req for Admin Users'} data={adminReqData}/> 
+                <Modal isOpen={isModalOpen} setModal={setIsModalOpen} header={'Req for Admin Users'} data={adminReqData} requestAcceptFunc={requestAcceptFunc} />
                 {
                     users.length ? (<> <table cellPadding='10' style={{ textAlign: 'center' }} border='1'>
                         <thead>
                             <tr>
-                                
+
                                 {
                                     tHead.map((th, idx) => {
                                         return (
-                                        <th key={idx}>
-                                            <span>{th.header}</span>
-                                            {
-                                                th.filter && <select onClick={(e) => sortFunc(th.filter, e.target.value)}>
-                                                    <option value='none'></option>
-                                                    <option value='asc'>Up</option>
-                                                    <option value='desc'>Down</option>
-                                                </select>
-                                            }
-                                        </th>
+                                            <th key={idx}>
+                                                <span>{th.header}</span>
+                                                {
+                                                    th.filter && <select onClick={(e) => sortFunc(th.filter, e.target.value)}>
+                                                        <option value='none'></option>
+                                                        <option value='asc'>Up</option>
+                                                        <option value='desc'>Down</option>
+                                                    </select>
+                                                }
+                                            </th>
                                         )
                                     })
                                 }
@@ -144,7 +153,7 @@ const GetAllUsers = () => {
                                             </td>
                                             <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
                                             <td>
-                                                <button onClick={() => uploadedIssues(user.mobile)}>Click Here</button>
+                                                <button onClick={() => uploadedIssues(user.email)}>Click Here</button>
                                             </td>
                                             <td>
                                                 <button disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => removeUser(user)}>Remove</button>

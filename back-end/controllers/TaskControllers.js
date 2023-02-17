@@ -35,6 +35,16 @@ module.exports.setData = async (req,res)=> {
     const {data} = req.body
     await TaskModel.create(data).then(data => res.send('Data Saved Sucessfully')).catch(err => res.send(err))
 }
+module.exports.addSolution = async (req,res)=> {
+    const {newData, id} = req.body
+    const result = await TaskModel.findByIdAndUpdate({_id:id},{'solutions': newData})
+    res.send(result)
+}
+module.exports.deleteSolution = async (req,res)=> {
+    const {id} = req.body
+    const result = await TaskModel.findByIdAndDelete({_id: id})
+    res.send(result)
+}
 // {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.getData = async (req,res)=> {
     await TaskModel.find({})
@@ -102,8 +112,8 @@ module.exports.getAllUsers = async (req,res)=> {
     res.send(result)
 }
 module.exports.uploadedIssues = async (req,res)=> {
-    const {mobile} = req.body
-    const result = await TaskModel.find({mobile: mobile})
+    const {email} = req.body
+    const result = await TaskModel.find({email: email})
     res.send(result)
 }
 module.exports.mailVerification = async (req,res)=> {

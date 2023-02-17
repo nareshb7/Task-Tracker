@@ -1,10 +1,11 @@
 const { Router } = require('express')
-const { setData, getData, signUpData, logInUserData, setCurrentUser, getCurrentUser, deleteCurrentUser, getParticularUser, getAllUsers, uploadedIssues, mailVerification, deleteUser, updateUser } = require('../controllers/TaskControllers')
+const { setData, getData, signUpData, logInUserData, setCurrentUser, getCurrentUser, deleteCurrentUser, getParticularUser, getAllUsers, uploadedIssues, mailVerification, deleteUser, updateUser, addSolution, deleteSolution } = require('../controllers/TaskControllers')
 
 const router = Router()
 
 router.post('/setData', setData)
 router.get('/getData', getData)
+router.post('/addSolution', addSolution)
 router.post('/signupData', signUpData)
 router.post('/loginData', logInUserData)
 router.post('/setCurrentUser', setCurrentUser)
@@ -16,5 +17,6 @@ router.post('/uploadedIssues', uploadedIssues)
 router.post('/mailverification', mailVerification)
 router.post('/deleteuser', deleteUser)
 router.post('/adminupdateuser', updateUser)
+router.post('/deletesolution', deleteSolution)
 
 module.exports = router

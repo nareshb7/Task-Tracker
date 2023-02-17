@@ -8,6 +8,7 @@ import Login from './components/login/Login'
 import MyProfile from './components/profile/MyProfile'
 import Signup from './components/signup/Signup'
 import GetAllUsers from './components/allusers/GetAllUsers'
+import UserUpdate from './components/updateUser/UserUpdate'
 
 const RoutesComp =()=> {
     return (
@@ -22,6 +23,7 @@ const RoutesComp =()=> {
                 <Route path='login' element={<Login /> } />
                 <Route path='profile' element={<MyProfile/> } />
                 <Route path='getallusers' element={<GetAllUsers/>} />
+                <Route path='updateuser' element={<UserUpdate />} />
             </Routes>
         </div>
     )

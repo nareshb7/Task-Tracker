@@ -51,11 +51,14 @@ const GetTask = () => {
     const gotoDesc = (val) => {
         navigate(`/description`, { state: val })
     }
-    const editFunc =()=> {
-        console.log('Edit button clicekd')
+    const editFunc =(id)=> {
+        console.log('Edit button clicekd', id)
     }
-    const deleteFunc =()=> {
-        console.log('delete button Clicekd')
+    const deleteFunc =(id)=> {
+        console.log('delete button Clicekd', id)
+        axios.post('/api/deletesolution', {id})
+        .then(data => console.log('Solution Deleted', data))
+        .catch(err => console.log(err, 'Error Occured during delete'))
     }
     useEffect(() => {
         axios.get('/api/getData')
@@ -150,8 +153,8 @@ const GetTask = () => {
                                 <td> {val?.time}</td>
                                 <td><img src={val.binaryData} style={{width:'100px', height:'100px'}} alt='img' /> </td>
                                 <td>
-                                    <button onClick={editFunc} disabled={currentUser.mobile !== val.mobile}>Edit</button>
-                                    <button onClick={deleteFunc} disabled={currentUser.mobile !== val.mobile}>Delete</button>
+                                    <button onClick={() => editFunc(val._id)} disabled={currentUser.mobile !== val.mobile}>Edit</button>
+                                    <button onClick={() => deleteFunc(val._id)} disabled={currentUser.mobile !== val.mobile}>Delete</button>
                                 </td>
                             </tr>
                         )
