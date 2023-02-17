@@ -14,9 +14,9 @@ const Nav =()=>{
                 <li><NavLink to='react'>React </NavLink> </li>
                 <li><NavLink to='addIssue'>Add Data</NavLink> </li>
                 <li><NavLink to='getIssue'>Get Data</NavLink> </li>
-                <li style={{display: `${currentUserVal.mobile ? 'none': 'inline-block'}`}}><NavLink to='signup'>Sign Up</NavLink> </li>
                 <li><NavLink to='login'>{currentUserVal.mobile ? "My  Profile":"Login" }</NavLink> </li>
                 <li><NavLink to='getallusers'>Get All Users </NavLink> </li>
+                <li style={{display: `${currentUserVal.mobile ? 'none': 'inline-block'}`}}><NavLink to='signup'>Sign Up</NavLink> </li>
             </ul>
         </nav>
     )
