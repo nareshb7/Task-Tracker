@@ -4,6 +4,7 @@ import { UserContext } from '../App'
 
 const Nav =()=>{
     const {currentUserVal} = useContext(UserContext)
+    console.log(currentUserVal, 'nav')
     return (
         <nav>
             <ul>
@@ -17,6 +18,7 @@ const Nav =()=>{
                 <li><NavLink to='login'>{currentUserVal.mobile ? "My  Profile":"Login" }</NavLink> </li>
                 <li><NavLink to='getallusers'>Get All Users </NavLink> </li>
                 <li style={{display: `${currentUserVal.mobile ? 'none': 'inline-block'}`}}><NavLink to='signup'>Sign Up</NavLink> </li>
+                <li><h3 style={{marginBlock:'0'}}>{currentUserVal.hasOwnProperty('fName') &&  currentUserVal.fName +" "+ currentUserVal.lName} </h3></li>
             </ul>
         </nav>
     )

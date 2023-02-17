@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import { setCookie } from '../cookieset/CookieComp'
 import { UserContext } from '../../App'
 import MyProfile from '../profile/MyProfile'
@@ -82,6 +82,7 @@ const Login = () => {
                             </div>
                         </form>
                         <div>
+                            <h4>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></h4>
                             <h3> Status: {response} </h3>
                         </div>
                     </>
