@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { NavLink, } from 'react-router-dom'
+import { NavLink,useNavigate } from 'react-router-dom'
 import { setCookie } from '../cookieset/CookieComp'
 
 const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
+  const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState({})
   useEffect(() => {
     setCurrentUser(currentUserVal)
@@ -27,12 +28,14 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
   const reqAdminAccess =()=> {
     let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id: currentUser._id, "objectType": 'reqforAdmin', status: true })
+            axios.post('/api/adminupdateuser', { id: currentUser._id, "objectType": 'reqforAdmin', status: true, update:'single' })
                 .then(res => console.log('applied for admin access'))
                 .catch(err => console.log(err, 'err'))
         }
   }
-
+  const updateData =(data)=> {
+    navigate('/updateuser', {state: data})
+  }
   return (
     <div>
       {
@@ -49,6 +52,7 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
           <div>
             <p style={{ display: `${currentUser.isAdmin ? 'none': 'block'}`}}>Request for <button  onClick={reqAdminAccess}>Admin Access</button></p>
             <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button></div>
+            <button onClick={()=> updateData(currentUser)}>Update Details</button>
         </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
     </div>

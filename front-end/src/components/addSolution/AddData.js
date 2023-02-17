@@ -17,7 +17,9 @@ const AddData = () => {
         time: '',
         mobile: '',
         binaryData: '',
-        issueTitle: ''
+        issueTitle: '',
+        solutions:[],
+        solution:''
     }
     let [data, setData] = useState(obj)
     useEffect(() => {
@@ -50,12 +52,15 @@ const AddData = () => {
         data.time = new Date().toLocaleString()
         data.dName = isLoggedin.fName + " " + isLoggedin.lName
         data.mobile = isLoggedin.mobile
+        data.email = isLoggedin.email
+        data.solutions = [ data.solution]
         console.log(data, 'submit data')
         axios.post("/api/setData", { "data": data })
-            .then(data => setStatus('Data Added Sucessfully'))
-            .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
+        .then(data => setStatus('Data Added Sucessfully'))
+        .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
         setData(obj)
         setStatus('Submitting...')
+        delete data.solution
         // console.log('submitted')
     }
     return (
@@ -91,7 +96,7 @@ const AddData = () => {
                                 </label>
                             </div>
                             <div>
-                                <input type='file' name='images' defaultValue={img} onChange={handleChange} required />
+                                <input type='file' name='images' defaultValue={data.binaryData} onChange={handleChange} required />
                             </div>
                             <div>
                                 <label>Issue Title : </label>
@@ -100,6 +105,10 @@ const AddData = () => {
                             <div>
                                 <label>Describe the issue :  </label>
                                 <textarea name='issue' onChange={handleChange} value={data.issue} required></textarea>
+                            </div>
+                            <div>
+                                <label>Describe the Solution :  </label>
+                                <textarea name='solution' onChange={handleChange} value={data.solution} required></textarea>
                             </div>
                             <div>
                                 <button type='submit'>Add Data</button>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Modal.css";
 
-export default function Modal({isOpen, setModal, header, data}) {
+export default function Modal({isOpen, setModal, header, data, requestAcceptFunc}) {
 //   const [modal, setModal] = useState(false);
 
   const toggleModal = () => {
@@ -12,12 +12,6 @@ export default function Modal({isOpen, setModal, header, data}) {
     document.body.classList.add('active-modal')
   } else {
     document.body.classList.remove('active-modal')
-  }
-  const approve =()=>{
-    console.log('approve')
-  }
-  const deny =()=> {
-    console.log('deny')
   }
 
   return (
@@ -30,7 +24,7 @@ export default function Modal({isOpen, setModal, header, data}) {
             {
                 data.map((user,idx)=> {
                     return (
-                        <li key={idx} className='li-style'><h3>{user.fName} - {user.email} </h3><span ><button onClick={()=> approve()}>Approve</button> <button onClick={()=> deny()}>Deny</button></span> </li>
+                        <li key={idx} className='li-style'><h3>{user.fName} - {user.email} </h3><span ><button onClick={()=> requestAcceptFunc( user._id, true)}>Approve</button> <button onClick={()=> requestAcceptFunc(user._id, false)}>Deny</button></span> </li>
                     )
                 })
             }

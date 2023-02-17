@@ -36,6 +36,14 @@ const taskSchema = new mongoose.Schema({
     issueTitle: {
         type:String,
         require: true
+    },
+    solutions: {
+        type:Array,
+        require: true
+    },
+    email : {
+        type: String,
+        require:true
     }
 })
 
