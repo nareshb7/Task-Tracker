@@ -98,9 +98,11 @@ const GetAllUsers = () => {
     }
     const requestAcceptFunc = (id, type) => {
         console.log(id, type)
+        const objectType = type ? 'isAdmin': 'reqforAdmin'
+        console.log(objectType, 'objectType')
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id, "objectType": 'isAdmin', status: type, update: 'single' })
+            axios.post('/api/adminupdateuser', { id, "objectType": objectType, status: type, update: 'single' })
                 .then(res => console.log('Admin access updated',res))
                 .catch(err => console.log(err, 'Admin access rejected'))
         }

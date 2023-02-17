@@ -121,7 +121,7 @@ module.exports.mailVerification = async (req,res)=> {
     const random = Math.random().toString(36).slice(2,10)
     const d = new Date().toLocaleString()
     options.to = creds.email
-    options.text = `Your confirmation password is : " ${random} " please provide this code on http://localhost:3000/signup sent time : ${d}`
+    options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://localhost:3000/signup sent time : ${d}`
     // console.log(creds, 'creds', random)
     transporter.sendMail(options, (err, info)=> {
         if (err){

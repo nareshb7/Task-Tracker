@@ -39,7 +39,8 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
   return (
     <div>
       {
-        Object.keys(currentUser).length > 2 ? <div style={styles.div}>
+        Object.keys(currentUser).length > 2 ? 
+        <div style={styles.div}>
           <div>
             <h2>Name : {currentUser.fName} {currentUser.lName}  <span style={styles.span}>{currentUser.isAdmin && '( Admin )'}</span></h2>
             <h2>Email : {currentUser.email}</h2>
@@ -50,9 +51,12 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
             <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
           </div>
           <div>
-            <p style={{ display: `${currentUser.isAdmin ? 'none': 'block'}`}}>Request for <button  onClick={reqAdminAccess}>Admin Access</button></p>
-            <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button></div>
-            <button onClick={()=> updateData(currentUser)}>Update Details</button>
+            <p style={{ display: `${currentUser.isAdmin ? 'none': 'block'}`}}>Request  {currentUser.reqforAdmin ? 'sent ':'for '}  <button disabled={currentUser.reqforAdmin}  onClick={reqAdminAccess}>Admin access</button></p>
+            <div>
+              <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
+              <button onClick={()=> updateData(currentUser)}>Update Details</button>
+            </div>
+          </div>
         </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
     </div>
