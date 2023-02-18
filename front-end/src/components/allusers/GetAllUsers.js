@@ -12,6 +12,8 @@ const GetAllUsers = () => {
     const [tableData, setTableData] = useState([])
     const [adminReqData, setAdminReqData] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [showEmpModal, setShowEmpModal] = useState(false)
+    const [showEmpData, setShowEmpData] = useState({})
     const tHead = [
         { header: 'Sl. No' },
         { header: 'Name', filter: 'fName' },
@@ -43,14 +45,19 @@ const GetAllUsers = () => {
             .then(data => setIssuesList(data.data))
             .catch(err => console.log(err, 'err'))
     }
-    const setAlert = (val) => {
-        window.alert(`User ${val} Sucessfuly, Refresh the page to see effect.`)
+    const setAlert= (val, type)=> {
+        window.alert(`${val}'s account ${type} sucessfully`)
     }
     const removeUser = (user) => {
         let cnfrm = window.confirm(`Do you want to delete ${user.fName}'s account ??`)
         if (cnfrm) {
             axios.post('/api/deleteuser', { id: user._id })
-                .then(data => console.log(data, 'delete response'))
+                .then(data => {
+                    console.log(data, 'data deleted')
+                    let newData = users.filter(user => user._id != data.data._id)
+                    setUsers(newData)
+                    setAlert(data.fName+data.lName , 'Deleted')
+                })
                 .catch(err => console.log(err, 'err'))
         }
     }
@@ -60,7 +67,11 @@ const GetAllUsers = () => {
         let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
         if (cnfrm) {
             axios.post('/api/adminupdateuser', { id: user._id, status: !status, "objectType": 'isActive', update:'single' })
-                .then(res => setAlert('Updated'))
+                .then(res => {
+                    let newData = users.map(user => user._id == res.data._id ? res.data : user)
+                    setUsers(newData)
+                    setAlert(res.data.fName+res.data.lName , 'Updated')
+                })
                 .catch(err => console.log(err, 'err'))
         }
     }
@@ -103,11 +114,19 @@ const GetAllUsers = () => {
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
             axios.post('/api/adminupdateuser', { id, "objectType": objectType, status: type, update: 'single' })
-                .then(res => console.log('Admin access updated',res))
+                .then(res => {
+                    let newReqData = adminReqData.filter(user=> user._id != res.data._id)
+                    setAdminReqData(newReqData)
+                })
                 .catch(err => console.log(err, 'Admin access rejected'))
         }
     }
-    console.log(issuesList, 'issueslist')
+    const showEmployeeData =(empDetails)=> {
+        const d = new Date(empDetails.joinedDate).toLocaleString()
+        console.log('empDetails', d)
+        setShowEmpData(empDetails)
+        setShowEmpModal(true)
+    }
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
@@ -118,8 +137,10 @@ const GetAllUsers = () => {
                     <button style={{ marginInline: '10px' }} >Search</button>
                 </div>
                 <Modal isOpen={isModalOpen} setModal={setIsModalOpen} header={'Req for Admin Users'} data={adminReqData} requestAcceptFunc={requestAcceptFunc} />
+                <Modal isOpen={showEmpModal} setModal={setShowEmpModal} header={'User Data'} employee={showEmpData}  />
                 {
                     users.length ? (<> <table cellPadding='10' style={{ textAlign: 'center' }} border='1'>
+                        <caption>All Users</caption>
                         <thead>
                             <tr>
 
@@ -151,7 +172,7 @@ const GetAllUsers = () => {
                                             <td>{user.email}</td>
                                             <td>{user.mobile}</td>
                                             <td style={{ width: '100px', height: '100px' }}>
-                                                <img src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
+                                                <img onClick={()=> showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
                                             </td>
                                             <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
                                             <td>
@@ -173,6 +194,7 @@ const GetAllUsers = () => {
                                 issuesList.length > 0 ? (
                                     <div>
                                         <table border='1'>
+                                        <caption>Uploaded Issues</caption>
                                             <thead>
                                                 <tr>
                                                     <th>Developer Name</th>

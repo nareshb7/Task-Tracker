@@ -85,6 +85,17 @@ const signinSchema = mongoose.Schema({
     }, reqforAdmin : {
         type: Boolean,
         require: true
+    }, joinedDate : {
+        type:Date,
+        require: true
+    },
+    uploadedIssues : {
+        type: Array,
+        require: true
+    },
+    technologies: {
+        type:Array,
+        require: true
     }
 })
 

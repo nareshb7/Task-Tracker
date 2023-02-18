@@ -134,12 +134,20 @@ module.exports.mailVerification = async (req,res)=> {
 module.exports.deleteUser = async (req,res)=> {
     const {id} = req.body
     const result = await signUpModel.findByIdAndDelete({_id : id})
-    await deletedUsers.create(result).then(res=> console.log('Delete sucess')).catch(err=> console.log('delete error'))
+    await deletedUsers.create({user:result}).then(res=> console.log('Delete sucess')).catch(err=> console.log('delete error'))
     res.send(result)
 }
 module.exports.updateUser = async (req,res)=> {
     const {id, status, objectType } = req.body
     console.log(id, status, objectType, 'result')
-    const result = await signUpModel.findByIdAndUpdate({_id : id},{[objectType]: status})
-    res.send(result)
+    // await signUpModel.findByIdAndUpdate({_id : id},{[objectType]: status})
+    // .then(data => res.send(data))
+    // .catch(err => res.send(err))
+    await signUpModel.findOneAndUpdate({_id:id}, {$set :{ [objectType]: status}}, {new: true})
+    .then((err, user)=> {
+        if (err){
+            res.send(err)
+        } 
+        res.send(user)
+    })
 }

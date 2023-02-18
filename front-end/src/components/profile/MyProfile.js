@@ -29,7 +29,7 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
     let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
         if (cnfrm) {
             axios.post('/api/adminupdateuser', { id: currentUser._id, "objectType": 'reqforAdmin', status: true, update:'single' })
-                .then(res => console.log('applied for admin access'))
+                .then(res => setCurrentUserVal(res.data))
                 .catch(err => console.log(err, 'err'))
         }
   }

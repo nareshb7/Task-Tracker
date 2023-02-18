@@ -56,8 +56,8 @@ const Signup = () => {
             result = 'error red'
         } else {
             if (checkdata.isAdmin === false) {
-                adminAcVerify(checkdata)
-                
+                // adminAcVerify(checkdata)
+                console.log(checkdata, 'data verified')
             }
             result = 'newemailid'
         }
