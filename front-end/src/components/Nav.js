@@ -4,7 +4,6 @@ import { UserContext } from '../App'
 
 const Nav =()=>{
     const {currentUserVal} = useContext(UserContext)
-    console.log(currentUserVal, 'nav')
     return (
         <nav>
             <ul>

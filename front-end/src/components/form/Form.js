@@ -12,7 +12,9 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
         binaryData:'',
         isAdmin:false,
         isActive: true,
-        reqforAdmin: false
+        reqforAdmin: false,
+        uploadedIssues:[],
+        technologies:[]
     }
     const [data, setData] = useState(formData || obj)
     const errorObj = {
