@@ -2,63 +2,64 @@ const multer = require('multer')
 const nodemailer = require('nodemailer')
 
 const fs = require('fs')
-const {TaskModel, signUpModel, currentUserModel, currentID, deletedUsers} = require('../models/TodoModel')
+const { TaskModel, signUpModel, currentUserModel, currentID, deletedUsers, mailChangeReq } = require('../models/TodoModel')
+const { model } = require('mongoose')
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth:{
+    auth: {
         user: 'nareshsit7@gmail.com',
         pass: 'xdocuqqhhnlwyllg'
     }
 })
 const options = {
-    from :'narehsit7@gmail.com',
-    to:'',
+    from: 'narehsit7@gmail.com',
+    to: '',
     subject: 'Email Verification',
-    text:'Verification Code is : '
+    text: 'Verification Code is : '
 }
 
 // Storage Engine
 const Storage = multer.diskStorage({
-    destination: (req,file,cb)=> {
+    destination: (req, file, cb) => {
         cb(null, 'uploads')
     },
-    filename: (req,file, cb)=> {
+    filename: (req, file, cb) => {
         cb(null, `taskimage-${Date.now()}.${file.originalname}`)
     }
 })
 const upload = multer({
-    storage : Storage
+    storage: Storage
 }).single('testImage')
 
-module.exports.setData = async (req,res)=> {
-    const {data} = req.body
+module.exports.setData = async (req, res) => {
+    const { data } = req.body
     await TaskModel.create(data).then(data => res.send('Data Saved Sucessfully')).catch(err => res.send(err))
 }
-module.exports.addSolution = async (req,res)=> {
-    const {newData, id} = req.body
-    const result = await TaskModel.findByIdAndUpdate({_id:id},{'solutions': newData})
+module.exports.addSolution = async (req, res) => {
+    const { newData, id } = req.body
+    const result = await TaskModel.findByIdAndUpdate({ _id: id }, { 'solutions': newData }, { new: true })
     res.send(result)
 }
-module.exports.deleteSolution = async (req,res)=> {
-    const {id} = req.body
-    const result = await TaskModel.findByIdAndDelete({_id: id})
+module.exports.deleteSolution = async (req, res) => {
+    const { id } = req.body
+    const result = await TaskModel.findByIdAndDelete({ _id: id }, { new: true })
     res.send(result)
 }
 // {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
-module.exports.getData = async (req,res)=> {
+module.exports.getData = async (req, res) => {
     await TaskModel.find({})
-    .then(data => res.json(data))
-    .catch(err=> res.send(err))
+        .then(data => res.json(data))
+        .catch(err => res.send(err))
     // await TaskModel.deleteMany()
 }
 
 //
 const UserStorage = multer.diskStorage({
-    destination: (req,file,cb)=> {
+    destination: (req, file, cb) => {
         cb(null, 'users')
     },
-    filename: (req,file, cb)=> {
+    filename: (req, file, cb) => {
         cb(null, `image-${Date.now()}.${file.originalname}`)
     }
 })
@@ -69,85 +70,102 @@ const signinStorage = multer({
     }
 }).single('profileImage')
 
-module.exports.signUpData = async (req,res)=> {
-    signinStorage(req,res, (err)=> {
-        const {data} = req.body
-        if (err){
+module.exports.signUpData = async (req, res) => {
+    signinStorage(req, res, (err) => {
+        const { data } = req.body
+        if (err) {
             console.log(err)
-        }else {
+        } else {
             const saveImage = new signUpModel(data)
-            saveImage.save().then(()=> res.send('Account Created Sucessfully')).catch(err=> res.send('Error Occured'))
+            saveImage.save().then(() => res.send('Account Created Sucessfully')).catch(err => res.send('Error Occured'))
         }
     })
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
-module.exports.logInUserData = async (req,res)=> {
-    const {mobile} = req.body
-    const result = await signUpModel.findOne({"mobile" : mobile})
+module.exports.logInUserData = async (req, res) => {
+    const { mobile } = req.body
+    const result = await signUpModel.findOne({ "mobile": mobile })
     res.send(result)
 }
 
-module.exports.setCurrentUser = async (req,res)=> {
-    const { currentUser} = req.body
+module.exports.setCurrentUser = async (req, res) => {
+    const { currentUser } = req.body
     await currentUserModel.deleteMany()
-    const savedata =await new currentUserModel(currentUser)
-    await savedata.save().then(()=> res.send('Login Sucessful')).catch(err=> res.send(err))
+    const savedata = await new currentUserModel(currentUser)
+    await savedata.save().then(() => res.send('Login Sucessful')).catch(err => res.send(err))
 }
 
-module.exports.getCurrentUser = async (req,res)=> {
-    await currentUserModel.find({},{_id:0}).then(data=> res.send(data)).catch(err => res.send(err))  
+module.exports.getCurrentUser = async (req, res) => {
+    await currentUserModel.find({}, { _id: 0 }).then(data => res.send(data)).catch(err => res.send(err))
 }
 
-module.exports.deleteCurrentUser = async (req,res) => {
-    await currentUserModel.deleteMany().then(data=> res.send(data)).catch(err=> res.send(err))
+module.exports.deleteCurrentUser = async (req, res) => {
+    await currentUserModel.deleteMany().then(data => res.send(data)).catch(err => res.send(err))
 }
 
-module.exports.getParticularUser = async (req,res)=> {
-    const {id} = req.body
-    const result =await signUpModel.findOne({_id : id})
+module.exports.getParticularUser = async (req, res) => {
+    const { id } = req.body
+    const result = await signUpModel.findOne({ _id: id })
     res.send(result)
 }
-module.exports.getAllUsers = async (req,res)=> {
+module.exports.getAllUsers = async (req, res) => {
     const result = await signUpModel.find({})
     res.send(result)
 }
-module.exports.uploadedIssues = async (req,res)=> {
-    const {email} = req.body
-    const result = await TaskModel.find({email: email})
+module.exports.uploadedIssues = async (req, res) => {
+    const { email } = req.body
+    const result = await TaskModel.find({ email: email })
     res.send(result)
 }
-module.exports.mailVerification = async (req,res)=> {
-    const {creds} = req.body
-    const random = Math.random().toString(36).slice(2,10)
+module.exports.mailVerification = async (req, res) => {
+    const { creds } = req.body
+    const random = Math.random().toString(36).slice(2, 10)
     const d = new Date().toLocaleString()
     options.to = creds.email
     options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://localhost:3000/signup sent time : ${d}`
     // console.log(creds, 'creds', random)
-    transporter.sendMail(options, (err, info)=> {
-        if (err){
+    transporter.sendMail(options, (err, info) => {
+        if (err) {
             res.send(err)
         }
-        res.send({psd: random, message: 'OTP sent to ur mail'})
+        res.send({ psd: random, message: 'OTP sent to ur mail' })
     })
 }
 
-module.exports.deleteUser = async (req,res)=> {
-    const {id} = req.body
-    const result = await signUpModel.findByIdAndDelete({_id : id})
-    await deletedUsers.create({user:result}).then(res=> console.log('Delete sucess')).catch(err=> console.log('delete error'))
+module.exports.deleteUser = async (req, res) => {
+    const { id } = req.body
+    const result = await signUpModel.findByIdAndDelete({ _id: id })
+    await deletedUsers.create({ user: result }).then(res => console.log('Delete sucess')).catch(err => console.log('delete error'))
     res.send(result)
 }
-module.exports.updateUser = async (req,res)=> {
-    const {id, status, objectType } = req.body
-    console.log(id, status, objectType, 'result')
-    // await signUpModel.findByIdAndUpdate({_id : id},{[objectType]: status})
+module.exports.updateUser = async (req, res) => {
+    const { id, updateValue, updateKey, update } = req.body
+    // await signUpModel.findByIdAndUpdate({_id : id},{[updateKey]: updateValue})
     // .then(data => res.send(data))
     // .catch(err => res.send(err))
-    await signUpModel.findOneAndUpdate({_id:id}, {$set :{ [objectType]: status}}, {new: true})
-    .then((err, user)=> {
-        if (err){
-            res.send(err)
-        } 
-        res.send(user)
-    })
+    if (update == 'MULTIPLE') {
+        await signUpModel.findOneAndUpdate({ _id: id },updateValue, { new: true })
+            .then(data => {
+                res.send(data)
+            })
+            .catch(err => res.send(err))
+    } else {
+        await signUpModel.findOneAndUpdate({ _id: id }, { $set: { [updateKey]: updateValue } }, { new: true })
+            .then((err, user) => {
+                if (err) {
+                    res.send(err)
+                }
+                res.send(user)
+            })
+    }
+}
+module.exports.mailChangeReq = async (req,res)=> {
+    const {user} = req.body
+    console.log(user, 'user')
+    await mailChangeReq.create({user}).then(data => res.send('Request sent Sucessfully')).catch(err =>res.send(err))
+}
+module.exports.getmailchangeID = async (req,res)=> {
+    await mailChangeReq.find({})
+    .then(data => res.send(data))
+    .catch(err => res.semd(err))
 }

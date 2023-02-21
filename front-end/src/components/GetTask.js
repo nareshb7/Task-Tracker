@@ -47,7 +47,10 @@ const GetTask = () => {
     }
     const deleteFunc = (id) => {
         axios.post('/api/deletesolution', { id })
-            .then(data => console.log('Solution Deleted', data))
+            .then(res => {
+                const newData = data.filter(val => val._id != res.data._id)
+                setData(newData)
+            })
             .catch(err => console.log(err, 'Error Occured during delete'))
     }
     useEffect(() => {

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-
+import './Form.css'
 const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
     const obj = {
         fName: '',
@@ -28,6 +28,8 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
     }
     const [errors, setErrors] = useState(errorObj)
     const [isValid, setIsValid] = useState(false)
+    const [imageName, setImageName] = useState('')
+
     useEffect(() => {
         // const { fName, lName, mobile, password, email, conPassword, profileImage } = errors
         // if (!fName && !lName && !mobile && !email && !password && !conPassword && !profileImage) {
@@ -49,7 +51,7 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
         isSubmitted && setData(obj)
     }, [isSubmitted])
     const convertToBase64 =async (name, file)=> {
-        let result = await new Promise((resolve, reject)=> {
+        let result =await new Promise((resolve, reject)=> {
             const filereader = new FileReader()
             filereader.readAsDataURL(file)
             filereader.onload =()=> {
@@ -59,6 +61,7 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
                 reject(err)
             } 
         })
+        setImageName(file.name)
         setData({...data, "binaryData": result})
     }
     const handleChange = (e) => {
@@ -107,7 +110,11 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
     const handleSubmit = async (e) => {
       e.preventDefault()
         submitFunc(data)
-        // setData(obj)
+    }
+   
+    const removeImage = ()=> {
+       setData({...data, "binaryData": ''})
+       setImageName('')
     }
   return (
     <div>
@@ -143,12 +150,22 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
                     <div className='errorMsz'>{errors.conPassword}</div>
                 </div>
                 <div>
-                    {/* <div> <label>Upload your ProfileImage :</label></div> */}
-                    <div> <input type='file' name='profileImage' defaultValue={''} onChange={handleChange} /></div>
-                    <div className='errorMsz'>{errors.profileImage}</div>
+                <input data-multiple-caption="{count} files selected" defaultValue={data.binaryData} onChange={handleChange} type="file" name="profileImage" id="file-1" className="inputfile"  multiple />
+				<label htmlFor="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>{imageName ? `${imageName.slice(0,8)}` : 'Choose a file' } &hellip;</span></label>
+                <div className='errorMsz'>{errors.profileImage}</div>
                 </div>
+               
                 <div><button type='submit' disabled={!isValid}> Submit </button> </div>
             </form>
+            <div style={{display:'flex', flexWrap:'wrap', position:'relative'}}>
+            {
+                data.binaryData && <div><div style={{width:'100px', height:'100px'}}>
+                <img  src={data.binaryData}  style={{width:'100%', height:'100%'}}/></div>
+                <button style={{position: 'absolute', top:'0', right:'0', padding:'5px'}} onClick={removeImage}>X</button></div>
+            }
+            </div>
+      
+            
     </div>
   )
 }
