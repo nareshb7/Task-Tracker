@@ -6,6 +6,12 @@ import { setCookie } from '../cookieset/CookieComp'
 const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
   const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState({})
+  const [mailUpdatereq, setMailUpdatereq] = useState(false)
+  const [reqMailError, setReqMailError] = useState('')
+  const [adminUpdates, setAdminUpdates] = useState({
+    updateKey:'email',
+    updateValue:''
+  })
   useEffect(() => {
     setCurrentUser(currentUserVal)
   }, [currentUserVal])
@@ -28,13 +34,50 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
   const reqAdminAccess =()=> {
     let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id: currentUser._id, "objectType": 'reqforAdmin', status: true, update:'single' })
+            axios.post('/api/adminupdateuser', { id: currentUser._id, updateKey: 'reqforAdmin', updateValue: true, update:'single' })
                 .then(res => setCurrentUserVal(res.data))
                 .catch(err => console.log(err, 'err'))
         }
   }
   const updateData =(data)=> {
     navigate('/updateuser', {state: data})
+  }
+  const handleChangeMailReq =(e)=> {
+    
+    const {name,value} = e.target
+    console.log(name, value, 'hc')
+    
+    setAdminUpdates({...adminUpdates, [name]: value})
+  }
+  const handleMailReq =()=> {
+    const emailpattern = /^[a-z][a-z0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
+    const mobilePattern = /^[0-9]{10}$/
+    const {updateKey, updateValue} = adminUpdates
+    let length = 0
+    if (updateKey == 'email'){
+      console.log(emailpattern.test(updateValue), 'email')
+      if (emailpattern.test(updateValue) && updateValue != currentUser.email) {
+        length = length +1
+      } else {
+        setReqMailError('Email is not valid')
+      }
+    } 
+    if (updateKey == 'mobile') {
+      if (mobilePattern.test(updateValue && updateValue != currentUser.mobile )) {
+        length = length + 1
+      } else {
+        setReqMailError('Mobile Number is not valid')
+      }
+    }
+    if (length === 1 ){
+      console.log('ur mail change req is sent to admin')
+      setReqMailError('Requset sending...')
+      setAdminUpdates({updateKey:'email', updateValue:''})
+      axios.post('/api/mailupdatereq', {user: {id: currentUserVal._id,updateKey,updateValue}})
+      .then(data => setReqMailError(data.data))
+      .catch(err => console.log(err, 'error'))
+      alert('If data is not valid Ur req will be rejected')
+    }
   }
   return (
     <div>
@@ -56,6 +99,23 @@ const MyProfile = ({currentUserVal, setCurrentUserVal}) => {
               <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
               <button onClick={()=> updateData(currentUser)}>Update Details</button>
             </div>
+            <div>
+              <button onClick={()=> setMailUpdatereq(!mailUpdatereq)}> Req for Mail update</button>
+            </div>
+            {
+              mailUpdatereq && 
+              <div style={{marginBlock:'10px'}}>
+                <select name='updateKey' defaultValue={adminUpdates.updateKey} onChange={handleChangeMailReq}>
+                  <option value='email'>Email</option>
+                  <option value='mobile'>Mobile</option>
+                </select>
+             {/* <input placeholder='Enter key here' type='text' name='updateKey' value={adminUpdates.updateKey} onChange={(e)=> setAdminUpdates({...adminUpdates, 'updateKey': e.target.value})} /> */}
+              <input placeholder='enter value here' type='text' name='updateValue' value={adminUpdates.updateValue} onChange={handleChangeMailReq} />
+              <div style={{ height:'30px'}}>{reqMailError}</div>
+              <div ><button onClick={handleMailReq}>Submit</button></div>
+            </div>
+            }
+            
           </div>
         </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }

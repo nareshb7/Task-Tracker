@@ -117,9 +117,16 @@ const deletedUsers = mongoose.Schema({
         require: true
     }
 })
+const mailChangeReq = mongoose.Schema({
+    user: {
+        type:Object,
+        require:true
+    }
+})
 
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)
 module.exports.TaskModel =  mongoose.model('solutions', taskSchema)
 module.exports.currentUserModel = mongoose.model('CurrentUser', currentUserSchema)
 module.exports.currentID = mongoose.model('currentUserID', currentuserID)
 module.exports.deletedUsers = mongoose.model('deletedUserId', deletedUsers)
+module.exports.mailChangeReq = mongoose.model('mailChangeReqUser', mailChangeReq)

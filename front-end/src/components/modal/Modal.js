@@ -13,7 +13,7 @@ export default function Modal({isOpen, setModal, header, data, requestAcceptFunc
   } else {
     document.body.classList.remove('active-modal')
   }
-console.log(data, 'data')
+console.log(employee, 'data')
   return (
     <>
       {isOpen && (
@@ -46,8 +46,8 @@ console.log(data, 'data')
                 <h3>Active User : {employee.isActive? "Yes": 'No'}</h3>
                 <h3>Admin : {employee.isAdmin? "Yes": "No"}</h3>
                 <h3>Joined Date : {employee.joinedDate ? new Date(employee.joinedDate).toLocaleString() : 'No Data Found' }</h3>
-                <h3>Uploaded Issues : {'counting....'}</h3>
-                <h3>Technologies : {"Loading...."}</h3>
+                <h3>Uploaded Issues :{employee.uploadedIssues.length ? `${employee.uploadedIssues.length}`:  'counting....'}</h3>
+                <h3>Technologies : {employee.technologies.length ? `${employee.technologies}`: "Loading...."}</h3>
                 </div>
                 <div style={{width:'100px', height:'100px'}}>
                   <img src={employee.binaryData} style={{width:'100%', height:'100%'}}/>

@@ -14,6 +14,7 @@ const GetAllUsers = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [showEmpModal, setShowEmpModal] = useState(false)
     const [showEmpData, setShowEmpData] = useState({})
+    const [mailChangeReqIDs, setMailChangeReqIDs] = useState([])
     const tHead = [
         { header: 'Sl. No' },
         { header: 'Name', filter: 'fName' },
@@ -33,6 +34,9 @@ const GetAllUsers = () => {
                 setAdminReqData(val)
             })
             .catch(err => console.log(err, 'err'))
+        axios.get('/api/getmailreqIDs')
+        .then(data => setMailChangeReqIDs(data.data))
+        .catch(err => console.log(err, 'error'))
     }, [])
     useEffect(() => {
         setCurrentUser(currentUserVal)
@@ -61,12 +65,13 @@ const GetAllUsers = () => {
                 .catch(err => console.log(err, 'err'))
         }
     }
+   
     const updateUser = (user) => {
         console.log(user, 'update')
         let status = user.isActive
         let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id: user._id, status: !status, "objectType": 'isActive', update:'single' })
+            axios.post('/api/adminupdateuser', { id: user._id, updateValue: !status, updateKey: 'isActive', update:'single' })
                 .then(res => {
                     let newData = users.map(user => user._id == res.data._id ? res.data : user)
                     setUsers(newData)
@@ -109,11 +114,11 @@ const GetAllUsers = () => {
     }
     const requestAcceptFunc = (id, type) => {
         console.log(id, type)
-        const objectType = type ? 'isAdmin': 'reqforAdmin'
-        console.log(objectType, 'objectType')
+        const updateKey = type ? 'isAdmin': 'reqforAdmin'
+        console.log(updateKey, 'objectType')
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id, "objectType": objectType, status: type, update: 'single' })
+            axios.post('/api/adminupdateuser', { id, updateKey: updateKey, updateValue: type, update: 'single' })
                 .then(res => {
                     let newReqData = adminReqData.filter(user=> user._id != res.data._id)
                     setAdminReqData(newReqData)
@@ -127,11 +132,15 @@ const GetAllUsers = () => {
         setShowEmpData(empDetails)
         setShowEmpModal(true)
     }
+    const getMailReqIDs = ()=> {
+        console.log(mailChangeReqIDs, 'mail')        
+    }
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
                 <h1>All Users : </h1>
                 <div style={{ textAlign: 'end' }}>
+                    <button onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </button>
                     <button onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </button>
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='search here...' />
                     <button style={{ marginInline: '10px' }} >Search</button>

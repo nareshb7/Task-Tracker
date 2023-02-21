@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import { UserContext } from '../../App'
 
 const AddData = () => {
-    const { currentUserVal } = useContext(UserContext)
+    const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const [isLoggedin, setIsLoggedIn] = useState([])
     const technologies = ["React", "Angular", "JavaScript", "CSS"]
     const [status, setStatus] = useState('')
@@ -53,16 +53,31 @@ const AddData = () => {
         data.dName = isLoggedin.fName + " " + isLoggedin.lName
         data.mobile = isLoggedin.mobile
         data.email = isLoggedin.email
-        data.solutions = [ data.solution]
-        console.log(data, 'submit data')
+        data.solutions = [ {solution: data.solution}]
+        isLoggedin.uploadedIssues.push(data)
+        const addTech = isLoggedin.technologies.indexOf(data.technology)
+        console.log(addTech, 'inexof')
+        if (addTech == -1) {
+            isLoggedin.technologies.push(data.technology)
+        }
+       // setCurrentUserVal(isLoggedin)
+       const id = isLoggedin._id
+       const updateData = JSON.parse(JSON.stringify(isLoggedin))
+       
+       delete updateData._id
+        console.log(data, 'submit data', id, isLoggedin, updateData)
         axios.post("/api/setData", { "data": data })
         .then(data => setStatus('Data Added Sucessfully'))
         .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
+        axios.post('api/adminupdateuser', {id :id ,updateValue: updateData, update: 'MULTIPLE'})
+        .then(res => console.log('User Val Updated',res))
+        .catch(err => console.log(err, ';errrr user updating'))
         setData(obj)
         setStatus('Submitting...')
         delete data.solution
         // console.log('submitted')
     }
+    console.log(currentUserVal, 'currentUserVal')
     return (
         <> {
             Array.isArray(isLoggedin) ? "Loading...." : <>
@@ -108,7 +123,7 @@ const AddData = () => {
                             </div>
                             <div>
                                 <label>Describe the Solution :  </label>
-                                <textarea name='solution' onChange={handleChange} value={data.solution} required></textarea>
+                                <textarea name='solution' onChange={handleChange} value={data.solution}></textarea>
                             </div>
                             <div>
                                 <button type='submit'>Add Data</button>
