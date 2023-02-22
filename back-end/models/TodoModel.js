@@ -96,6 +96,10 @@ const signinSchema = mongoose.Schema({
     technologies: {
         type:Array,
         require: true
+    },
+    reqforMailChange: {
+        type: Boolean,
+        require: true
     }
 })
 
@@ -118,8 +122,16 @@ const deletedUsers = mongoose.Schema({
     }
 })
 const mailChangeReq = mongoose.Schema({
-    user: {
-        type:Object,
+    id: {
+        type:String,
+        require:true
+    },
+    updateKey: {
+        type:String,
+        require:true
+    },
+    updateValue: {
+        type:String,
         require:true
     }
 })

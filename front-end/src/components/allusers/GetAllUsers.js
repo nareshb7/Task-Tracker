@@ -15,6 +15,7 @@ const GetAllUsers = () => {
     const [showEmpModal, setShowEmpModal] = useState(false)
     const [showEmpData, setShowEmpData] = useState({})
     const [mailChangeReqIDs, setMailChangeReqIDs] = useState([])
+    const [mailChangeModal, setMailChangeModal] = useState(false)
     const tHead = [
         { header: 'Sl. No' },
         { header: 'Name', filter: 'fName' },
@@ -126,6 +127,9 @@ const GetAllUsers = () => {
                 .catch(err => console.log(err, 'Admin access rejected'))
         }
     }
+    const mailChangeAcceptFunc =(id, type)=> {
+        console.log(id, type, 'mailchangeaCCEPT FUNC')
+    }
     const showEmployeeData =(empDetails)=> {
         const d = new Date(empDetails.joinedDate).toLocaleString()
         console.log('empDetails', d)
@@ -133,7 +137,11 @@ const GetAllUsers = () => {
         setShowEmpModal(true)
     }
     const getMailReqIDs = ()=> {
-        console.log(mailChangeReqIDs, 'mail')        
+        let newIndex = mailChangeReqIDs.map(val => val.id)
+        let data = users.filter(val => val.reqforMailChange)
+        console.log(newIndex, 'newIndex',data)
+        console.log(mailChangeReqIDs, 'mail')  
+        setMailChangeModal(true)
     }
     return (
         <>{
@@ -145,6 +153,7 @@ const GetAllUsers = () => {
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='search here...' />
                     <button style={{ marginInline: '10px' }} >Search</button>
                 </div>
+                <Modal isOpen={mailChangeModal} setModal={setMailChangeModal} data={mailChangeReqIDs} requestAcceptFunc={mailChangeAcceptFunc} />
                 <Modal isOpen={isModalOpen} setModal={setIsModalOpen} header={'Req for Admin Users'} data={adminReqData} requestAcceptFunc={requestAcceptFunc} />
                 <Modal isOpen={showEmpModal} setModal={setShowEmpModal} header={'User Data'} employee={showEmpData}  />
                 {

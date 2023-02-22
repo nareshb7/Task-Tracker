@@ -10,6 +10,7 @@ import Signup from './components/signup/Signup'
 import GetAllUsers from './components/allusers/GetAllUsers'
 import UserUpdate from './components/updateUser/UserUpdate'
 import ForgotPassword from './components/login/ForgotPassword'
+import MailVerification from './components/utils/MailVerification'
 
 const RoutesComp =()=> {
     return (
@@ -26,6 +27,7 @@ const RoutesComp =()=> {
                 <Route path='profile' element={<MyProfile/> } />
                 <Route path='getallusers' element={<GetAllUsers/>} />
                 <Route path='updateuser' element={<UserUpdate />} />
+                <Route path='verifymail/:path' element={<MailVerification/>} />
             </Routes>
         </div>
     )
