@@ -3,7 +3,6 @@ const nodemailer = require('nodemailer')
 
 const fs = require('fs')
 const { TaskModel, signUpModel, currentUserModel, currentID, deletedUsers, mailChangeReq } = require('../models/TodoModel')
-const { model } = require('mongoose')
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -121,7 +120,7 @@ module.exports.mailVerification = async (req, res) => {
     const { creds } = req.body
     const random = Math.random().toString(36).slice(2, 10)
     const d = new Date().toLocaleString()
-    options.to = creds.email
+    options.to = creds.email || creds.updateValue
     options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://localhost:3000/signup sent time : ${d}`
     // console.log(creds, 'creds', random)
     transporter.sendMail(options, (err, info) => {
@@ -161,8 +160,12 @@ module.exports.updateUser = async (req, res) => {
 }
 module.exports.mailChangeReq = async (req,res)=> {
     const {user} = req.body
-    console.log(user, 'user')
-    await mailChangeReq.create({user}).then(data => res.send('Request sent Sucessfully')).catch(err =>res.send(err))
+    let previousData = await mailChangeReq.findOne({id: user.id})
+    if(!previousData){
+        await mailChangeReq.create({...user}).then(data => res.send('Request sent Sucessfully')).catch(err =>res.send(err))
+    } else {
+        res.send('You are already requested for mail Change')
+    }
 }
 module.exports.getmailchangeID = async (req,res)=> {
     await mailChangeReq.find({})

@@ -14,14 +14,13 @@ const UserUpdate = () => {
 
     const success =(res)=> {
       setResponse('User Data Updated Sucessfully, Navigating to profile page')
+      setCurrentUserVal(res)
       setTimeout(()=> {
         navigate('/login')
       },2000)
     }
     const handleSubmit = (updatedData)=> {
-
-      console.log('submit updatedData', updatedData)
-      setCurrentUserVal(updatedData)
+      setResponse('Submitting....')
       axios.post('api/adminupdateuser', {id :updatedData._id ,updateValue: updatedData, update: 'MULTIPLE'})
       .then(res => success(res.data))
       .catch(err => setResponse('Error Occured '))
