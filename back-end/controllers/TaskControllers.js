@@ -160,12 +160,20 @@ module.exports.updateUser = async (req, res) => {
 }
 module.exports.mailChangeReq = async (req,res)=> {
     const {user} = req.body
-    let previousData = await mailChangeReq.findOne({id: user.id})
+    console.log(user, 'user')
+    if (user.updateKey == 'DELETE') {
+        await mailChangeReq.findOneAndDelete({id:user.id}, {new:true})
+        .then(data => res.send(data))
+        .catch(err => res.send(err))
+    } else {
+        let previousData = await mailChangeReq.findOne({id: user.id})
     if(!previousData){
         await mailChangeReq.create({...user}).then(data => res.send('Request sent Sucessfully')).catch(err =>res.send(err))
     } else {
         res.send('You are already requested for mail Change')
     }
+    }
+    
 }
 module.exports.getmailchangeID = async (req,res)=> {
     await mailChangeReq.find({})

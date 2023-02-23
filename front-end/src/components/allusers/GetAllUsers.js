@@ -4,7 +4,7 @@ import { UserContext } from '../../App'
 import Modal from '../modal/Modal'
 
 const GetAllUsers = () => {
-    const { currentUserVal } = useContext(UserContext)
+    const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const [users, setUsers] = useState([])
     const [issuesList, setIssuesList] = useState([])
     const [currentUser, setCurrentUser] = useState({})
@@ -129,18 +129,49 @@ const GetAllUsers = () => {
     }
     const mailChangeAcceptFunc =(id, type)=> {
         console.log(id, type, 'mailchangeaCCEPT FUNC')
+        const mailUpdateData = mailChangeReqIDs.filter(val => val._id == id)
+        console.log(mailUpdateData, 'mailUpdateData')
+        let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
+        if (cnfrm) {
+            if (type){
+                mailUpdateData[0].reqforMailChange = false
+                mailUpdateData[0].email = mailUpdateData[0].updateData.updateValue
+                delete mailUpdateData[0].updateData
+                let updateData =mailUpdateData[0]
+                axios.post('api/adminupdateuser', {id  ,updateValue: updateData, update: 'MULTIPLE'})
+                .then(res => {
+                    let newData = mailChangeReqIDs.filter(val => val._id != res.data._id)
+                    console.log(res, 'res', newData)
+                    setMailChangeReqIDs(newData)
+                })
+                .catch(err => console.log(err, 'errrr user updating'))
+                axios.post('/api/mailupdatereq', {user:{ id:id, updateKey:'DELETE'}})
+                .then(res => {
+                    console.log(res, 'res')
+                    let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
+                    setMailChangeReqIDs(newData)
+                })
+                .catch(err => console.log(err, 'errr'))
+            }
+            
+        }
     }
     const showEmployeeData =(empDetails)=> {
-        const d = new Date(empDetails.joinedDate).toLocaleString()
-        console.log('empDetails', d)
         setShowEmpData(empDetails)
         setShowEmpModal(true)
     }
     const getMailReqIDs = ()=> {
-        let newIndex = mailChangeReqIDs.map(val => val.id)
-        let data = users.filter(val => val.reqforMailChange)
-        console.log(newIndex, 'newIndex',data)
-        console.log(mailChangeReqIDs, 'mail')  
+        if (!mailChangeReqIDs[0].fName) {
+            let data = users.filter(val => val.reqforMailChange)
+            let final = data.map(val => {
+                let obj = mailChangeReqIDs.filter(ids => ids.id == val._id)
+                console.log(obj, 'obj')
+                val['updateData'] = obj[0]
+                return val
+            })
+            console.log(mailChangeReqIDs, 'mail', final) 
+            setMailChangeReqIDs(final) 
+        }
         setMailChangeModal(true)
     }
     return (
@@ -153,7 +184,7 @@ const GetAllUsers = () => {
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='search here...' />
                     <button style={{ marginInline: '10px' }} >Search</button>
                 </div>
-                <Modal isOpen={mailChangeModal} setModal={setMailChangeModal} data={mailChangeReqIDs} requestAcceptFunc={mailChangeAcceptFunc} />
+                <Modal isOpen={mailChangeModal} setModal={setMailChangeModal} header={'Profile Update Requests'} data={mailChangeReqIDs} requestAcceptFunc={mailChangeAcceptFunc} />
                 <Modal isOpen={isModalOpen} setModal={setIsModalOpen} header={'Req for Admin Users'} data={adminReqData} requestAcceptFunc={requestAcceptFunc} />
                 <Modal isOpen={showEmpModal} setModal={setShowEmpModal} header={'User Data'} employee={showEmpData}  />
                 {

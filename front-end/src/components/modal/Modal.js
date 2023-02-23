@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import "./Modal.css";
 
 export default function Modal({ isOpen, setModal, header, data, requestAcceptFunc, employee }) {
-  //   const [modal, setModal] = useState(false);
-
   const toggleModal = () => {
     setModal(!isOpen);
   };
@@ -13,7 +11,6 @@ export default function Modal({ isOpen, setModal, header, data, requestAcceptFun
   } else {
     document.body.classList.remove('active-modal')
   }
-  console.log(employee, 'data')
   return (
     <>
       {isOpen && (
@@ -29,16 +26,18 @@ export default function Modal({ isOpen, setModal, header, data, requestAcceptFun
                       data.map((user, idx) => {
                         return (
                           <li key={idx} className='li-style'>
+                            <div>
                             {
-                              user.fName && <h3>{user.fName} - {user.email} </h3>
+                              user.fName && <h3>{user.fName+" "+ user.lName} - {user.email} </h3>
                             }
                             {
-                              user.updateKey && <h3>{user.updateKey} - {user.updateValue}</h3>
+                              user.updateData && <h3><span>Update Data: </span> <span>{user.updateData.updateKey}</span> - <span>{user.updateData.updateValue}</span></h3>
                             }
-                            <span>
+                            </div>
+                            <div>
                               <button onClick={() => requestAcceptFunc(user._id, true)}>Approve</button>
                               <button onClick={() => requestAcceptFunc(user._id, false)}>Deny</button>
-                            </span>
+                            </div>
                           </li>
                         )
                       })
