@@ -207,7 +207,7 @@ const GetAllUsers = () => {
                 <div style={{ textAlign: 'end' }}>
                     <button onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </button>
                     <button onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </button>
-                    <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='search here...' />
+                    <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />
                     <button style={{ marginInline: '10px' }} >Search</button>
                 </div>
                 <Modal isOpen={mailChangeModal} setModal={setMailChangeModal} header={'Profile Update Requests'} data={mailChangeReqIDs} requestAcceptFunc={mailChangeAcceptFunc} />

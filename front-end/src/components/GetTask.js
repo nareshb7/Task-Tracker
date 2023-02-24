@@ -13,30 +13,41 @@ const GetTask = () => {
     const [sortNames, setSortNames] = useState({
         dName: [],
         cName: [],
-        technology: []
+        technology: [],
+        appType:[]
     })
     const [applyFilters, setApplyFilters] = useState({
         dName: 'All',
         cName: 'All',
-        technology: 'All'
+        technology: 'All',
+        appType:'All'
     })
     const sortList = () => {
         sortNames.dName = [...new Set(data.map(val => val.dName))]
         sortNames.cName = [...new Set(data.map(val => val.cName))]
         sortNames.technology = [...new Set(data.map(val => val.technology))]
+        sortNames.appType = [...new Set(data.map(val=> val.appType))]
     }
 
     const handleSort = (e) => {
         const { name, value } = e.target
         applyFilters[name] = value
-        const result = data.filter(val => {
-            if ((applyFilters.dName == 'All' ? val.dName : val.dName == applyFilters.dName) &&
-                (applyFilters.cName == 'All' ? val.cName : val.cName == applyFilters.cName) &&
-                (applyFilters.technology == 'All' ? val.technology : val.technology == applyFilters.technology)
-            ) {
-                return val
-            }
-        })
+        let result =[]
+        if (name == 'appType'){
+            result = value == 'All' ? data : data.filter(val=> val.appType == value)
+            console.log(result, value)
+        }else {
+            applyFilters.appType = 'All'
+            result = data.filter(val => {
+                if ((applyFilters.dName == 'All' ? val.dName : val.dName == applyFilters.dName) &&
+                    (applyFilters.cName == 'All' ? val.cName : val.cName == applyFilters.cName) &&
+                    (applyFilters.technology == 'All' ? val.technology : val.technology == applyFilters.technology)
+                ) {
+                    return val
+                }
+            })
+        }
+        
         setTableData(result)
     }
     const gotoDesc = (val) => {
@@ -121,7 +132,18 @@ const GetTask = () => {
                                 </select>
                             </th>
                             <th>CompanyName</th>
-                            <th>Application Type</th>
+                            <th>Application Type
+                            <select onClick={handleSort} defaultValue={applyFilters.appType} name='appType'>
+                                    <option value='All'>All</option>
+                                    {
+                                        sortNames.appType.map((val, idx) => {
+                                            return (
+                                                <option key={idx} value={val}>{val}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </th>
                             <th>Issue</th>
                             <th>Date</th>
                             <th>Image</th>
@@ -141,7 +163,7 @@ const GetTask = () => {
                                             <td>{val.companyName ? val.companyName : 'No Data'}</td>
                                             <td>{val.appType ? val.appType : 'No Data'}</td>
                                             <td onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
-                                            <td> {val?.time}</td>
+                                            <td> {new Date(val?.time).toLocaleString()}</td>
                                             <td><img src={val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' /> </td>
                                             <td>
                                                 <button onClick={() => editFunc(val._id)} disabled={currentUser.mobile !== val.mobile}>Edit</button>

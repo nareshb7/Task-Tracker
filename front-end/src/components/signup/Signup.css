@@ -4,7 +4,10 @@
     margin: auto;
     text-align: center;
 }
-.signupDiv input {
+.signupDiv input, .signupDiv select {
     padding: 10px 20px;
     margin-block: 10px;
+}
+.signupDiv select {
+    padding: 10px 20%
 }

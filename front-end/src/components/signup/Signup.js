@@ -51,7 +51,7 @@ const Signup = () => {
     }
        
     const handleSubmit = (submitedData) => {
-        const d = new Date().toLocaleString()
+        const d = new Date()
         submitedData['joinedDate'] = d
         verifyData(submitedData)
         console.log(submitedData, 'signindata', response)

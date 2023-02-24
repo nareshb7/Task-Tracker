@@ -13,7 +13,7 @@ const Description = () => {
         return ''
     }
     const addAnswer =()=> {
-      const d = new Date().toLocaleString()
+      const d = new Date()
       const devName = currentUserVal.fName +" "+ currentUserVal.lName
       console.log(devName)
       axios.post('/api/addSolution', {newData : [...data.solutions, {solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id})
@@ -29,14 +29,14 @@ const Description = () => {
       <div>
         <h2>Client Name : <span>{data.cName}</span></h2>
         <h2>Technology : <span>{data.technology}</span></h2>
-        <h2>Posted on : <span>{data.time}</span></h2>
+        <h2>Posted on : <span>{new Date(data.time).toLocaleString()}</span></h2>
         <h2>Issue : <span>{data.issueTitle}</span></h2>
         <h2>Description: <span>{data.issue}</span></h2>
         <h2>Solutions : </h2>
         {
           data?.solutions.map((solution, idx)=> {
             return (
-              <h4 key={idx}>{idx +1 }: <span>{solution?.solution}</span> - {solution?.updatedTime ? <span>added on {solution.updatedTime}</span>: 'Initial'} by : {solution?.uploadedBy}</h4>
+              <h4 key={idx}>{idx +1 }: <span>{solution?.solution}</span> - {solution?.updatedTime ? <span>added on {new Date(solution.updatedTime).toLocaleString()}</span>: 'Initial'} by : {solution?.uploadedBy}</h4>
             )
           })
         }
