@@ -35,6 +35,12 @@ module.exports.setData = async (req, res) => {
     const { data } = req.body
     await TaskModel.create(data).then(data => res.send('Data Saved Sucessfully')).catch(err => res.send(err))
 }
+module.exports.getData = async (req, res) => {
+    await TaskModel.find({})
+        .then(data => res.json(data))
+        .catch(err => res.send(err))
+    // await TaskModel.deleteMany()
+}
 module.exports.addSolution = async (req, res) => {
     const { newData, id } = req.body
     const result = await TaskModel.findByIdAndUpdate({ _id: id }, { 'solutions': newData }, { new: true })
@@ -45,13 +51,14 @@ module.exports.deleteSolution = async (req, res) => {
     const result = await TaskModel.findByIdAndDelete({ _id: id }, { new: true })
     res.send(result)
 }
-// {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
-module.exports.getData = async (req, res) => {
-    await TaskModel.find({})
-        .then(data => res.json(data))
-        .catch(err => res.send(err))
-    // await TaskModel.deleteMany()
+module.exports.updateSolution = async (req,res)=> {
+    const {updateData, email} = req.body
+    console.log(updateData, email, 'emaill')
+    const result = await TaskModel.updateMany({email},{$set : {'email': updateData }})
 }
+
+// {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
+
 
 //
 const UserStorage = multer.diskStorage({
