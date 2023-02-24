@@ -78,8 +78,11 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
       }
     }
     if (updateKey == 'mobile') {
-      if (mobilePattern.test(updateValue && updateValue != currentUser.mobile)) {
+      console.log(updateValue, 'uopdateVal')
+      if (mobilePattern.test(updateValue) && updateValue != currentUser.mobile) {
+
         length = length + 1
+        setReqMailError('')
       } else {
         setReqMailError('Mobile Number is not valid')
       }

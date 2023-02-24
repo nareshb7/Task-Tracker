@@ -44,7 +44,16 @@ const taskSchema = new mongoose.Schema({
     email : {
         type: String,
         require:true
+    },
+    companyName : {
+        require: true,
+        type: String
+    },
+    appType : {
+        type:String,
+        require: true
     }
+
 })
 
 
