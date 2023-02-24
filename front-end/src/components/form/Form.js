@@ -14,7 +14,8 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
         isActive: true,
         reqforAdmin: false,
         uploadedIssues:[],
-        technologies:[]
+        technologies:[],
+        gender: 'Male'
     }
     const [data, setData] = useState(formData || obj)
     const errorObj = {
@@ -110,6 +111,7 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
     const handleSubmit = async (e) => {
       e.preventDefault()
         submitFunc(data)
+        
     }
    
     const removeImage = ()=> {
@@ -140,13 +142,23 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
                     <div className='errorMsz'>{errors.mobile}</div>
                 </div>
                 <div>
+                    <label>Gender:</label>
+                    <div><select onChange={handleChange} name='gender' value={data.gender} required>
+                            <option value='Male'>Male</option>
+                            <option value='Female'>Female</option>
+                            <option value='Not Specify'>Not Specify</option>
+                        </select>
+                    </div>
+                    <div className='errorMsz'></div>
+                </div>
+                <div>
                     {/* <div><label>Create a Password :</label></div> */}
-                    <div><input type='text' name='password' value={data.password} onChange={handleChange} required placeholder='Enter your password' /></div>
+                    <div><input type='password' name='password' value={data.password} onChange={handleChange} required placeholder='Enter your password' /></div>
                     <div className='errorMsz'>{errors.password}</div>
                 </div>
                 <div>
                     {/* <div><label>Confirm Password :</label></div> */}
-                    <div><input type='text' name='conPassword' value={data.conPassword} onChange={handleChange} required placeholder='Enter your Confrirm Password' /></div>
+                    <div><input type='password' name='conPassword' value={data.conPassword} onChange={handleChange} required placeholder='Enter your Confrirm Password' /></div>
                     <div className='errorMsz'>{errors.conPassword}</div>
                 </div>
                 <div>

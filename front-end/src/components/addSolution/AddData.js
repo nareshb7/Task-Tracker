@@ -7,6 +7,7 @@ const AddData = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const [isLoggedin, setIsLoggedIn] = useState([])
     const technologies = ["React", "Angular", "JavaScript", "CSS"]
+    const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics']
     const [status, setStatus] = useState('')
     const [img, setImg] = useState('')
     const obj = {
@@ -47,27 +48,31 @@ const AddData = () => {
     const handleChange = async (e) => {
         const { name, value } = e.target
         name === 'images' ? convertToBase64(e.target.files[0]) : setData({ ...data, [name]: value })
+        
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        data.time = new Date().toLocaleString()
+        data.time = new Date()
         data.dName = isLoggedin.fName + " " + isLoggedin.lName
         data.mobile = isLoggedin.mobile
         data.email = isLoggedin.email
         data.solutions = [ {solution: data.solution}]
         isLoggedin.uploadedIssues.push(data)
         const addTech = isLoggedin.technologies.indexOf(data.technology)
-        console.log(addTech, 'inexof')
         if (addTech == -1) {
             isLoggedin.technologies.push(data.technology)
         }
+        let idx = AppTypesDataList.indexOf(data.appType)
+        if(idx == -1){
+            AppTypesDataList.push(data.appType)
+        }
+        
        // setCurrentUserVal(isLoggedin)
        const id = isLoggedin._id
        const updateData = JSON.parse(JSON.stringify(isLoggedin))
        
        delete updateData._id
-        console.log(data, 'submit data', id, isLoggedin, updateData)
         axios.post("/api/setData", { "data": data })
         .then(data => setStatus('Data Added Sucessfully'))
         .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
@@ -77,9 +82,7 @@ const AddData = () => {
         setData(obj)
         setStatus('Submitting...')
         delete data.solution
-        // console.log('submitted')
     }
-    console.log(currentUserVal, 'currentUserVal')
     return (
         <> {
             Array.isArray(isLoggedin) ? "Loading...." : <>
@@ -119,7 +122,16 @@ const AddData = () => {
                             </div>
                             <div>
                                 <label>Application Type:</label>
-                                <input type='text' name='appType' placeholder='Application Type..' value={data.appType} onChange={handleChange} required />
+                                <input type='text' name='appType' list='applicationTypes' placeholder='Application Type..' value={data.appType} onChange={handleChange} required />
+                                <datalist id='applicationTypes'>
+                                        {
+                                            AppTypesDataList.map((app, idx)=>{
+                                                return (
+                                                    <option key={idx} value={app}>{app}</option>
+                                                )
+                                            } )
+                                        }
+                                </datalist>
                             </div>
                             <div>
                                 <label>Upload Issue Image : </label>

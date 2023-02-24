@@ -18,7 +18,7 @@ const taskSchema = new mongoose.Schema({
         require: true
     }, 
     time : {
-        type: String,
+        type: Date,
         require: true
     },
     image : {
@@ -108,6 +108,10 @@ const signinSchema = mongoose.Schema({
     },
     reqforMailChange: {
         type: Boolean,
+        require: true
+    },
+    gender: {
+        type: String,
         require: true
     }
 })

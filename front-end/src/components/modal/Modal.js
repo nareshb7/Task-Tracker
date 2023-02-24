@@ -50,7 +50,7 @@ export default function Modal({ isOpen, setModal, header, data, requestAcceptFun
             {
               employee && employee.hasOwnProperty('mobile') && <div style={{ display: 'flex' }}>
                 <div>
-                  <h3>Name : {employee.fName + employee.lName}</h3>
+                  <h3>Name : {employee.fName +" "+ employee.lName}</h3>
                   <h3>Email: {employee.email}</h3>
                   <h3>Mobile : {employee.mobile}</h3>
                   <h3>Active User : {employee.isActive ? "Yes" : 'No'}</h3>
