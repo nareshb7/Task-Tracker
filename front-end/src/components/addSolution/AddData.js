@@ -19,7 +19,9 @@ const AddData = () => {
         binaryData: '',
         issueTitle: '',
         solutions:[],
-        solution:''
+        solution:'',
+        companyName:'',
+        appType:''
     }
     let [data, setData] = useState(obj)
     useEffect(() => {
@@ -93,7 +95,7 @@ const AddData = () => {
                             <div>
                                 <label>
                                     <span>Enter Client Name :</span>
-                                    <input type='text' name='cName' value={data.cName} onChange={handleChange} required />
+                                    <input type='text' name='cName' placeholder='Enter Client name..' value={data.cName} onChange={handleChange} required />
                                 </label>
                             </div>
                             <div>
@@ -107,23 +109,33 @@ const AddData = () => {
                                                 )
                                             })
                                         }
+                                        <option value='new'>Add + </option>
                                     </select>
                                 </label>
                             </div>
                             <div>
+                                <label>Provide the Company Name : </label>
+                                <input type='text' name='companyName' placeholder='Provide company name...' value={data.companyName} onChange={handleChange} required />
+                            </div>
+                            <div>
+                                <label>Application Type:</label>
+                                <input type='text' name='appType' placeholder='Application Type..' value={data.appType} onChange={handleChange} required />
+                            </div>
+                            <div>
+                                <label>Upload Issue Image : </label>
                                 <input type='file' name='images' defaultValue={data.binaryData} onChange={handleChange} required />
                             </div>
                             <div>
                                 <label>Issue Title : </label>
-                                <input type='text' name='issueTitle' value={data.issueTitle} onChange={handleChange} />
+                                <input type='text' name='issueTitle' placeholder='Issue title...' value={data.issueTitle} onChange={handleChange} />
                             </div>
                             <div>
                                 <label>Describe the issue :  </label>
-                                <textarea name='issue' onChange={handleChange} value={data.issue} required></textarea>
+                                <textarea rows='5' cols={50} name='issue' onChange={handleChange} placeholder='Describe issue here..' value={data.issue} required></textarea>
                             </div>
                             <div>
                                 <label>Describe the Solution :  </label>
-                                <textarea name='solution' onChange={handleChange} value={data.solution}></textarea>
+                                <textarea rows='5' cols={50} name='solution' placeholder='What are the changes u made..' onChange={handleChange} value={data.solution}></textarea>
                             </div>
                             <div>
                                 <button type='submit'>Add Data</button>

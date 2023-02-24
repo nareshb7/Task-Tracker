@@ -49,6 +49,7 @@ const GetAllUsers = () => {
         axios.post('/api/uploadedIssues', { email })
             .then(data => setIssuesList(data.data))
             .catch(err => console.log(err, 'err'))
+        console.log(issuesList, 'issueslist')
     }
     const setAlert= (val, type)=> {
         window.alert(`${val}'s account ${type} sucessfully`)
@@ -134,8 +135,21 @@ const GetAllUsers = () => {
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
             if (type){
+                
+                axios.post('/api/mailupdatereq', {user:{ id:id, updateKey:'DELETE'}})
+                .then(res => {
+                    console.log(res, 'res')
+                    let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
+                    setMailChangeReqIDs(newData)
+                })
+                .catch(err => console.log(err, 'errr'))
+                const {updateKey, updateValue} = mailUpdateData[0].updateData
+                axios.post('/api/updatesolution', {prevId: mailUpdateData[0][updateKey], updateData: updateValue, updateKey})
+                .then(res => console.log(res, 'solution response'))
+                .catch(err => console.log(err, 'solutione err'))
+
                 mailUpdateData[0].reqforMailChange = false
-                mailUpdateData[0].email = mailUpdateData[0].updateData.updateValue
+                mailUpdateData[0][updateKey] = mailUpdateData[0].updateData.updateValue
                 delete mailUpdateData[0].updateData
                 let updateData =mailUpdateData[0]
                 axios.post('api/adminupdateuser', {id  ,updateValue: updateData, update: 'MULTIPLE'})
@@ -145,6 +159,8 @@ const GetAllUsers = () => {
                     setMailChangeReqIDs(newData)
                 })
                 .catch(err => console.log(err, 'errrr user updating'))
+            } 
+            else {
                 axios.post('/api/mailupdatereq', {user:{ id:id, updateKey:'DELETE'}})
                 .then(res => {
                     console.log(res, 'res')
@@ -152,6 +168,10 @@ const GetAllUsers = () => {
                     setMailChangeReqIDs(newData)
                 })
                 .catch(err => console.log(err, 'errr'))
+
+                axios.post('/api/adminupdateuser', { id, updateKey: 'reqforMailChange', updateValue: type, update: 'single' })
+                .then(res => console.log(res.data, 'success'))
+                .catch(err => console.log(err, 'Reqfor Mail Change error in user account'))
             }
             
         }
@@ -159,17 +179,23 @@ const GetAllUsers = () => {
     const showEmployeeData =(empDetails)=> {
         setShowEmpData(empDetails)
         setShowEmpModal(true)
+        console.log(empDetails, 'emp')
     }
     const getMailReqIDs = ()=> {
         if (!mailChangeReqIDs[0].fName) {
-            let data = users.filter(val => val.reqforMailChange)
+            let data = users.filter(val => {
+                if (val.reqforMailChange){
+                    console.log(val, 'vak')
+                    return val
+                }
+            })
             let final = data.map(val => {
                 let obj = mailChangeReqIDs.filter(ids => ids.id == val._id)
                 console.log(obj, 'obj')
                 val['updateData'] = obj[0]
                 return val
             })
-            console.log(mailChangeReqIDs, 'mail', final) 
+            console.log(mailChangeReqIDs, 'mail', final, data) 
             setMailChangeReqIDs(final) 
         }
         setMailChangeModal(true)

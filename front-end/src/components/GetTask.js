@@ -120,6 +120,8 @@ const GetTask = () => {
                                     }
                                 </select>
                             </th>
+                            <th>CompanyName</th>
+                            <th>Application Type</th>
                             <th>Issue</th>
                             <th>Date</th>
                             <th>Image</th>
@@ -136,6 +138,8 @@ const GetTask = () => {
                                             <td> {val.dName}</td>
                                             <td> {val.cName}</td>
                                             <td> {val.technology} </td>
+                                            <td>{val.companyName ? val.companyName : 'No Data'}</td>
+                                            <td>{val.appType ? val.appType : 'No Data'}</td>
                                             <td onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                                             <td> {val?.time}</td>
                                             <td><img src={val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' /> </td>

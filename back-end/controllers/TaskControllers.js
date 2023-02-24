@@ -52,9 +52,9 @@ module.exports.deleteSolution = async (req, res) => {
     res.send(result)
 }
 module.exports.updateSolution = async (req,res)=> {
-    const {updateData, email} = req.body
-    console.log(updateData, email, 'emaill')
-    const result = await TaskModel.updateMany({email},{$set : {'email': updateData }})
+    const {updateData, prevId, updateKey} = req.body
+    const result = await TaskModel.updateMany({[updateKey]: prevId},{$set : {[updateKey]: updateData }})
+    res.send(result)
 }
 
 // {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
@@ -129,7 +129,6 @@ module.exports.mailVerification = async (req, res) => {
     const d = new Date().toLocaleString()
     options.to = creds.email || creds.updateValue
     options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://localhost:3000/signup sent time : ${d}`
-    // console.log(creds, 'creds', random)
     transporter.sendMail(options, (err, info) => {
         if (err) {
             res.send(err)
@@ -167,7 +166,6 @@ module.exports.updateUser = async (req, res) => {
 }
 module.exports.mailChangeReq = async (req,res)=> {
     const {user} = req.body
-    console.log(user, 'user')
     if (user.updateKey == 'DELETE') {
         await mailChangeReq.findOneAndDelete({id:user.id}, {new:true})
         .then(data => res.send(data))
