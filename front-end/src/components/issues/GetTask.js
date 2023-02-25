@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { UserContext } from '../App'
+import { UserContext } from '../../App'
 
 const GetTask = () => {
     const navigate = useNavigate()
@@ -166,15 +166,15 @@ const GetTask = () => {
                                             <td> {new Date(val?.time).toLocaleString()}</td>
                                             <td><img src={val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' /> </td>
                                             <td>
-                                                <button onClick={() => editFunc(val._id)} disabled={currentUser.mobile !== val.mobile}>Edit</button>
-                                                <button onClick={() => deleteFunc(val._id)} disabled={currentUser.mobile !== val.mobile}>Delete</button>
+                                                <button onClick={() => editFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Edit</button>
+                                                <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Delete</button>
                                             </td>
                                         </tr>
                                     )
                                 })
                             }
                             </> : <tr>
-                                <td colSpan={8} > <h3 style={{textAlign:'center'}}>No Data found</h3></td>
+                                <td colSpan={11} > <h3 style={{textAlign:'center'}}>No Data found</h3></td>
                             </tr>
                         }
 

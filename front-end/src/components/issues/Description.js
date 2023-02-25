@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, {useState, useContext} from 'react'
 import { useLocation } from 'react-router-dom'
-import { UserContext } from '../App'
+import { UserContext } from '../../App'
 
 const Description = () => {
   const {currentUserVal} = useContext(UserContext)
@@ -16,6 +16,7 @@ const Description = () => {
       const d = new Date()
       const devName = currentUserVal.fName +" "+ currentUserVal.lName
       console.log(devName)
+      
       axios.post('/api/addSolution', {newData : [...data.solutions, {solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id})
       .then(res => {
         setData(res.data)
@@ -36,7 +37,7 @@ const Description = () => {
         {
           data?.solutions.map((solution, idx)=> {
             return (
-              <h4 key={idx}>{idx +1 }: <span>{solution?.solution}</span> - {solution?.updatedTime ? <span>added on {new Date(solution.updatedTime).toLocaleString()}</span>: 'Initial'} by : {solution?.uploadedBy}</h4>
+              <h4 key={idx}>{idx +1 }: <span>{solution?.solution}</span> - {solution?.updatedTime ? <span>added on {new Date(solution.updatedTime).toLocaleString()}</span>: 'Initial Solution'} by : {solution.uploadedBy ? solution.uploadedBy : data.dName}</h4>
             )
           })
         }

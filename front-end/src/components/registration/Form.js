@@ -15,7 +15,8 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
         reqforAdmin: false,
         uploadedIssues:[],
         technologies:[],
-        gender: 'Male'
+        gender: 'Male',
+        solutions:[]
     }
     const [data, setData] = useState(formData || obj)
     const errorObj = {

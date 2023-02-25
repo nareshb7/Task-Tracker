@@ -1,16 +1,16 @@
 import React from 'react'
 import {Routes, Route, Navigate} from 'react-router-dom'
-import AddData from './components/addSolution/AddData'
-import Description from './components/Description'
-import GetTask from './components/GetTask'
-import Home from './components/Home'
-import Login from './components/login/Login'
-import MyProfile from './components/profile/MyProfile'
-import Signup from './components/signup/Signup'
-import GetAllUsers from './components/allusers/GetAllUsers'
-import UserUpdate from './components/updateUser/UserUpdate'
-import ForgotPassword from './components/login/ForgotPassword'
-import MailVerification from './components/utils/MailVerification'
+import AddData from './issues/AddData'
+import Description from './issues/Description'
+import GetTask from './issues/GetTask'
+import Home from './Home'
+import Login from './registration/Login'
+import MyProfile from './profile/MyProfile'
+import Signup from './registration/Signup'
+import AdminPage from './profile/AdminPage'
+import UserUpdate from './profile/UserUpdate'
+import ForgotPassword from './registration/ForgotPassword'
+import MailVerification from './utils/MailVerification'
 
 const RoutesComp =()=> {
     return (
@@ -24,8 +24,8 @@ const RoutesComp =()=> {
                 <Route path='signup' element={<Signup /> } />
                 <Route path='login' element={<Login /> } />
                 <Route path='/forgotpassword' element={<ForgotPassword />} />
-                <Route path='profile' element={<MyProfile/> } />
-                <Route path='getallusers' element={<GetAllUsers/>} />
+                {/* <Route path='profile' element={<MyProfile/> } /> */}
+                <Route path='adminpage' element={<AdminPage/>} />
                 <Route path='updateuser' element={<UserUpdate />} />
                 <Route path='verifymail/:path' element={<MailVerification/>} />
             </Routes>

@@ -7,7 +7,7 @@ const AddData = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const [isLoggedin, setIsLoggedIn] = useState([])
     const technologies = ["React", "Angular", "JavaScript", "CSS"]
-    const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics']
+    const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics', 'OTT']
     const [status, setStatus] = useState('')
     const [img, setImg] = useState('')
     const obj = {
@@ -22,7 +22,8 @@ const AddData = () => {
         solutions:[],
         solution:'',
         companyName:'',
-        appType:''
+        appType:'',
+        developerId :''
     }
     let [data, setData] = useState(obj)
     useEffect(() => {
@@ -55,8 +56,9 @@ const AddData = () => {
         e.preventDefault()
         data.time = new Date()
         data.dName = isLoggedin.fName + " " + isLoggedin.lName
-        data.mobile = isLoggedin.mobile
-        data.email = isLoggedin.email
+        // data.mobile = isLoggedin.mobile
+        // data.email = isLoggedin.email
+        data.developerId = isLoggedin._id
         data.solutions = [ {solution: data.solution}]
         isLoggedin.uploadedIssues.push(data)
         const addTech = isLoggedin.technologies.indexOf(data.technology)

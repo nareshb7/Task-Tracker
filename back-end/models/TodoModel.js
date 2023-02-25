@@ -25,10 +25,6 @@ const taskSchema = new mongoose.Schema({
         type:String,
         require: true
     },
-    mobile: {
-        type: Number,
-        require:true
-    },
     binaryData: {
         type: String,
         require: true
@@ -41,10 +37,6 @@ const taskSchema = new mongoose.Schema({
         type:Array,
         require: true
     },
-    email : {
-        type: String,
-        require:true
-    },
     companyName : {
         require: true,
         type: String
@@ -52,6 +44,10 @@ const taskSchema = new mongoose.Schema({
     appType : {
         type:String,
         require: true
+    },
+    developerId : {
+        type: String,
+        require:true
     }
 
 })

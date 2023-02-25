@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react'
 import axios from 'axios'
-import Form from '../form/Form'
+import Form from '../registration/Form'
 import { useLocation, useNavigate } from 'react-router-dom'
-import '../signup/Signup.css'
+import '../registration/Signup.css'
 import { UserContext } from '../../App'
 
 const UserUpdate = () => {

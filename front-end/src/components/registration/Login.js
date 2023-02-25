@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate, NavLink } from 'react-router-dom'
-import { setCookie } from '../cookieset/CookieComp'
+import { setCookie } from '../utils/CookieComp'
 import { UserContext } from '../../App'
 import MyProfile from '../profile/MyProfile'
 
@@ -87,9 +87,6 @@ const Login = () => {
                         </div>
                     </>
                 ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} />
-            }
-            {
-
             }
         </div>
     )
