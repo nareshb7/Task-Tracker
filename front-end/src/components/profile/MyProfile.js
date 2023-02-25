@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { setCookie } from '../cookieset/CookieComp'
+import { setCookie } from '../utils/CookieComp'
+import UserIssues, { uploadedIssues } from '../issues/UserIssues'
 
 const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
   const navigate = useNavigate()
@@ -9,6 +10,8 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
   const [currentUser, setCurrentUser] = useState({})
   const [mailUpdatereq, setMailUpdatereq] = useState(false)
   const [reqMailError, setReqMailError] = useState('')
+  const [showIssues, setShowIssues] = useState(false)
+  const [issuesList, setIssuesList] = useState([])
   const [adminUpdates, setAdminUpdates] = useState({
     updateKey: 'email',
     updateValue: ''
@@ -95,6 +98,10 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
       alert('If data is not valid Ur req will be rejected')
     }
   }
+  const showMyIssues =()=> {
+    setShowIssues(!showIssues)
+    uploadedIssues(currentUserVal._id, setIssuesList)
+  }
   return (
     <div>
       {
@@ -130,9 +137,17 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
                 </div>
               }
               <div style={{ height: '30px' }}>{reqMailError}</div>
+              <div><button onClick={showMyIssues}>My Issues</button> </div>
+              
             </div>
+            
           </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
+      {
+                showIssues && issuesList.length && <div>
+                  <UserIssues issuesList={issuesList}/>
+                </div>
+            }
     </div>
   )
 }

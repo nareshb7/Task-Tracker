@@ -119,8 +119,8 @@ module.exports.getAllUsers = async (req, res) => {
     res.send(result)
 }
 module.exports.uploadedIssues = async (req, res) => {
-    const { email } = req.body
-    const result = await TaskModel.find({ email: email })
+    const { developerId } = req.body
+    const result = await TaskModel.find({ developerId })
     res.send(result)
 }
 module.exports.mailVerification = async (req, res) => {

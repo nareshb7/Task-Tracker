@@ -2,8 +2,9 @@ import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { UserContext } from '../../App'
 import Modal from '../modal/Modal'
+import UserIssues, { uploadedIssues } from '../issues/UserIssues'
 
-const GetAllUsers = () => {
+const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const [users, setUsers] = useState([])
     const [issuesList, setIssuesList] = useState([])
@@ -45,12 +46,7 @@ const GetAllUsers = () => {
     useEffect(() => {
         setTableData(users)
     }, [users])
-    const uploadedIssues = (email) => {
-        axios.post('/api/uploadedIssues', { email })
-            .then(data => setIssuesList(data.data))
-            .catch(err => console.log(err, 'err'))
-        console.log(issuesList, 'issueslist')
-    }
+    
     const setAlert= (val, type)=> {
         window.alert(`${val}'s account ${type} sucessfully`)
     }
@@ -128,9 +124,13 @@ const GetAllUsers = () => {
                 .catch(err => console.log(err, 'Admin access rejected'))
         }
     }
+    const uploadedIssuesList = (developerId)=> {
+        uploadedIssues(developerId, setIssuesList)
+    }
+
     const mailChangeAcceptFunc =(id, type)=> {
         console.log(id, type, 'mailchangeaCCEPT FUNC')
-        const mailUpdateData = mailChangeReqIDs.filter(val => val._id == id)
+        const mailUpdateData = mailChangeReqIDs.find(val => val._id == id)
         console.log(mailUpdateData, 'mailUpdateData')
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
@@ -143,16 +143,13 @@ const GetAllUsers = () => {
                     setMailChangeReqIDs(newData)
                 })
                 .catch(err => console.log(err, 'errr'))
-                const {updateKey, updateValue} = mailUpdateData[0].updateData
-                axios.post('/api/updatesolution', {prevId: mailUpdateData[0][updateKey], updateData: updateValue, updateKey})
-                .then(res => console.log(res, 'solution response'))
-                .catch(err => console.log(err, 'solutione err'))
+                const {updateKey, updateValue} = mailUpdateData.updateData
+                
 
-                mailUpdateData[0].reqforMailChange = false
-                mailUpdateData[0][updateKey] = mailUpdateData[0].updateData.updateValue
-                delete mailUpdateData[0].updateData
-                let updateData =mailUpdateData[0]
-                axios.post('api/adminupdateuser', {id  ,updateValue: updateData, update: 'MULTIPLE'})
+                mailUpdateData.reqforMailChange = false
+                mailUpdateData[updateKey] = mailUpdateData.updateData.updateValue
+                delete mailUpdateData.updateData
+                axios.post('api/adminupdateuser', {id  ,updateValue: mailUpdateData, update: 'MULTIPLE'})
                 .then(res => {
                     let newData = mailChangeReqIDs.filter(val => val._id != res.data._id)
                     console.log(res, 'res', newData)
@@ -173,7 +170,6 @@ const GetAllUsers = () => {
                 .then(res => console.log(res.data, 'success'))
                 .catch(err => console.log(err, 'Reqfor Mail Change error in user account'))
             }
-            
         }
     }
     const showEmployeeData =(empDetails)=> {
@@ -190,9 +186,9 @@ const GetAllUsers = () => {
                 }
             })
             let final = data.map(val => {
-                let obj = mailChangeReqIDs.filter(ids => ids.id == val._id)
+                let obj = mailChangeReqIDs.find(ids => ids.id == val._id)
                 console.log(obj, 'obj')
-                val['updateData'] = obj[0]
+                val['updateData'] = obj
                 return val
             })
             console.log(mailChangeReqIDs, 'mail', final, data) 
@@ -251,7 +247,7 @@ const GetAllUsers = () => {
                                             </td>
                                             <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
                                             <td>
-                                                <button onClick={() => uploadedIssues(user.email)}>Click Here</button>
+                                                <button onClick={() => uploadedIssuesList(user._id)}>Click Here</button>
                                             </td>
                                             <td>
                                                 <button disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => removeUser(user)}>Remove</button>
@@ -267,35 +263,7 @@ const GetAllUsers = () => {
                         <div style={{ marginBlock: '20px' }}>
                             {
                                 issuesList.length > 0 ? (
-                                    <div>
-                                        <table border='1'>
-                                        <caption>Uploaded Issues</caption>
-                                            <thead>
-                                                <tr>
-                                                    <th>Developer Name</th>
-                                                    <th>Client Name</th>
-                                                    <th>Technology</th>
-                                                    <th>Issue</th>
-                                                    <th>Updated Time</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    issuesList.map((issue, idx) => {
-                                                        return (
-                                                            <tr key={idx}>
-                                                                <td>{issue.dName}</td>
-                                                                <td>{issue.cName}</td>
-                                                                <td>{issue.technology}</td>
-                                                                <td>{issue.issue}</td>
-                                                                <td>{issue.time}</td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                   <UserIssues issuesList={issuesList}/>
                                 ) : (
                                     <h3>No Solutions Added</h3>
                                 )
@@ -308,4 +276,4 @@ const GetAllUsers = () => {
     )
 }
 
-export default GetAllUsers
+export default AdminPage

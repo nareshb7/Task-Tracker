@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useState} from 'react'
 import Nav from './components/Nav'
-import RoutesComp from './RoutesComp';
-import useAuth from './components/authentication/Authentication';
+import RoutesComp from './components/RoutesComp';
+import useAuth from './components/utils/Authentication';
 
 export const UserContext = createContext()
 
