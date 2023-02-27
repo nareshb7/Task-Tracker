@@ -94,14 +94,6 @@ const signinSchema = mongoose.Schema({
         type:Date,
         require: true
     },
-    uploadedIssues : {
-        type: Array,
-        require: true
-    },
-    technologies: {
-        type:Array,
-        require: true
-    },
     reqforMailChange: {
         type: Boolean,
         require: true
