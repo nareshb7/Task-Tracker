@@ -98,9 +98,11 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
       alert('If data is not valid Ur req will be rejected')
     }
   }
-  const showMyIssues =()=> {
+  const showMyIssues =async ()=> {
     setShowIssues(!showIssues)
-    uploadedIssues(currentUserVal._id, setIssuesList)
+    let result =await uploadedIssues(currentUserVal._id)
+    setIssuesList(result)
+    
   }
   return (
     <div>
