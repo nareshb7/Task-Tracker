@@ -2,15 +2,14 @@ import React from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-export const uploadedIssues =async (developerId, setIssuesList) => {
-    return  axios.post('/api/uploadedIssues', { developerId })
+export const uploadedIssues = (developerId) => {
+     const response =  axios.post('/api/uploadedIssues', { developerId })
     .then(data => {
-        setIssuesList(data.data)
         return data.data
     })
     .catch(err => console.log(err, 'err'))
+    return response
 }
-
 const UserIssues = ({issuesList}) => {
     const navigate = useNavigate()
     const gotoDesc = (val) => {

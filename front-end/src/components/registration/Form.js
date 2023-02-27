@@ -1,3 +1,36 @@
+// import React from 'react'
+// import * as Yup from 'yup'
+// import {Formik, Field, ErrorMessage, Form } from 'formik'
+// import './Form.css'
+
+// const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
+//         const obj = {
+//         fName: '',
+//         lName: '',
+//         email: '',
+//         mobile: '',
+//         password: '',
+//         conPassword: '',
+//         profileImage: '',
+//         binaryData:'',
+//         isAdmin:false,
+//         isActive: true,
+//         reqforAdmin: false,
+//         gender: 'Male',
+//         solutions:[]
+//     }
+//     const fieldsArr =[{name:'fName', type:'text'}, {name:'lName', type:'text'}, {name:'email', type:'text'},{name:'mobile', type:'text'},
+//     {name:'password', type:''}
+// ]
+//   return (
+//     <div>Form</div>
+//   )
+// }
+
+// export default Form
+
+
+
 import React, {useState, useEffect} from 'react'
 import './Form.css'
 const Form = ({submitFunc, formData, error, isSubmitted, component}) => {

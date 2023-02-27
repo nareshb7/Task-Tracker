@@ -124,8 +124,9 @@ const AdminPage = () => {
                 .catch(err => console.log(err, 'Admin access rejected'))
         }
     }
-    const uploadedIssuesList = (developerId)=> {
-        uploadedIssues(developerId, setIssuesList)
+    const uploadedIssuesList = async (developerId)=> {
+        const result =await uploadedIssues(developerId)
+        setIssuesList(result)
     }
 
     const mailChangeAcceptFunc =(id, type)=> {
@@ -145,7 +146,6 @@ const AdminPage = () => {
                 .catch(err => console.log(err, 'errr'))
                 const {updateKey, updateValue} = mailUpdateData.updateData
                 
-
                 mailUpdateData.reqforMailChange = false
                 mailUpdateData[updateKey] = mailUpdateData.updateData.updateValue
                 delete mailUpdateData.updateData
@@ -172,10 +172,12 @@ const AdminPage = () => {
             }
         }
     }
-    const showEmployeeData =(empDetails)=> {
-        let result = uploadedIssues(empDetails._id, setIssuesList)
+    const showEmployeeData = async (empDetails)=> {
+        const result =await  uploadedIssues(empDetails._id, '')
+        
+        console.log(result, 'result')
         empDetails['uploadedIssues'] = result
-        empDetails['technologies'] = issuesList.map(val => val.technology)
+        empDetails['technologies'] = result.map(val => val.technology)
         setShowEmpData(empDetails)
         setShowEmpModal(true)
         console.log(empDetails, 'emp')
