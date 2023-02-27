@@ -1,13 +1,21 @@
 import React from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 export const uploadedIssues =async (developerId, setIssuesList) => {
-    axios.post('/api/uploadedIssues', { developerId })
-        .then(data => setIssuesList(data.data))
-        .catch(err => console.log(err, 'err'))
+    return  axios.post('/api/uploadedIssues', { developerId })
+    .then(data => {
+        setIssuesList(data.data)
+        return data.data
+    })
+    .catch(err => console.log(err, 'err'))
 }
 
 const UserIssues = ({issuesList}) => {
+    const navigate = useNavigate()
+    const gotoDesc = (val) => {
+        navigate(`/description`, { state: val })
+    }
     return (
         <div>
             <table border='1'>
@@ -29,7 +37,7 @@ const UserIssues = ({issuesList}) => {
                                     <td>{issue.dName}</td>
                                     <td>{issue.cName}</td>
                                     <td>{issue.technology}</td>
-                                    <td>{issue.issue}</td>
+                                    <td onClick={()=> gotoDesc(issue)}>{issue.issue}</td>
                                     <td>{new Date(issue.time).toLocaleString()}</td>
                                 </tr>
                             )

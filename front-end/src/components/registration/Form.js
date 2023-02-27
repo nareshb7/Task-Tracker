@@ -13,8 +13,6 @@ const Form = ({submitFunc, formData, error, isSubmitted, component}) => {
         isAdmin:false,
         isActive: true,
         reqforAdmin: false,
-        uploadedIssues:[],
-        technologies:[],
         gender: 'Male',
         solutions:[]
     }

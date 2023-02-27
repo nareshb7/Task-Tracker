@@ -24,7 +24,7 @@ const AdminPage = () => {
         { header: 'Mobile', filter: 'mobile' },
         { header: 'Profile Image' },
         { header: 'Active User', filter: 'isActive' },
-        { header: 'Uploaded Isues' },
+        { header: 'Uploaded Issues' },
         { header: 'Remove User' }
     ]
     useEffect(() => {
@@ -173,6 +173,9 @@ const AdminPage = () => {
         }
     }
     const showEmployeeData =(empDetails)=> {
+        let result = uploadedIssues(empDetails._id, setIssuesList)
+        empDetails['uploadedIssues'] = result
+        empDetails['technologies'] = issuesList.map(val => val.technology)
         setShowEmpData(empDetails)
         setShowEmpModal(true)
         console.log(empDetails, 'emp')

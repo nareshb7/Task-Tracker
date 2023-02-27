@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../../App'
+import Loader from '../utils/loader/Loader'
 
 const GetTask = () => {
     const navigate = useNavigate()
@@ -57,12 +58,16 @@ const GetTask = () => {
         console.log('Edit button clicekd', id)
     }
     const deleteFunc = (id) => {
-        axios.post('/api/deletesolution', { id })
-            .then(res => {
-                const newData = data.filter(val => val._id != res.data._id)
-                setData(newData)
-            })
-            .catch(err => console.log(err, 'Error Occured during delete'))
+        // axios.post('/api/deletesolution', { id })
+        //     .then(res => {
+        //         const newData = data.filter(val => val._id != res.data._id)
+        //         setData(newData)
+        //     })
+        //     .catch(err => console.log(err, 'Error Occured during delete'))
+
+        console.log(id, 'currentIssues', currentUserVal)
+
+        
     }
     useEffect(() => {
         axios.get('/api/getData')
@@ -174,7 +179,7 @@ const GetTask = () => {
                                 })
                             }
                             </> : <tr>
-                                <td colSpan={11} > <h3 style={{textAlign:'center'}}>No Data found</h3></td>
+                                <td colSpan={11} > {tableData.length ==0 ? <h3 style={{textAlign:'center'}}>No result found</h3> : <Loader />} </td>
                             </tr>
                         }
 
