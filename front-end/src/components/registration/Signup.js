@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import './Signup.css'
-import Form from './Form'
+import SignupForm from './Form'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const Signup = () => {
@@ -59,7 +59,7 @@ const Signup = () => {
     }
     return (
         <div className='signupDiv'>
-            <Form submitFunc={handleSubmit} error={errors} isSubmitted={isSubmitted}/>
+            <SignupForm submitFunc={handleSubmit} error={errors} isSubmitted={isSubmitted}/>
             <div><h3>Status : {response}</h3></div>            
         </div>
     )
