@@ -3,6 +3,7 @@ import axios from 'axios'
 import { UserContext } from '../../App'
 import Modal from '../modal/Modal'
 import UserIssues, { uploadedIssues } from '../issues/UserIssues'
+import Loader from '../utils/loader/Loader'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -113,7 +114,6 @@ const AdminPage = () => {
     const requestAcceptFunc = (id, type) => {
         console.log(id, type)
         const updateKey = type ? 'isAdmin': 'reqforAdmin'
-        console.log(updateKey, 'objectType')
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
             axios.post('/api/adminupdateuser', { id, updateKey: updateKey, updateValue: type, update: 'single' })
@@ -132,7 +132,6 @@ const AdminPage = () => {
     const mailChangeAcceptFunc =(id, type)=> {
         console.log(id, type, 'mailchangeaCCEPT FUNC')
         const mailUpdateData = mailChangeReqIDs.find(val => val._id == id)
-        console.log(mailUpdateData, 'mailUpdateData')
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
             if (type){
@@ -173,30 +172,23 @@ const AdminPage = () => {
         }
     }
     const showEmployeeData = async (empDetails)=> {
-        const result =await  uploadedIssues(empDetails._id, '')
-        
-        console.log(result, 'result')
+        const result =await  uploadedIssues(empDetails._id)
         empDetails['uploadedIssues'] = result
-        empDetails['technologies'] = result.map(val => val.technology)
+        empDetails['technologies'] = [...new Set(result.map(val => val.technology))]
         setShowEmpData(empDetails)
         setShowEmpModal(true)
         console.log(empDetails, 'emp')
     }
     const getMailReqIDs = ()=> {
-        if (!mailChangeReqIDs[0].fName) {
-            let data = users.filter(val => {
-                if (val.reqforMailChange){
-                    console.log(val, 'vak')
-                    return val
-                }
-            })
-            let final = data.map(val => {
+        if (!mailChangeReqIDs[0]?.fName) {
+            let final = users.filter(val => val.reqforMailChange).map(val => {
                 let obj = mailChangeReqIDs.find(ids => ids.id == val._id)
                 console.log(obj, 'obj')
                 val['updateData'] = obj
                 return val
             })
-            console.log(mailChangeReqIDs, 'mail', final, data) 
+            
+            console.log(mailChangeReqIDs, 'mail', final) 
             setMailChangeReqIDs(final) 
         }
         setMailChangeModal(true)
@@ -240,6 +232,8 @@ const AdminPage = () => {
                         </thead>
                         <tbody>
                             {
+                                tableData.length ? <>
+                                {
                                 tableData.map((user, idx) => {
                                     return (
                                         <tr key={idx}>
@@ -261,6 +255,10 @@ const AdminPage = () => {
                                         </tr>
                                     )
                                 })
+                            }
+                                </> :<tr>
+                                    <td colSpan={8}>No result found <Loader /> </td>
+                                </tr>
                             }
                         </tbody>
                     </table>

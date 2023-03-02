@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import axios from 'axios'
-import Form from '../registration/Form'
+import SignupForm from '../registration/Form'
 import { useLocation, useNavigate } from 'react-router-dom'
 import '../registration/Signup.css'
 import { UserContext } from '../../App'
@@ -29,7 +29,7 @@ const UserUpdate = () => {
   return (
     <div className='signupDiv'>
         <h2>User Update : </h2>
-      <Form submitFunc={handleSubmit} formData={data} component='UPDATE' />
+      <SignupForm submitFunc={handleSubmit} formData={data} component='UPDATE' />
       <div>
         <h3>Status : {response}</h3>
       </div>

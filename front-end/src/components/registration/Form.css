@@ -19,3 +19,38 @@
 .inputfile + label:hover {
     background-color: #d52a81;
 }
+
+.is-invalid {
+    border-color: #f00;
+  }
+  .errMsz {
+    color: #f00;
+  }
+  .form {
+    margin-left: 20px;
+  }
+  .form label {
+    font-weight: 600;
+    margin-block: 5px;
+    display: block;
+  }
+  .form label::after {
+    content: ' :';
+  }
+  .form input,.form select,.form textarea {
+    padding: 10px 20px;
+    margin-block: 5px;
+    border-radius: 5px;
+  }
+  .form button {
+    padding: 5px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .form button:hover {
+    color:#fff;
+    background-color: #888;
+    border: 2px solid #fff
+  }
+  
