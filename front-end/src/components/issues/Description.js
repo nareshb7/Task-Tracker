@@ -42,7 +42,10 @@ const Description = () => {
           })
         }
         <div style={{width:'300px', height:'300px'}}>
+          {
+            Array.isArray(data.binaryData) ? data.binaryData.map((imgFile, idx)=> <img key={idx} src={imgFile} style={{width:'100%', height:'100%'}}/>):
           <img src={data.binaryData} style={{width:'100%' , height:'100%'}}/>
+          }
         </div>
       </div>
       <div>

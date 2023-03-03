@@ -25,6 +25,7 @@
   }
   .errMsz {
     color: #f00;
+    padding: 10px 20px ;
   }
   .form {
     margin-left: 20px;
@@ -53,4 +54,20 @@
     background-color: #888;
     border: 2px solid #fff
   }
+  .signupDiv {
+    background-color: #999;
+    width: 500px;
+    margin: auto;
+    text-align: center;
+}
+.signupDiv input, .signupDiv select {
+    padding: 10px 20px;
+    margin-block: 10px;
+}
+.signupDiv select {
+    padding: 10px 20%
+}
+.issueImage > div {
+  margin-block: 10px
+}
   

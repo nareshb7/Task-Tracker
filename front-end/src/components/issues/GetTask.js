@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../../App'
 import Loader from '../utils/loader/Loader'
+import useRandomNum from '../utils/RandomNum'
 
 const GetTask = () => {
     const navigate = useNavigate()
@@ -29,6 +30,7 @@ const GetTask = () => {
         sortNames.technology = [...new Set(data.map(val => val.technology))]
         sortNames.appType = [...new Set(data.map(val=> val.appType))]
     }
+    console.log(useRandomNum(), 'random get')
 
     const handleSort = (e) => {
         const { name, value } = e.target
@@ -169,7 +171,7 @@ const GetTask = () => {
                                             <td>{val.appType ? val.appType : 'No Data'}</td>
                                             <td onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                                             <td> {new Date(val?.time).toLocaleString()}</td>
-                                            <td><img src={val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' /> </td>
+                                            <td><img src={val.binaryData[0] || val.binaryData } style={{ width: '100px', height: '100px' }} alt='img' /> </td>
                                             <td>
                                                 <button onClick={() => editFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Edit</button>
                                                 <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Delete</button>

@@ -26,7 +26,7 @@ const taskSchema = new mongoose.Schema({
         require: true
     },
     binaryData: {
-        type: String,
+        type: Array,
         require: true
     },
     issueTitle: {
