@@ -57,12 +57,6 @@ const Login = () => {
             }
         } 
     }, [currentUser])
-    // useEffect(()=> {
-    //     if(Object.keys(currentUserVal).length > 2) {
-    //         navigate('/profile')
-            
-    //     }
-    // }, [currentUserVal])
     return (
         <div>
             {

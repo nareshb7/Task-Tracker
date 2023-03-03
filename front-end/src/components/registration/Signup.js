@@ -35,13 +35,17 @@ const Signup = () => {
     const verifyData =async (checkdata)=> {
         let res = await axios.get('/api/getallusers')
         let isValid = await res.data.filter(val => val.email === checkdata.email || val.mobile.toString() === checkdata.mobile)
+        console.log(isValid, '972==isValid')
         if (isValid.length) {
+            let val=''
             if (isValid[0].email === checkdata.email){
+                val='email'
                 setErrors({...errors, "email": 'Try new Email Id.'})
             } else {
+                val='mobile'
                 setErrors({...errors, 'mobile': 'Try new Mobile number...'})
             }
-            setResponse('Something Went Wrong')
+            setResponse(`Check the ${val} field`)
         } else {
             if (checkdata.isAdmin === false) {
                 navigate('/verifymail/signup', {state: checkdata})
