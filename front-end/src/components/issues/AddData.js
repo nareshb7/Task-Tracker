@@ -1,29 +1,32 @@
 import React, { useState, useContext, useEffect } from 'react'
 import axios from 'axios'
 import { NavLink } from 'react-router-dom'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
 import { UserContext } from '../../App'
 
 const AddData = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const [isLoggedin, setIsLoggedIn] = useState([])
-    const technologies = ["React", "Angular", "JavaScript", "CSS"]
+    const technologies = ['Select the technology', "React", "Angular", "JavaScript", "CSS"]
     const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics', 'OTT']
     const [status, setStatus] = useState('')
     const [img, setImg] = useState('')
     const obj = {
-        dName: '',
+        dName: isLoggedin.fName + " " + isLoggedin.lName,
         cName: '',
-        technology: 'React',
+        technology: '',
         issue: '',
         time: '',
         mobile: '',
         binaryData: '',
         issueTitle: '',
-        solutions:[],
-        solution:'',
-        companyName:'',
-        appType:'',
-        developerId :''
+        solutions: [],
+        solution: '',
+        companyName: '',
+        appType: '',
+        developerId: '',
+        images: ""
     }
     let [data, setData] = useState(obj)
     useEffect(() => {
@@ -44,117 +47,136 @@ const AddData = () => {
             }
         })
         setData({ ...data, 'binaryData': result })
+        return result
     }
 
     const handleChange = async (e) => {
         const { name, value } = e.target
         name === 'images' ? convertToBase64(e.target.files[0]) : setData({ ...data, [name]: value })
-        
+
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        data.time = new Date()
-        data.dName = isLoggedin.fName + " " + isLoggedin.lName
-        // data.mobile = isLoggedin.mobile
-        // data.email = isLoggedin.email
-        data.developerId = isLoggedin._id
-        data.solutions = [ {solution: data.solution}]
-        isLoggedin.uploadedIssues.push(data)
-        const addTech = isLoggedin.technologies.indexOf(data.technology)
-        if (addTech == -1) {
-            isLoggedin.technologies.push(data.technology)
-        }
-        let idx = AppTypesDataList.indexOf(data.appType)
-        if(idx == -1){
-            AppTypesDataList.push(data.appType)
-        }
+    const handleSubmit =async (newData) => {
+        newData.time = new Date()
+        newData.dName = isLoggedin.fName + " " + isLoggedin.lName
+        console.log(newData.images, 'images')
+        newData.binaryData = await convertToBase64(newData.images)
+        // newData.mobile = isLoggedin.mobile
+        // newData.email = isLoggedin.email
+        newData.developerId = isLoggedin._id
+        newData.solutions = [{ solution: newData.solution }]
+        isLoggedin.uploadedIssues.push(newData)
         
-       // setCurrentUserVal(isLoggedin)
-       const id = isLoggedin._id
-       const updateData = JSON.parse(JSON.stringify(isLoggedin))
-       
-       delete updateData._id
-        axios.post("/api/setData", { "data": data })
-        .then(data => setStatus('Data Added Sucessfully'))
-        .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
-        axios.post('api/adminupdateuser', {id :id ,updateValue: updateData, update: 'MULTIPLE'})
-        .then(res => console.log('User Val Updated',res))
-        .catch(err => console.log(err, ';errrr user updating'))
+        
+        console.log( 'newData submitted',newData,isLoggedin)
+        // setCurrentUserVal(isLoggedin)
+        const id = isLoggedin._id
+        const updateData = JSON.parse(JSON.stringify(isLoggedin))
+        delete updateData.images
+        delete updateData._id
+        delete newData.images
+        axios.post("/api/setData", { "data": newData })
+            .then(data => setStatus('Data Added Sucessfully'))
+            .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
+        axios.post('api/adminupdateuser', { id: id, updateValue: updateData, update: 'MULTIPLE' })
+            .then(res => console.log('User Val Updated', res))
+            .catch(err => console.log(err, ';errrr user updating'))
         setData(obj)
         setStatus('Submitting...')
-        delete data.solution
+        delete newData.solution
+    }
+    const handleValidate =(val)=> {
+        console.log('validate', val)
+    }
+    const schema = {
+
     }
     return (
         <> {
             Array.isArray(isLoggedin) ? "Loading...." : <>
                 {
                     isLoggedin.hasOwnProperty('fName') ? <div>
-                        <form onSubmit={handleSubmit}>
-                            <div>
-                                <label>
-                                    <span>Enter Developer Name :</span>
-                                    <input type='text' name='dName' value={isLoggedin.fName + " " + isLoggedin.lName} disabled={isLoggedin.fName} onChange={handleChange} required />
-                                </label>
-                            </div>
-                            <div>
-                                <label>
-                                    <span>Enter Client Name :</span>
-                                    <input type='text' name='cName' placeholder='Enter Client name..' value={data.cName} onChange={handleChange} required />
-                                </label>
-                            </div>
-                            <div>
-                                <label>
-                                    <span>Mention the Technology</span>
-                                    <select name='technology' value={data.technology} onChange={handleChange} required>
-                                        {
-                                            technologies.map((val, idx) => {
-                                                return (
-                                                    <option key={idx} value={val}>{val}</option>
-                                                )
-                                            })
-                                        }
-                                        <option value='new'>Add + </option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div>
-                                <label>Provide the Company Name : </label>
-                                <input type='text' name='companyName' placeholder='Provide company name...' value={data.companyName} onChange={handleChange} required />
-                            </div>
-                            <div>
-                                <label>Application Type:</label>
-                                <input type='text' name='appType' list='applicationTypes' placeholder='Application Type..' value={data.appType} onChange={handleChange} required />
-                                <datalist id='applicationTypes'>
-                                        {
-                                            AppTypesDataList.map((app, idx)=>{
-                                                return (
-                                                    <option key={idx} value={app}>{app}</option>
-                                                )
-                                            } )
-                                        }
-                                </datalist>
-                            </div>
-                            <div>
-                                <label>Upload Issue Image : </label>
-                                <input type='file' name='images' defaultValue={data.binaryData} onChange={handleChange} required />
-                            </div>
-                            <div>
-                                <label>Issue Title : </label>
-                                <input type='text' name='issueTitle' placeholder='Issue title...' value={data.issueTitle} onChange={handleChange} />
-                            </div>
-                            <div>
-                                <label>Describe the issue :  </label>
-                                <textarea rows='5' cols={50} name='issue' onChange={handleChange} placeholder='Describe issue here..' value={data.issue} required></textarea>
-                            </div>
-                            <div>
-                                <label>Describe the Solution :  </label>
-                                <textarea rows='5' cols={50} name='solution' placeholder='What are the changes u made..' onChange={handleChange} value={data.solution}></textarea>
-                            </div>
-                            <div>
-                                <button type='submit'>Add Data</button>
-                            </div>
-                        </form>
+                        <Formik
+                            initialValues={obj}
+                            validationSchema={Yup.object().shape(schema)}
+                            onSubmit={handleSubmit}
+                            validate={handleValidate}
+                        >
+                            {({ values, errors, setFieldValue, touched }) => (
+                                <Form>
+                                    <div>
+                                        <div>
+                                            <label>Enter Developer Name : </label>
+                                        </div>
+                                        <Field name='dName' disabled />
+                                    </div>
+                                    <div>
+                                        <label>Enter Client Name : </label>
+                                        <Field name='cName' placeholder='Enter Client name...' type='text' className={`inputField ${errors.cName && touched.cName
+                                            ? 'is-invalid'
+                                            : ''
+                                            }`} />
+                                        <ErrorMessage name='cName' coponent='div' className='errMsz' />
+                                    </div>
+                                    <div>
+                                        <label>Mention the technology: </label>
+                                        <Field as='select' name='technology'>
+                                            {
+                                                technologies.map((val, idx) => {
+                                                    return (
+                                                        <option key={idx} value={val}>{val}</option>
+                                                    )
+                                                })
+                                            }
+                                        </Field>
+                                        <ErrorMessage name='technology' coponent='div' className='errMsz' />
+                                    </div>
+                                    <div>
+                                        <label>Provide the Company Name : </label>
+                                        <Field type='text' name='companyName' placeholder='Provide company name...' />
+                                        <ErrorMessage name='companyName' component={'div'} className='errMsz' />
+                                    </div>
+                                    <div>
+                                        <label>Application Type:</label>
+                                        <Field type='text' name='appType' list='applicationTypes' placeholder='Application Type..'/>
+                                        <datalist id='applicationTypes'>
+                                            {
+                                                AppTypesDataList.map((app, idx) => {
+                                                    return (
+                                                        <option key={idx} value={app}>{app}</option>
+                                                    )
+                                                })
+                                            }
+                                        </datalist>
+                                        <ErrorMessage name='appType' component='div' />
+                                    </div>
+                                    <div>
+                                        <label>Upload Issue Image : </label>
+                                        <input type='file' onChange={(e)=>setFieldValue('images', e.target.files[0]) } />
+                                        <ErrorMessage name='images' component='div' className='errMsz' />
+                                    </div>
+                                    <div>
+                                        <label>Issue Title : </label>
+                                        <Field type='text' name='issueTitle' placeholder='Issue title...' />
+                                        <ErrorMessage name='issueTitle' component='div' className='errMsz' />
+                                    </div>
+                                    <div>
+                                        <label>Describe the issue :  </label>
+                                        <Field as='textarea' rows='5' cols={50} name='issue' placeholder='Describe issue here..' />
+                                        <ErrorMessage name='issue' component='div' className='errMsz' />
+                                    </div>
+                                    <div>
+                                        <label>Describe the Solution :  </label>
+                                        <Field as='textarea' rows='5' cols={50} name='solution' placeholder='What are the changes u made..' />
+                                        <ErrorMessage name='solution' component='div' className='errMsz' />
+                                    </div>
+                                    <div>
+                                        <button type='submit'>Add Data</button>
+                                    </div>
+                                </Form>
+                            )}
+
+                        </Formik>  
                         <div>
                             <h3>Status : {status}</h3>
                         </div>

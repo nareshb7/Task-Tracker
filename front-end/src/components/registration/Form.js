@@ -12,6 +12,7 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
     password: '',
     conPassword: '',
     gender: '',
+    profileImage:'',
     binaryData:'',
     isAdmin:false,
     isActive: true,
@@ -20,6 +21,7 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
   };
   const emailpattern =/^[a-z][a-z0-9]+@[a-z]+(?:[.][a-z]{2,})+$/   
   const mblPattern = /^[\d]{10}$/;
+  const psdPattern = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%&*<>]).{8,}$/
   const schema = {
     fName: Yup.string().required('First Name is Required'),
     lName: Yup.string().required('Last Name is required'),
@@ -28,13 +30,14 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
       .matches(mblPattern, 'Mobile Number not Valid')
       .required('Mobile Number required'),
     password: Yup.string()
+      .matches(psdPattern, 'Password must contain one upper, one lower, digit and character')
       .min(4, 'min 4 chars required')
       .required('password required'),
     conPassword: Yup.string()
       .oneOf([Yup.ref('password'), null], 'Password must match')
       .required('Password is required'),
     gender: Yup.string().required('Gender required'),
-    binaryData: Yup.mixed()
+    profileImage: Yup.mixed()
       .nullable()
       .test('FILE-TYPE', 'Upload Image files only', (value) =>
         ['image/jpeg', 'image/png'].includes(value.type)
@@ -59,11 +62,15 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
             return result
         }
   const handleSubmit =async (val, actions) => {
-    val.binaryData = await convertToBase64(val.binaryData)
+    val.binaryData = await convertToBase64(val.profileImage)
+    delete val.profileImage
     console.log(val, 'submitted', actions);
     submitFunc(val)
-    val.setSubmitting(isSubmitted)
+    // val.setSubmitting(isSubmitted)
   };
+  const handleValidate =(val)=> {
+    console.log(val, 'validate func')
+  }
   return (
     <div>
       Signup:
@@ -71,16 +78,17 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
         initialValues={formData || initialObj}
         validationSchema={Yup.object().shape(schema)}
         onSubmit={handleSubmit}
+        validate={handleValidate}
       >
         {({ errors, touched, setFieldValue, values }) => (
           <Form className="form">
             <div>
-                <Field type='text' name='fName' placeholder='Enter your first name' className={`inputField ${
+              <Field type='text' name='fName' placeholder='Enter your first name' className={`inputField ${
                         errors.fName && touched.fName
                           ? 'is-invalid'
                           : ''
                       }`}/>
-                <ErrorMessage name='fName' component='div' />
+                <ErrorMessage name='fName' component='div' className='errMsz'/>
             </div>
             <div>
                 <Field type='text' name='lName' placeholder='Enter your Last name' className={`inputField ${
@@ -88,23 +96,23 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
                           ? 'is-invalid'
                           : ''
                       }`}/>
-                <ErrorMessage name='lName' component='div' />
+                <ErrorMessage name='lName' component='div' className='errMsz' />
             </div>
             <div>
                 <Field type='text' name='email' disabled={component} placeholder='Enter your Email' className={`inputField ${
-                        errors.email && touched.email
+                        errors.email && touched.email || error?.email
                           ? 'is-invalid'
                           : ''
                       }`}/>
-                <ErrorMessage name='email' component='div' />
+                <ErrorMessage name='email' component='div' className='errMsz' />
             </div>
             <div>
                 <Field type='text' disabled={component} name='mobile' placeholder='Enter your Mobile number' className={`inputField ${
-                        errors.mobile && touched.mobile
+                        errors.mobile && touched.mobile || error?.mobile
                           ? 'is-invalid'
                           : ''
                       }`}/>
-                <ErrorMessage name='mobile' component='div' />
+                <ErrorMessage name='mobile' component='div' className='errMsz' />
             </div>
             <div>
                 <Field type='password' name='password' placeholder='Enter a new password' className={`inputField ${
@@ -112,7 +120,7 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
                           ? 'is-invalid'
                           : ''
                       }`}/>
-                <ErrorMessage name='password' component='div' />
+                <ErrorMessage name='password' component='div' className='errMsz' />
             </div>
             <div>
                 <Field type='password' name='conPassword' placeholder='Confirm Password' className={`inputField ${
@@ -120,7 +128,7 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
                           ? 'is-invalid'
                           : ''
                       }`}/>
-                <ErrorMessage name='conPassword' component='div' />
+                <ErrorMessage name='conPassword' component='div' className='errMsz' />
             </div>
             <div>
                 <Field as='select' name='gender' placeholder='Enter your first name' className={`inputField ${
@@ -133,15 +141,16 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
                     <option value='female'>Female</option>
                     <option value='notspecify'>Not specify</option>
                 </Field>
-                <ErrorMessage name='gender' component='div' />
+                <ErrorMessage name='gender' component='div' className='errMsz' />
             </div>
             <div>
-                <input id='file' onChange={(e)=> setFieldValue(`binaryData`,e.target.files[0])} type="file" className={`inputfile inputField ${
-                        errors.binaryData && touched.binaryData
+                <input id='file' onChange={(e)=> setFieldValue(`profileImage`,e.target.files[0])} type="file" className={`inputfile inputField ${
+                        errors.profileImage && touched.profileImage
                         ? 'is-invalid'
                         : ''
                     }`} />
-				<label htmlFor='file'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>{values.binaryData.name ? `${values.binaryData.name.slice(0,5)}`: 'Choose a file'} &hellip;</span></label>
+				        <label htmlFor='file'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>{values.profileImage?.name ? `${values.profileImage?.name.slice(0,5)}`: 'Choose a file'} &hellip;</span></label>
+                <ErrorMessage name='profileImage' component={'div'} className='errMsz' />
             </div>
             <div>
               <button type="submit">Submit</button>

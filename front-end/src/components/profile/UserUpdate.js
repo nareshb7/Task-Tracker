@@ -12,7 +12,7 @@ const UserUpdate = () => {
     const [data, setData] = useState(state.state)
     const [response,setResponse] = useState('')
 
-    const success =(res)=> {
+    const successFunc =(res)=> {
       setResponse('User Data Updated Sucessfully, Navigating to profile page')
       setCurrentUserVal(res)
       setTimeout(()=> {
@@ -21,8 +21,9 @@ const UserUpdate = () => {
     }
     const handleSubmit = (updatedData)=> {
       setResponse('Submitting....')
+      console.log(updatedData, '972=updateFunc')
       axios.post('api/adminupdateuser', {id :updatedData._id ,updateValue: updatedData, update: 'MULTIPLE'})
-      .then(res => success(res.data))
+      .then(res => successFunc(res.data))
       .catch(err => setResponse('Error Occured '))
     }
 
