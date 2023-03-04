@@ -36,7 +36,7 @@ const UserIssues = ({issuesList}) => {
                                     <td>{issue.dName}</td>
                                     <td>{issue.cName}</td>
                                     <td>{issue.technology}</td>
-                                    <td onClick={()=> gotoDesc(issue)}>{issue.issue}</td>
+                                    <td style={{cursor:'pointer'}} onClick={()=> gotoDesc(issue)}>{issue.issue}</td>
                                     <td>{new Date(issue.time).toLocaleString()}</td>
                                 </tr>
                             )

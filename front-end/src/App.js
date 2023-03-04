@@ -1,23 +1,27 @@
-import React, {createContext, useEffect, useState} from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import Nav from './components/Nav'
+import { Provider } from 'react-redux';
 import RoutesComp from './components/RoutesComp';
 import useAuth from './components/utils/Authentication';
+import { store } from './redux/store/Store';
 
 export const UserContext = createContext()
 
 function App() {
   const userDetails = useAuth()
   const [currentUserVal, setCurrentUserVal] = useState({})
-  const value ={currentUserVal, setCurrentUserVal}
-  useEffect(()=> {
+  const value = { currentUserVal, setCurrentUserVal }
+  useEffect(() => {
     console.log('context vall use....')
     setCurrentUserVal(userDetails)
-  },[userDetails])
+  }, [userDetails])
   return (
-    <UserContext.Provider value={value}>
-      <Nav />
-      <RoutesComp />
-    </UserContext.Provider>
+    <Provider store={store} >
+      <UserContext.Provider value={value}>
+        <Nav />
+        <RoutesComp />
+      </UserContext.Provider>
+    </Provider>
   );
 }
 
