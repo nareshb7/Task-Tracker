@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react'
-import axios from 'axios'
 import SignupForm from '../registration/Form'
 import { useLocation, useNavigate } from 'react-router-dom'
 import '../registration/Signup.css'
 import { UserContext } from '../../App'
+import { fetchCall } from '../utils/fetch/UseFetch'
 
 const UserUpdate = () => {
     const state = useLocation()
@@ -19,12 +19,16 @@ const UserUpdate = () => {
         navigate('/login')
       },2000)
     }
-    const handleSubmit = (updatedData)=> {
+    const handleSubmit =async (updatedData)=> {
       setResponse('Submitting....')
       console.log(updatedData, '972=updateFunc')
-      axios.post('api/adminupdateuser', {id :updatedData._id ,updateValue: updatedData, update: 'MULTIPLE'})
-      .then(res => successFunc(res.data))
-      .catch(err => setResponse('Error Occured '))
+      const apiResponse = await fetchCall('api/adminupdateuser', {id :updatedData._id ,updateValue: updatedData, update: 'MULTIPLE'} )
+      if(apiResponse._id) {
+        successFunc(apiResponse)
+      }else {
+        setResponse('Error Occured')
+        console.log('Error', apiResponse)
+      }
     }
 
   return (

@@ -1,13 +1,10 @@
 import React from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { fetchCall } from '../utils/fetch/UseFetch'
 
-export const uploadedIssues = (developerId) => {
-     const response =  axios.post('/api/uploadedIssues', { developerId })
-    .then(data => {
-        return data.data
-    })
-    .catch(err => console.log(err, 'err'))
+export const uploadedIssues =async (developerId) => {
+    const response = await fetchCall('api/uploadedIssues', {developerId})
     return response
 }
 const UserIssues = ({issuesList}) => {

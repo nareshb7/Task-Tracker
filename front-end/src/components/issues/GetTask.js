@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { UserContext } from '../../App'
 import Loader from '../utils/loader/Loader'
 import useRandomNum from '../utils/RandomNum'
 
 const GetTask = () => {
+    const stateIssues = useSelector(state => state.issues)
+    console.log(stateIssues, 'stateIssues')
     const navigate = useNavigate()
     const { currentUserVal } = useContext(UserContext)
     const [currentUser, setCurrentUser] = useState({})
@@ -16,41 +19,41 @@ const GetTask = () => {
         dName: [],
         cName: [],
         technology: [],
-        appType:[]
+        appType: []
     })
     const [applyFilters, setApplyFilters] = useState({
         dName: 'All',
         cName: 'All',
         technology: 'All',
-        appType:'All'
+        appType: 'All'
     })
     const sortList = () => {
         sortNames.dName = [...new Set(data.map(val => val.dName))]
         sortNames.cName = [...new Set(data.map(val => val.cName))]
         sortNames.technology = [...new Set(data.map(val => val.technology))]
-        sortNames.appType = [...new Set(data.map(val=> val.appType))]
+        sortNames.appType = [...new Set(data.map(val => val.appType))]
     }
     console.log(useRandomNum(), 'random get')
 
     const handleSort = (e) => {
         const { name, value } = e.target
         applyFilters[name] = value
-        let result =[]
-        if (name == 'appType'){
-            result = value == 'All' ? data : data.filter(val=> val.appType == value)
+        let result = []
+        if (name === 'appType') {
+            result = value === 'All' ? data : data.filter(val => val.appType === value)
             console.log(result, value)
-        }else {
+        } else {
             applyFilters.appType = 'All'
             result = data.filter(val => {
-                if ((applyFilters.dName == 'All' ? val.dName : val.dName == applyFilters.dName) &&
-                    (applyFilters.cName == 'All' ? val.cName : val.cName == applyFilters.cName) &&
-                    (applyFilters.technology == 'All' ? val.technology : val.technology == applyFilters.technology)
+                if ((applyFilters.dName === 'All' ? val.dName : val.dName === applyFilters.dName) &&
+                    (applyFilters.cName === 'All' ? val.cName : val.cName === applyFilters.cName) &&
+                    (applyFilters.technology === 'All' ? val.technology : val.technology === applyFilters.technology)
                 ) {
                     return val
                 }
             })
         }
-        
+
         setTableData(result)
     }
     const gotoDesc = (val) => {
@@ -60,16 +63,15 @@ const GetTask = () => {
         console.log('Edit button clicekd', id)
     }
     const deleteFunc = (id) => {
-        // axios.post('/api/deletesolution', { id })
-        //     .then(res => {
-        //         const newData = data.filter(val => val._id != res.data._id)
-        //         setData(newData)
-        //     })
-        //     .catch(err => console.log(err, 'Error Occured during delete'))
-
-        console.log(id, 'currentIssues', currentUserVal)
-
-        
+        let cnfrm = window.confirm('Do you want to delete this issue??')
+        if (cnfrm) {
+            axios.post('/api/deletesolution', { id })
+            .then(res => {
+                const newData = data.filter(val => val._id !== res.data._id)
+                setData(newData)
+            })
+            .catch(err => console.log(err, 'Error Occured during delete'))
+        }
     }
     useEffect(() => {
         axios.get('/api/getData')
@@ -140,7 +142,7 @@ const GetTask = () => {
                             </th>
                             <th>CompanyName</th>
                             <th>Application Type
-                            <select onClick={handleSort} defaultValue={applyFilters.appType} name='appType'>
+                                <select onClick={handleSort} defaultValue={applyFilters.appType} name='appType'>
                                     <option value='All'>All</option>
                                     {
                                         sortNames.appType.map((val, idx) => {
@@ -160,7 +162,7 @@ const GetTask = () => {
                     <tbody>
                         {
                             tableData.length ? <>{
-                                tableData.map((val, idx) => {
+                                tableData.reverse().map((val, idx) => {
                                     return (
                                         <tr key={idx}>
                                             <td>{idx + 1}</td>
@@ -171,17 +173,17 @@ const GetTask = () => {
                                             <td>{val.appType ? val.appType : 'No Data'}</td>
                                             <td onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                                             <td> {new Date(val?.time).toLocaleString()}</td>
-                                            <td><img src={val.binaryData[0] || val.binaryData } style={{ width: '100px', height: '100px' }} alt='img' /> </td>
+                                            <td><img src={val.binaryData[0] || val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' /> </td>
                                             <td>
                                                 <button onClick={() => editFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Edit</button>
-                                                <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Delete</button>
+                                                <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId} >Delete</button>
                                             </td>
                                         </tr>
                                     )
                                 })
                             }
                             </> : <tr>
-                                <td colSpan={11} > {tableData.length ==0 ? <h3 style={{textAlign:'center'}}>No result found</h3> : <Loader />} </td>
+                                <td colSpan={11} > {tableData.length === 0 ? <h3 style={{ textAlign: 'center' }}>No result found</h3> : <Loader />} </td>
                             </tr>
                         }
 
