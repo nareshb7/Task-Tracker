@@ -1,12 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react'
-import axios from 'axios'
 import { NavLink } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 import * as Yup from 'yup'
+import { useDispatch, useSelector } from 'react-redux'
 import { UserContext } from '../../App'
+import { addIssue } from '../../redux/actions/issues/Actions'
+import { fetchCall } from '../utils/fetch/UseFetch'
 
 const AddData = () => {
-    const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
+    const dispatch = useDispatch()
+    const issues = useSelector(state=> state.issues)
+    // console.log(issues, 'issueslist')
+    const { currentUserVal} = useContext(UserContext)
     const [isLoggedin, setIsLoggedIn] = useState([])
     const technologies = ['Select the technology', "React", "Angular", "JavaScript", "CSS"]
     const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics', 'OTT']
@@ -17,7 +22,6 @@ const AddData = () => {
         technology: '',
         issue: '',
         time: '',
-        mobile: '',
         binaryData: '',
         issueTitle: '',
         solutions: [],
@@ -36,11 +40,11 @@ const AddData = () => {
         solution: Yup.string().required('Mention what are the changes u made'),
         companyName: Yup.string().required('Enter the company name'),
         appType: Yup.string().required('Provide the application type'),
-        // images: Yup.mixed()
-        //     .nullable()
-        //     .test('FILE-TYPE', 'Upload Image files only', (value) => ['image/jpeg', 'image/png'].includes(value.type))
-        //     .test('FILE-SIZE', 'File is too large', (value) => value.size < 300000)
-        //     .required('File required'),
+        issueImages : Yup.array().of( Yup.mixed()
+            .nullable()
+            .test('FILE-Upload', 'File Required', (value)=> value.image)
+            .test('FILE-TYPE', 'Upload Image files only', (value) => ['image/jpeg', 'image/png'].includes(value.image?.type))
+            .test('FILE-SIZE', 'File is too large', (value) => value.image?.size < 300000))
     }
     useEffect(() => {
         if (currentUserVal) {
@@ -63,30 +67,28 @@ const AddData = () => {
             return result
         }
     }
-    const handleFunction =async (files)=> {
-        // let result = await convertToBase64(file[0].image)
-        // console.log(result, 'result')
-        return await Promise.all(files.map((file )=> convertToBase64(file.image)))
-    }
-    const handleSubmit =async (newData) => {
-        newData.time = new Date()
+    const handleSubmit =async (newData, {resetForm}) => {
+        newData.time = new Date().toLocaleString()
         newData.dName = isLoggedin.fName + " " + isLoggedin.lName
-        // newData.binaryData = await convertToBase64(newData.issueImages[0].image)
         newData.binaryData =await Promise.all(newData.issueImages.map((file )=> convertToBase64(file.image)))
         newData.developerId = isLoggedin._id
         newData.solutions = [{ solution: newData.solution }]
         console.log('newData submitted', newData, isLoggedin)
         delete newData.images
-        axios.post("/api/setData", { "data": newData })
-            .then(data => setStatus('Data Added Sucessfully'))
-            .catch(err => setStatus(`Error Occured : ${JSON.stringify(err)}`))
+        newData.issueImages =[{ image: '' }]
         setStatus('Submitting...')
+        let response =await fetchCall('api/setData', {data: newData})
+        dispatch(addIssue(newData))
+        setStatus(response)
+        if(response.includes('Sucessfully')){
+            resetForm({values:''})
+        }
     }
     const handleValidate = (val) => {
-        // console.log('validate', val)
+        //  console.log('validate', val)
     }
     
-    const handleClick = (values, setValues, field) => {
+    const addImageField = (values, setValues, field) => {
         const { issueImages } = values
         issueImages.push({ image: '' })
         setValues({ ...values, issueImages })
@@ -184,7 +186,7 @@ const AddData = () => {
                                             {({ field }) => (
                                                 <div>
                                                     <label>Upload Issue Image : </label>
-                                                    <button type='button' onClick={() => handleClick(values, setValues, field)}>Add Image</button>
+                                                    <button type='button' onClick={() => addImageField(values, setValues, field)}>Add Image</button>
                                                 </div>
                                             )}
 
@@ -196,7 +198,7 @@ const AddData = () => {
                                                         <div key={idx}>
                                                             <input id={`file${idx}`} onChange={(e) => setFieldValue(`issueImages.${idx}.image`, e.target.files[0])} type="file" className={`inputfile inputField ${true ? 'is-invalid' : ''}`} />
                                                             <label htmlFor={`file${idx}`} ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span>{values.issueImages[idx]?.image?.name ? `${values.issueImages[idx]?.image.name.slice(0, 5)}` : 'Choose a file'} &hellip;</span></label>
-                                                            <ErrorMessage name={`issueImages.${idx}.image`} component={'div'} className='errMsz' />
+                                                            <ErrorMessage name={`issueImages.${idx}`} component={'div'} className='errMsz' />
                                                         </div>
                                                     )
                                                 })

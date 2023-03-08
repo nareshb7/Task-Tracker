@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { setCookie } from '../utils/CookieComp'
 import UserIssues, { uploadedIssues } from '../issues/UserIssues'
+import { fetchCall } from '../utils/fetch/UseFetch'
 
 const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
   const navigate = useNavigate()
@@ -21,19 +21,23 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
   }, [currentUserVal])
   useEffect(() => {
     if (location.state?.status == 'Success') {
-      // It will trigger only when u verify the mail with otp
-      currentUserVal['reqforMailChange'] = true
-      const user = { id: currentUserVal._id, ...location.state.data }
-      setReqMailError('Request sending...')
-
-      axios.post('/api/mailupdatereq', { user })
-        .then(data => setReqMailError(data.data))
-        .catch(err => console.log(err, 'error'))
-
-      axios.post('api/adminupdateuser', { id: currentUserVal._id, updateValue: currentUserVal, update: 'MULTIPLE' })
-        .then(res => setCurrentUserVal(res.data))
-        .catch(err => console.log('Error Occured '))
+      // It will trigger only after verifying the mail with otp
+      async function updateMail() {
+        currentUserVal['reqforMailChange'] = true
+        const user = { id: currentUserVal._id, ...location.state.data }
+        setReqMailError('Request sending...')
+        const mResp = await fetchCall('api/mailUpdatereq', { user })
+        setReqMailError(mResp)
+        const aResp = await fetchCall('api/adminupdateuser', { id: currentUserVal._id, updateValue: currentUserVal, update: 'MULTIPLE' })
+        if (aResp._id) {
+          setCurrentUserVal(aResp)
+        } else {
+          console.log('aResp Error :', aResp)
+        }
+      }
+      updateMail()
     }
+
   }, [location.state])
 
   const logoutFunc = () => {
@@ -51,12 +55,16 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
       color: '#888'
     }
   }
-  const reqAdminAccess = () => {
+  const reqAdminAccess = async () => {
     let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
     if (cnfrm) {
-      axios.post('/api/adminupdateuser', { id: currentUser._id, updateKey: 'reqforAdmin', updateValue: true, update: 'single' })
-        .then(res => setCurrentUserVal(res.data))
-        .catch(err => console.log(err, 'err'))
+      const apiPayload = { id: currentUser._id, updateKey: 'reqforAdmin', updateValue: true, update: 'single' }
+      let resp = await fetchCall('/api/adminupdateuser', apiPayload)
+      if (resp._id) {
+        setCurrentUserVal(resp)
+      } else {
+        console.log('AdminAccess Error : ', resp)
+      }
     }
   }
   const updateData = (data) => {
@@ -98,11 +106,11 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
       alert('If data is not valid Ur req will be rejected')
     }
   }
-  const showMyIssues =async ()=> {
+  const showMyIssues = async () => {
     setShowIssues(!showIssues)
-    let result =await uploadedIssues(currentUserVal._id)
+    let result = await uploadedIssues(currentUserVal._id)
     setIssuesList(result)
-    
+
   }
   return (
     <div>
@@ -119,7 +127,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
               <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
             </div>
             <div>
-              <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</button></p>
+              <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <button  onClick={reqAdminAccess}>Admin access</button></p>
               <div>
                 <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
                 <button onClick={() => updateData(currentUser)}>Update Details</button>
@@ -140,16 +148,16 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
               }
               <div style={{ height: '30px' }}>{reqMailError}</div>
               <div><button onClick={showMyIssues}>My Issues</button> </div>
-              
+
             </div>
-            
+
           </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
       {
-                showIssues && issuesList.length && <div>
-                  <UserIssues issuesList={issuesList}/>
-                </div>
-            }
+        showIssues && issuesList.length && <div>
+          <UserIssues issuesList={issuesList} />
+        </div>
+      }
     </div>
   )
 }

@@ -1,7 +1,7 @@
-import axios from 'axios'
 import React, {useState, useContext} from 'react'
 import { useLocation } from 'react-router-dom'
 import { UserContext } from '../../App'
+import { fetchCall } from '../utils/fetch/UseFetch'
 
 const Description = () => {
   const {currentUserVal} = useContext(UserContext)
@@ -12,19 +12,24 @@ const Description = () => {
     if (!data){
         return ''
     }
-    const addAnswer =()=> {
+    const addAnswer =async ()=> {
       const d = new Date()
       const devName = currentUserVal.fName +" "+ currentUserVal.lName
-      console.log(devName)
-      
-      axios.post('/api/addSolution', {newData : [...data.solutions, {solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id})
-      .then(res => {
-        setData(res.data)
-        setNewSolution('')
-      })
-      .catch(err => console.log(err, 'err'))
+      const apiPayload ={newData : [...data.solutions, {solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id}
+      let response = await fetchCall('api/addSolution',apiPayload  )
+      if (response._id) {
+          setData(response)
+          setNewSolution('') 
+      }else {
+        console.log('error', response)
+      }
+      // axios.post('/api/addSolution', {newData : [...data.solutions, {solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id})
+      // .then(res => {
+      //   setData(res.data)
+      //   setNewSolution('')
+      // })
+      // .catch(err => console.log(err, 'err'))
     }
-    console.log(data, 'data')
   return (
     <div style={{display:'flex', justifyContent:'space-around'}}>
       <div>

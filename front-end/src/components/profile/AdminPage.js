@@ -104,7 +104,6 @@ const AdminPage = () => {
     }
     const handleSearch = (e) => {
         setSearchVal(e.target.value)
-        // let searchData = JSON.parse(JSON.stringify(users))
         const searchData = users.filter(val => val.fName.toLowerCase().includes(e.target.value.toLowerCase()) || val.lName.toLowerCase().includes(e.target.value.toLowerCase()))
         setTableData(searchData)
     }
@@ -181,9 +180,9 @@ const AdminPage = () => {
     }
     const getMailReqIDs = ()=> {
         if (!mailChangeReqIDs[0]?.fName) {
-            let final = users.filter(val => val.reqforMailChange).map(val => {
+            let final = users.filter(valu => valu.reqforMailChange && !valu.isAdmin).map(val => {
                 let obj = mailChangeReqIDs.find(ids => ids.id == val._id)
-                console.log(obj, 'obj')
+                console.log(obj, 'obj', val)
                 val['updateData'] = obj
                 return val
             })
