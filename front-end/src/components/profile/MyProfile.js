@@ -19,9 +19,12 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
   useEffect(() => {
     setCurrentUser(currentUserVal)
   }, [currentUserVal])
+  console.log(location.state, 'location out')
+
   useEffect(() => {
-    if (location.state?.status == 'Success') {
+    if (location.state?.status === 'Success') {
       // It will trigger only after verifying the mail with otp
+      console.log(location.state, 'location')
       async function updateMail() {
         currentUserVal['reqforMailChange'] = true
         const user = { id: currentUserVal._id, ...location.state.data }
@@ -34,6 +37,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
         } else {
           console.log('aResp Error :', aResp)
         }
+        location.state ={}
       }
       updateMail()
     }
@@ -127,7 +131,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
               <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
             </div>
             <div>
-              <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <button  onClick={reqAdminAccess}>Admin access</button></p>
+              <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</button></p>
               <div>
                 <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
                 <button onClick={() => updateData(currentUser)}>Update Details</button>

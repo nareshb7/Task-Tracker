@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import { useNavigate, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { setCookie } from '../utils/CookieComp'
 import { UserContext } from '../../App'
 import MyProfile from '../profile/MyProfile'
 
 const Login = () => {
     const {currentUserVal, setCurrentUserVal} = useContext(UserContext)
-    const [isLoggedIn, setIsLoggedIn] = useState({})
-    const navigate = useNavigate()
     const obj = {
         mobile: '',
         password: ''

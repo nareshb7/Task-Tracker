@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 const MailVerification = () => {
     const location = useLocation()
     const params = useParams()
-console.log(location, 'location',params)
     const navigate = useNavigate()
     const [creds, setCreds] = useState(location.state || {})
     const [result, setResult] = useState({})
