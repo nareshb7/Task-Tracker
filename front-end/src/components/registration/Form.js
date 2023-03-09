@@ -25,7 +25,7 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
   const schema = {
     fName: Yup.string().required('First Name is Required'),
     lName: Yup.string().required('Last Name is required'),
-    email: Yup.string().matches(emailpattern, 'Enter valid email'),
+    email: Yup.string().matches(emailpattern, 'Enter valid email').required('Email Required'),
     mobile: Yup.string()
       .matches(mblPattern, 'Mobile Number not Valid')
       .required('Mobile Number required'),
@@ -35,7 +35,7 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
       .required('password required'),
     conPassword: Yup.string()
       .oneOf([Yup.ref('password'), null], 'Password must match')
-      .required('Password is required'),
+      .required('Confirm Password is required'),
     gender: Yup.string().required('Gender required'),
     profileImage: Yup.mixed()
       .nullable()

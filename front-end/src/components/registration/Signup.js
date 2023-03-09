@@ -11,7 +11,7 @@ const Signup = () => {
     const [errors, setErrors] = useState({})
     const [isSubmitted, setIsSubmitted] = useState(false)
     useEffect(()=> {
-        if (location.state?.status== 'Success'){
+        if (location.state?.status=== 'Success'){
             addUser(location.state.data)
             setResponse('Creating ur account...')
             console.log(location.state.data, 'returned data use')

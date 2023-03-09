@@ -38,7 +38,10 @@ const AdminPage = () => {
             })
             .catch(err => console.log(err, 'err'))
         axios.get('/api/getmailreqIDs')
-        .then(data => setMailChangeReqIDs(data.data))
+        .then(data => {
+            setMailChangeReqIDs(data.data)
+            console.log(data.data, 'mailreq gggdata')
+        })
         .catch(err => console.log(err, 'error'))
     }, [])
     useEffect(() => {
@@ -134,26 +137,26 @@ const AdminPage = () => {
         let cnfrm = window.confirm(`Do you want to ${type?"accept":"reject"} the request ? `)
         if (cnfrm) {
             if (type){
-                
                 axios.post('/api/mailupdatereq', {user:{ id:id, updateKey:'DELETE'}})
                 .then(res => {
                     console.log(res, 'res')
                     let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
                     setMailChangeReqIDs(newData)
                 })
-                .catch(err => console.log(err, 'errr'))
+                .catch(err => console.log(err, 'Mail Update Err'))
                 const {updateKey, updateValue} = mailUpdateData.updateData
                 
                 mailUpdateData.reqforMailChange = false
                 mailUpdateData[updateKey] = mailUpdateData.updateData.updateValue
-                delete mailUpdateData.updateData
-                axios.post('api/adminupdateuser', {id  ,updateValue: mailUpdateData, update: 'MULTIPLE'})
+                let apiPayload = JSON.parse(JSON.stringify(mailUpdateData))
+                delete apiPayload.updateData
+                axios.post('api/adminupdateuser', {id  ,updateValue: apiPayload, update: 'MULTIPLE'})
                 .then(res => {
                     let newData = mailChangeReqIDs.filter(val => val._id != res.data._id)
                     console.log(res, 'res', newData)
                     setMailChangeReqIDs(newData)
                 })
-                .catch(err => console.log(err, 'errrr user updating'))
+                .catch(err => console.log(err, 'User Update Err'))
             } 
             else {
                 axios.post('/api/mailupdatereq', {user:{ id:id, updateKey:'DELETE'}})
@@ -162,7 +165,7 @@ const AdminPage = () => {
                     let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
                     setMailChangeReqIDs(newData)
                 })
-                .catch(err => console.log(err, 'errr'))
+                .catch(err => console.log(err, 'else Mail Update Err'))
 
                 axios.post('/api/adminupdateuser', { id, updateKey: 'reqforMailChange', updateValue: type, update: 'single' })
                 .then(res => console.log(res.data, 'success'))
