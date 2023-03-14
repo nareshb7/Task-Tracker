@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import axios from 'axios'
+// import axios from 'axios'
 import { NavLink } from 'react-router-dom'
 import { setCookie } from '../utils/CookieComp'
 import { UserContext } from '../../App'
@@ -21,21 +21,21 @@ const Login = () => {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        axios.post('/api/loginData', data)
-            .then(res => {
-                if (res.data){
-                    if (res.data.password == data.password ) {
-                        setCurrentUser(res.data)
-                    setData(obj)
-                    } else {
-                        setResponse('Password not matching..')
-                    }
+        // axios.post('/api/loginData', data)
+        //     .then(res => {
+        //         if (res.data){
+        //             if (res.data.password == data.password ) {
+        //                 setCurrentUser(res.data)
+        //             setData(obj)
+        //             } else {
+        //                 setResponse('Password not matching..')
+        //             }
                     
-                } else {
-                    setResponse('No user found..')
-                }
-            })
-            .catch(err => console.log(err, 'login err'))
+        //         } else {
+        //             setResponse('No user found..')
+        //         }
+        //     })
+        //     .catch(err => console.log(err, 'login err'))
         setResponse('Loading......')
     }
     const loginSucessFunc = async () => {
