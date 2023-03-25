@@ -243,7 +243,7 @@ const AdminPage = () => {
                                             <td>{user.fName} {user.lName}</td>
                                             <td>{user.email}</td>
                                             <td>{user.mobile}</td>
-                                            <td style={{ width: '100px', height: '100px' }}>
+                                            <td style={{ width: '100px', height: '100px', cursor:'pointer' }}>
                                                 <img onClick={()=> showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
                                             </td>
                                             <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>

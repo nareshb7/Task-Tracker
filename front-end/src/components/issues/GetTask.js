@@ -5,13 +5,15 @@ import { useSelector } from 'react-redux'
 import { UserContext } from '../../App'
 import Loader from '../utils/loader/Loader'
 import useRandomNum from '../utils/RandomNum'
+import GreenDot from '../utils/GreenDot'
+import RedDot from '../utils/RedDot'
 
 const GetTask = () => {
     const stateIssues = useSelector(state => state.issues)
-    console.log(stateIssues, 'stateIssues')
     const navigate = useNavigate()
     const { currentUserVal } = useContext(UserContext)
     const [currentUser, setCurrentUser] = useState({})
+    const [searchVal, setSearchVal] = useState('')
     const [data, setData] = useState([])
     const [tableData, setTableData] = useState([])
     const [loading, setLoading] = useState(true)
@@ -28,13 +30,11 @@ const GetTask = () => {
         appType: 'All'
     })
     const sortList = () => {
-        sortNames.dName = [...new Set(data.map(val => val.dName))]
-        sortNames.cName = [...new Set(data.map(val => val.cName))]
-        sortNames.technology = [...new Set(data.map(val => val.technology))]
-        sortNames.appType = [...new Set(data.map(val => val.appType))]
+        sortNames.dName = [...new Set(data.map(val => val.dName))].sort()
+        sortNames.cName = [...new Set(data.map(val => val.cName))].sort()
+        sortNames.technology = [...new Set(data.map(val => val.technology))].sort()
+        sortNames.appType = [...new Set(data.map(val => val.appType))].sort()
     }
-    console.log(useRandomNum(), 'random get')
-
     const handleSort = (e) => {
         const { name, value } = e.target
         applyFilters[name] = value
@@ -66,16 +66,16 @@ const GetTask = () => {
         let cnfrm = window.confirm('Do you want to delete this issue??')
         if (cnfrm) {
             axios.post('/api/deletesolution', { id })
-            .then(res => {
-                const newData = data.filter(val => val._id !== res.data._id)
-                setData(newData)
-            })
-            .catch(err => console.log(err, 'Error Occured during delete'))
+                .then(res => {
+                    const newData = data.filter(val => val._id !== res.data._id)
+                    setData(newData)
+                })
+                .catch(err => console.log(err, 'Error Occured during delete'))
         }
     }
     useEffect(() => {
         axios.get('/api/getData')
-            .then(data => setData(data.data))
+            .then(data => setData(data.data.reverse()))
             .catch(err => console.log(err, 'err'))
     }, [])
 
@@ -95,9 +95,25 @@ const GetTask = () => {
             setLoading(false)
         }
     }, [currentUserVal])
+    const handleSearch = (e)=> {
+        const {value} = e.target
+        setSearchVal(value)
+        const searchData = data.filter(val => {
+            if(val.cName.toLowerCase().includes(value.toLowerCase()) || val.dName.toLowerCase().includes(value.toLowerCase()) || val.technology.toLowerCase().includes(value.toLowerCase()) ){
+                return val
+            }
+        })
+        setTableData(searchData)
+    }
 
     return (<>
+    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
         <h1>Get Task:</h1>
+        <div>
+            <input style={{padding:'10px', margin:'10px', borderRadius:'8px'}} type='search' value={searchVal} onChange={handleSearch} placeholder='Search Here' />
+            <button onClick={handleSearch}>Search</button>
+        </div>
+        </div>
         {
             loading ? <h3>Loading....</h3> : <div>
                 <table border='1' cellPadding={10}>
@@ -154,6 +170,7 @@ const GetTask = () => {
                                 </select>
                             </th>
                             <th>Issue</th>
+                            <th>Issue status</th>
                             <th>Date</th>
                             <th>Image</th>
                             <th>Edit / Delete</th>
@@ -162,7 +179,7 @@ const GetTask = () => {
                     <tbody>
                         {
                             tableData.length ? <>{
-                                tableData.reverse().map((val, idx) => {
+                                tableData.map((val, idx) => {
                                     return (
                                         <tr key={idx}>
                                             <td>{idx + 1}</td>
@@ -171,9 +188,13 @@ const GetTask = () => {
                                             <td> {val.technology} </td>
                                             <td>{val.companyName ? val.companyName : 'No Data'}</td>
                                             <td>{val.appType ? val.appType : 'No Data'}</td>
-                                            <td onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
+                                            <td style={{ cursor: 'pointer' }} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
+                                            <td>{!val.issueStatus ? 'Null' : val.issueStatus === 'Resolved' ? 
+                                                <span><GreenDot title='Resolved' />{val.issueStatus} </span> : 
+                                                <span><RedDot title='Pending' />{val.issueStatus} </span>} 
+                                            </td>
                                             <td> {new Date(val?.time).toLocaleString()}</td>
-                                            <td><img src={val.binaryData[0] || val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' /> </td>
+                                            <td><img src={val.binaryData[0] || val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' />{val.binaryData.length > 1 && 'more....' } </td>
                                             <td>
                                                 <button onClick={() => editFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Edit</button>
                                                 <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId} >Delete</button>
