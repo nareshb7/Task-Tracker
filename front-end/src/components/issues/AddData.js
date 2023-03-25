@@ -30,7 +30,8 @@ const AddData = () => {
         appType: '',
         developerId: '',
         images: "",
-        issueImages: [{ image: '' }]
+        issueImages: [{ image: '' }],
+        issueStatus:'',
     }
     const schema = {
         cName: Yup.string().required('String required'),
@@ -44,7 +45,8 @@ const AddData = () => {
             .nullable()
             .test('FILE-Upload', 'File Required', (value)=> value.image)
             .test('FILE-TYPE', 'Upload Image files only', (value) => ['image/jpeg', 'image/png'].includes(value.image?.type))
-            .test('FILE-SIZE', 'File is too large', (value) => value.image?.size < 300000))
+            .test('FILE-SIZE', 'File is too large (max : 300 KB) ', (value) => value.image?.size < 300000)),
+        issueStatus:Yup.string().required('Select the issue status')
     }
     useEffect(() => {
         if (currentUserVal) {
@@ -94,7 +96,7 @@ const AddData = () => {
         setValues({ ...values, issueImages })
     }
     return (
-        <> {
+        <div className='addIssueForm signupDiv' > {
             Array.isArray(isLoggedin) ? "Loading...." : <>
                 {
                     isLoggedin.hasOwnProperty('fName') ? <div>
@@ -105,7 +107,7 @@ const AddData = () => {
                             validate={handleValidate}
                         >
                             {({ values, errors, setFieldValue, touched, setValues }) => (
-                                <Form className='addIssueForm signupDiv'>
+                                <Form >
                                     <div>
                                         <div>
                                             <label>Enter Developer Name : </label>
@@ -169,17 +171,6 @@ const AddData = () => {
                                         </datalist>
                                         <ErrorMessage name='appType' component='div' className='errMsz' />
                                     </div>
-                                    {/* <div>
-                                        <div>
-                                            <label>Upload Issue Image : </label>
-                                        </div>
-                                        <input id='file' onChange={(e) => setFieldValue(`images`, e.target.files[0])} type="file" className={`inputfile inputField ${errors.images && touched.images
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} />
-                                        <label htmlFor='file'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span>{values.images?.name ? `${values.images?.name.slice(0, 5)}` : 'Choose a file'} &hellip;</span></label>
-                                        <ErrorMessage name='images' component={'div'} className='errMsz' />
-                                    </div> */}
                                     <div className='issueImage'>
                                         <Field>
 
@@ -236,6 +227,17 @@ const AddData = () => {
                                         <ErrorMessage name='solution' component='div' className='errMsz' />
                                     </div>
                                     <div>
+                                    <Field as='select' name='issueStatus' className={`inputField ${errors.issueStatus && touched.issueStatus
+                                            ? 'is-invalid'
+                                            : ''
+                                            }`} >
+                                            <option value=''>Select the status</option>
+                                            <option value='Pending'>Pending</option>
+                                            <option value='Resolved'>Resolved</option>
+                                        </Field>
+                                        <ErrorMessage name='issueStatus' component='div' className='errMsz' />
+                                    </div>
+                                    <div>
                                         <button type='submit'>Add Data</button>
                                     </div>
                                 </Form>
@@ -252,9 +254,7 @@ const AddData = () => {
                 }
             </>
         }
-
-
-        </>
+        </div>
     )
 }
 

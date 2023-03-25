@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import RoutesComp from './components/RoutesComp';
 import useAuth from './components/utils/Authentication';
 import { store } from './redux/store/Store';
+import Footer from './components/Footer';
 
 export const UserContext = createContext()
 
@@ -20,6 +21,7 @@ function App() {
       <UserContext.Provider value={value}>
         <Nav />
         <RoutesComp />
+        <Footer/>
       </UserContext.Provider>
     </Provider>
   );

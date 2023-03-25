@@ -2,6 +2,8 @@ import React, {useState, useContext} from 'react'
 import { useLocation } from 'react-router-dom'
 import { UserContext } from '../../App'
 import { fetchCall } from '../utils/fetch/UseFetch'
+import GreenDot from '../utils/GreenDot'
+import RedDot from '../utils/RedDot'
 
 const Description = () => {
   const {currentUserVal} = useContext(UserContext)
@@ -36,7 +38,7 @@ const Description = () => {
         <h2>Client Name : <span>{data.cName}</span></h2>
         <h2>Technology : <span>{data.technology}</span></h2>
         <h2>Posted on : <span>{new Date(data.time).toLocaleString()}</span></h2>
-        <h2>Issue : <span>{data.issueTitle}</span></h2>
+        <h2>Issue : <span>{data.issueTitle}</span> {data.issueStatus === 'Resolved' ? <GreenDot/> : <RedDot/> } </h2>
         <h2>Description: <span>{data.issue}</span></h2>
         <h2>Solutions : </h2>
         {
