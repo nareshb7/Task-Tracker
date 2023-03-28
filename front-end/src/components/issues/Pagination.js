@@ -9,7 +9,7 @@ const Pagination = (props) => {
     const lastPage = parseInt(data.length / pageSize);
     useEffect(() => {
         setCurreentData(data.slice(currentPage * pageSize, currentPage * pageSize + pageSize))
-    }, [currentPage, pageSize])
+    }, [currentPage, pageSize, data])
     const showDataFunc = (page, operator) => {
         switch (operator) {
             case '-':
@@ -64,13 +64,13 @@ const Pagination = (props) => {
                 </div>
             </td>
             <td colSpan={4}>
-                <button onClick={() => showDataFunc(currentPage, '-')}> Back </button>
+                <button disabled={currentPage === 0} onClick={() => showDataFunc(currentPage, '-')}> Back </button>
             
                 <span> {currentPage + 1} </span>
            
                 <span> of Page : {lastPage + 1} </span>
             
-                <button onClick={() => showDataFunc(currentPage, '+')}> Next </button>
+                <button disabled={currentPage === lastPage} onClick={() => showDataFunc(currentPage, '+')}> Next </button>
             </td>
             
         </tr>

@@ -35,6 +35,7 @@ const GetTask = () => {
         sortNames.appType = [...new Set(data.map(val => val.appType))].sort()
     }
     const handleSort = (e) => {
+        setSearchVal('')
         const { name, value } = e.target
         applyFilters[name] = value
         let result = []
@@ -97,14 +98,15 @@ const GetTask = () => {
     const handleSearch = (e)=> {
         const {value} = e.target
         setSearchVal(value)
-        const searchData = data.filter(val => {
+        let mockData = value ? tableData : data
+        const searchData = mockData.filter(val => {
             if(val.cName.toLowerCase().includes(value.toLowerCase()) || val.dName.toLowerCase().includes(value.toLowerCase()) || val.technology.toLowerCase().includes(value.toLowerCase()) ){
                 return val
             }
         })
         setTableData(searchData)
     }
-
+    console.log(tableData, 'tableDataaaa')
     return (<>
     <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
         <h1>Get Task:</h1>

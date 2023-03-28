@@ -13,6 +13,7 @@ const Description = () => {
   const [addSolutionShow, setAddSolutionShow] = useState(false)
   useEffect(() => {
     const getIssue = async () => {
+      console.log(data, 'desc use')
       let result = await fetchCall('api/getParticularSolution', { id: data._id })
       if (result.solutions) {
         setData(result)
@@ -20,7 +21,7 @@ const Description = () => {
       }
     }
     getIssue()
-  }, [data])
+  }, [newSolution])
   if (!data) {
     return ''
   }
