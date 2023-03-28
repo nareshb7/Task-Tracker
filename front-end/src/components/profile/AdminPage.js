@@ -62,7 +62,7 @@ const AdminPage = () => {
                     console.log(data, 'data deleted')
                     let newData = users.filter(user => user._id != data.data._id)
                     setUsers(newData)
-                    setAlert(data.fName+data.lName , 'Deleted')
+                    setAlert(data.data.fName+" "+data.data.lName , 'Deleted')
                 })
                 .catch(err => console.log(err, 'err'))
         }
@@ -275,7 +275,11 @@ const AdminPage = () => {
                             }
                         </div></>) : <h3>Data Loading.....</h3>
                 }
-            </div> : <h1>You are not a authorised person to access this page</h1>
+            </div> : <div style={{textAlign:'center'}}>
+                <div>
+                    <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQc8odhMTP7bNGEGX4tiBh8NXaDu6CcycWlg&usqp=CAU' alt='img'/>
+                </div>
+                <h1>Sorry, You are not an authorised person to access this page :)</h1></div>
         }
         </>
     )

@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux'
 import { UserContext } from '../../App'
 import Loader from '../utils/loader/Loader'
 import useRandomNum from '../utils/RandomNum'
-import GreenDot from '../utils/GreenDot'
-import RedDot from '../utils/RedDot'
+import Pagination from './Pagination'
 
 const GetTask = () => {
     const stateIssues = useSelector(state => state.issues)
@@ -111,7 +110,6 @@ const GetTask = () => {
         <h1>Get Task:</h1>
         <div>
             <input style={{padding:'10px', margin:'10px', borderRadius:'8px'}} type='search' value={searchVal} onChange={handleSearch} placeholder='Search Here' />
-            <button onClick={handleSearch}>Search</button>
         </div>
         </div>
         {
@@ -169,16 +167,17 @@ const GetTask = () => {
                                     }
                                 </select>
                             </th>
-                            <th>Issue</th>
+                            <th>Issue ( click to know more)</th>
                             <th>Issue status</th>
                             <th>Date</th>
                             <th>Image</th>
                             <th>Edit / Delete</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    {/* <tbody> */}
                         {
-                            tableData.length ? <>{
+                            tableData.length ? <>
+                            {/* {
                                 tableData.map((val, idx) => {
                                     return (
                                         <tr key={idx}>
@@ -188,7 +187,7 @@ const GetTask = () => {
                                             <td> {val.technology} </td>
                                             <td>{val.companyName ? val.companyName : 'No Data'}</td>
                                             <td>{val.appType ? val.appType : 'No Data'}</td>
-                                            <td style={{ cursor: 'pointer' }} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
+                                            <td style={{ cursor: 'pointer' }} title={'Click here to get full info.'} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                                             <td>{!val.issueStatus ? 'Null' : val.issueStatus === 'Resolved' ? 
                                                 <span><GreenDot title='Resolved' />{val.issueStatus} </span> : 
                                                 <span><RedDot title='Pending' />{val.issueStatus} </span>} 
@@ -202,13 +201,14 @@ const GetTask = () => {
                                         </tr>
                                     )
                                 })
-                            }
+                            } */}
+                            <Pagination currentUser={currentUser} data={tableData} gotoDesc={gotoDesc} editFunc={editFunc} deleteFunc={deleteFunc} />
                             </> : <tr>
                                 <td colSpan={11} > {tableData.length === 0 ? <h3 style={{ textAlign: 'center' }}>No result found</h3> : <Loader />} </td>
                             </tr>
                         }
 
-                    </tbody>
+                    {/* </tbody> */}
                 </table>
             </div>
         }
