@@ -4,7 +4,7 @@ import { setCookie } from '../utils/CookieComp'
 import UserIssues, { uploadedIssues } from '../issues/UserIssues'
 import { fetchCall } from '../utils/fetch/UseFetch'
 
-const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
+const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [currentUser, setCurrentUser] = useState({})
@@ -48,6 +48,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
     setCurrentUser({})
     setCurrentUserVal({})
     setCookie("63dab3b51d791ebc7821db51", 2)
+    setResponse('Please Login')
   }
   const styles = {
     div: {
@@ -133,7 +134,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
             <div>
               <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</button></p>
               <div>
-                <button onClick={logoutFunc} style={{ padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
+                <button onClick={logoutFunc} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
                 <button onClick={() => updateData(currentUser)}>Update Details</button>
               </div>
               <div>
@@ -158,9 +159,9 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal }) => {
           </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
       {
-        showIssues && issuesList.length && <div>
+        showIssues && issuesList &&  <div>
           <UserIssues issuesList={issuesList} />
-        </div>
+        </div> 
       }
     </div>
   )

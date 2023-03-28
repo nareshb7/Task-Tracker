@@ -8,10 +8,9 @@ import MyProfile from '../profile/MyProfile'
 const Login = () => {
     const {currentUserVal, setCurrentUserVal} = useContext(UserContext)
     const obj = {
-        mobile: '',
+        value: '',
         password: ''
     }
-    console.log('isLoggedin', currentUserVal)
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
@@ -39,9 +38,6 @@ const Login = () => {
         setResponse('Loading......')
     }
     const loginSucessFunc = async () => {
-        // axios.post('/api/currentuserid', { id: currentUser._id })
-        //     .then(data => setResponse(data.data))
-        //     .catch(err => setResponse(err.message))
         setCurrentUserVal(currentUser)
         setResponse('Login Sucessfully')
         setCookie(currentUser._id, 2)
@@ -62,8 +58,8 @@ const Login = () => {
                     <>
                         <form onSubmit={handleSubmit}>
                             <div>
-                                <label>Enter your mobile: </label>
-                                <input type='text' name='mobile' value={data.mobile} onChange={handleChange} />
+                                <label>Enter your Email / Mobile: </label>
+                                <input type='text' name='value' value={data.value} onChange={handleChange} />
                             </div>
                             <div>
                                 <label>Enter your password</label>
@@ -78,7 +74,7 @@ const Login = () => {
                             <h3> Status: {response} </h3>
                         </div>
                     </>
-                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} />
+                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse}/>
             }
         </div>
     )

@@ -89,8 +89,12 @@ module.exports.signUpData = async (req, res) => {
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req, res) => {
-    const { mobile } = req.body
-    const result = await signUpModel.findOne({ "mobile": mobile })
+    const { value } = req.body
+    let key = "email"
+    if (value.match(/[\d]{10}/)){
+        key = "mobile"
+    }
+    const result = await signUpModel.findOne({[key]: value })
     res.send(result)
 }
 
@@ -123,12 +127,20 @@ module.exports.uploadedIssues = async (req, res) => {
     const result = await TaskModel.find({ developerId })
     res.send(result)
 }
+
+module.exports.getParticularSolution = async (req,res)=> {
+    const {id} = req.body
+    const result = await TaskModel.findOne({_id: id })
+    res.send(result)
+}
+
+
 module.exports.mailVerification = async (req, res) => {
     const { creds } = req.body
     const random = Math.random().toString(36).slice(2, 10)
     const d = new Date().toLocaleString()
     options.to = creds.email || creds.updateValue
-    options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://localhost:3000/signup sent time : ${d}`
+    options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://192.168.10.28:3030/verifymail/signup sent time : ${d}`
     transporter.sendMail(options, (err, info) => {
         if (err) {
             res.send(err)
