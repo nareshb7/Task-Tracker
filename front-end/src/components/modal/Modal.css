@@ -47,6 +47,7 @@ body.active-modal {
     border-radius: 8px;
     display: flex;
     justify-content: space-around;
+    margin:5px
 }
 .li-style h3 {
     margin: 0;

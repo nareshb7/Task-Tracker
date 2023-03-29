@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { setCookie } from '../cookieset/CookieComp'
+import { NavLink } from 'react-router-dom'
+import { setCookie } from '../utils/CookieComp'
 import { UserContext } from '../../App'
 import MyProfile from '../profile/MyProfile'
 
 const Login = () => {
     const {currentUserVal, setCurrentUserVal} = useContext(UserContext)
-    const [isLoggedIn, setIsLoggedIn] = useState({})
-    const navigate = useNavigate()
     const obj = {
-        mobile: '',
+        value: '',
         password: ''
     }
-    console.log('isLoggedin', currentUserVal)
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
@@ -41,9 +38,6 @@ const Login = () => {
         setResponse('Loading......')
     }
     const loginSucessFunc = async () => {
-        // axios.post('/api/currentuserid', { id: currentUser._id })
-        //     .then(data => setResponse(data.data))
-        //     .catch(err => setResponse(err.message))
         setCurrentUserVal(currentUser)
         setResponse('Login Sucessfully')
         setCookie(currentUser._id, 2)
@@ -57,12 +51,6 @@ const Login = () => {
             }
         } 
     }, [currentUser])
-    // useEffect(()=> {
-    //     if(Object.keys(currentUserVal).length > 2) {
-    //         navigate('/profile')
-            
-    //     }
-    // }, [currentUserVal])
     return (
         <div>
             {
@@ -70,8 +58,8 @@ const Login = () => {
                     <>
                         <form onSubmit={handleSubmit}>
                             <div>
-                                <label>Enter your mobile: </label>
-                                <input type='text' name='mobile' value={data.mobile} onChange={handleChange} />
+                                <label>Enter your Email / Mobile: </label>
+                                <input type='text' name='value' value={data.value} onChange={handleChange} />
                             </div>
                             <div>
                                 <label>Enter your password</label>
@@ -82,13 +70,11 @@ const Login = () => {
                             </div>
                         </form>
                         <div>
+                            <h4>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></h4>
                             <h3> Status: {response} </h3>
                         </div>
                     </>
-                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} />
-            }
-            {
-
+                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse}/>
             }
         </div>
     )

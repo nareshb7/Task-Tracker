@@ -1,0 +1,73 @@
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: #d3394c;
+    display: inline-block;
+    padding:7px 22px;
+    cursor: pointer;
+}
+.inputfile + label:hover {
+    background-color: #d52a81;
+}
+
+.is-invalid {
+    border-color: #f00;
+  }
+  .errMsz {
+    color: #f00;
+    padding: 10px 20px ;
+  }
+  .form {
+    margin-left: 20px;
+  }
+  .form label {
+    font-weight: 600;
+    margin-block: 5px;
+    display: block;
+  }
+  .form label::after {
+    content: ' :';
+  }
+  .form input,.form select,.form textarea {
+    padding: 10px 20px;
+    margin-block: 5px;
+    border-radius: 5px;
+  }
+  .form button {
+    padding: 5px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .form button:hover {
+    color:#fff;
+    background-color: #888;
+    border: 2px solid #fff
+  }
+  .signupDiv {
+    background-color: #999;
+    width: 500px;
+    margin: auto;
+    text-align: center;
+}
+.signupDiv input, .signupDiv select {
+    padding: 10px 20px;
+    margin-block: 10px;
+}
+.signupDiv select {
+    padding: 10px 20%
+}
+.issueImage > div {
+  margin-block: 10px
+}
+  
