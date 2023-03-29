@@ -1,8 +1,24 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { UserContext } from '../../App'
-import { fetchCall } from '../utils/fetch/UseFetch'
+import { fetchCall, fetchPutCall } from '../utils/fetch/UseFetch'
 import { GreenDot, RedDot } from '../utils/Dots/Dots'
+
+
+export const issueStatusFunc =(val)=> {
+  switch(val) {
+    case "Pending": {
+      return <><RedDot/> Pending </>
+    }
+    case "Resolved": {
+      return <><GreenDot/> Resolved</>
+    }
+    case "Fixed": {
+      return <span style={{color:'#0f5'}}> &#x2713; Fixed</span>
+    }
+    default: return ''
+  }
+}
 
 const Description = () => {
   const { currentUserVal } = useContext(UserContext)
@@ -11,13 +27,13 @@ const Description = () => {
   const [newSolution, setNewSolution] = useState('')
   const [solutions, setSolutions] = useState([])
   const [addSolutionShow, setAddSolutionShow] = useState(false)
+  const [issueStatus , setIssueStatus] = useState(data.issueStatus)
   useEffect(() => {
     const getIssue = async () => {
-      console.log(data, 'desc use')
       let result = await fetchCall('api/getParticularSolution', { id: data._id })
       if (result.solutions) {
         setData(result)
-        setSolutions(result.solutions.reverse())
+        setSolutions(result.solutions)
       }
     }
     getIssue()
@@ -29,6 +45,8 @@ const Description = () => {
   const addAnswer = async () => {
     const d = new Date()
     const devName = currentUserVal.fName + " " + currentUserVal.lName
+    let putApiPayload = { id: data._id, value: issueStatus}
+    let result = await fetchPutCall('api/issueStatus',putApiPayload )
     const apiPayload = { newData: [...data.solutions, { solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id }
     let response = await fetchCall('api/addSolution', apiPayload)
     if (response._id) {
@@ -37,12 +55,6 @@ const Description = () => {
     } else {
       console.log('error', response)
     }
-    // axios.post('/api/addSolution', {newData : [...data.solutions, {solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id})
-    // .then(res => {
-    //   setData(res.data)
-    //   setNewSolution('')
-    // })
-    // .catch(err => console.log(err, 'err'))
   }
   const addAnswerFunc = () => {
     if (currentUserVal.fName) {
@@ -51,13 +63,17 @@ const Description = () => {
       alert('Please Login ')
     }
   }
+  const handleStatusChange =async (data,e )=> {
+    setIssueStatus(e.target.value)
+}
+
   return (
     <div style={{ display: 'flex', justifyContent: 'space-around' }}>
       <div>
         <h2>Client Name : <span>{data.cName}</span></h2>
         <h2>Technology : <span>{data.technology}</span></h2>
         <h2>Posted on : <span>{new Date(data.time).toLocaleString()}</span></h2>
-        <h2>Issue : <span>{data.issueTitle}</span> {data.issueStatus === 'Resolved' ? <GreenDot /> : <RedDot />} </h2>
+        <h2>Issue : <span>{data.issueTitle}</span> ( {issueStatusFunc(data.issueStatus)} ) </h2>
         <h2>Description: <span>{data.issue}</span></h2>
         <h2>Solutions : </h2>
         {
@@ -79,10 +95,23 @@ const Description = () => {
         </div>
       </div>
       <div>
-        <button title='U can add data only after login' onClick={() => addAnswerFunc()} >Add Answer</button>
-        <div style={{ visibility: `${addSolutionShow ? 'visible' : 'hidden'}` }}><div style={{ marginBlock: '10px' }}>
-          <textarea placeholder='Add Solution here....' rows={6} cols='50' value={newSolution} onChange={(e) => setNewSolution(e.target.value)}></textarea>
-        </div>
+        <button title='U can add data only after login' onClick={() => addAnswerFunc()} > Add Answer</button>
+        <div style={{ visibility: `${addSolutionShow ? 'visible' : 'hidden'}` }}>
+          <div style={{ marginBlock: '10px' }}>
+            <textarea placeholder='Add Solution here....' rows={6} cols='50' value={newSolution} onChange={(e) => setNewSolution(e.target.value)}></textarea>
+          </div>
+          <div>
+            <div>
+              {data.developerId === currentUserVal._id ?
+                <select defaultValue={data.issueStatus} onChange={(e)=> handleStatusChange(data,e)}>
+                  <option>''</option>
+                  <option value='Pending'>Pending</option>
+                  <option value='Resolved'>Resolved</option>
+                  <option value='Fixed'>Fixed</option>
+                </select>
+                : (<span> {data.issueStatus ? issueStatusFunc(data.issueStatus) : 'Null'}</span>)}
+            </div>
+          </div>
           <div>
             <button onClick={addAnswer}>Submit</button>
           </div>

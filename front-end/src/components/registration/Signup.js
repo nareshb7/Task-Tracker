@@ -63,7 +63,6 @@ const Signup = () => {
     }
     return (
         <div className='signupDiv'>
-            <h1>In Progress</h1>
             <SignupForm submitFunc={handleSubmit} error={errors} isSubmitted={isSubmitted}/>
             <div><h3>Status : {response}</h3></div>            
         </div>
