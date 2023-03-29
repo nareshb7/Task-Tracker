@@ -57,7 +57,10 @@ const AdminPage = () => {
     const removeUser = (user) => {
         let cnfrm = window.confirm(`Do you want to delete ${user.fName}'s account ??`)
         if (cnfrm) {
-            axios.post('/api/deleteuser', { id: user._id })
+            console.log('id::', user._id)
+            axios.delete('/api/deleteuser',  {data:{id: user._id}, headers: {
+                Authorization: `Bearer`,
+              },})
                 .then(data => {
                     console.log(data, 'data deleted')
                     let newData = users.filter(user => user._id != data.data._id)

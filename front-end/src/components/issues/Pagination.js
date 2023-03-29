@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { GreenDot, RedDot } from '../utils/Dots/Dots'
+import { issueStatusFunc } from './Description'
 
 const Pagination = (props) => {
     const { data, gotoDesc, editFunc, deleteFunc, currentUser }= props
@@ -36,17 +37,14 @@ const Pagination = (props) => {
                     <td> {val.dName}</td>
                     <td> {val.cName}</td>
                     <td> {val.technology} </td>
-                    <td>{val.companyName ? val.companyName : 'No Data'}</td>
+                    <td>{val.companyName ? val.companyName : 'Data not available'}</td>
                     <td>{val.appType ? val.appType : 'No Data'}</td>
                     <td style={{ cursor: 'pointer' }} title={'Click here to get full info.'} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
-                    <td>{!val.issueStatus ? 'Null' : val.issueStatus === 'Resolved' ?
-                        <span><GreenDot title='Resolved' />{val.issueStatus} </span> :
-                        <span><RedDot title='Pending' />{val.issueStatus} </span>}
-                    </td>
+                    <td> {issueStatusFunc(val.issueStatus)} </td>
                     <td> {new Date(val?.time).toLocaleString()}</td>
                     <td><img src={val.binaryData[0] || val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' />{val.binaryData.length > 1 && 'more....'} </td>
                     <td>
-                        <button onClick={() => editFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Edit</button>
+                        <button onClick={() => editFunc(val._id, val)} disabled={currentUser._id !== val?.developerId}>Edit</button>
                         <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId} >Delete</button>
                     </td>
                 </tr>

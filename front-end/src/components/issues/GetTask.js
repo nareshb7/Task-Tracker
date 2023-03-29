@@ -59,8 +59,9 @@ const GetTask = () => {
     const gotoDesc = (val) => {
         navigate(`/description`, { state: val })
     }
-    const editFunc = (id) => {
+    const editFunc = (id, data) => {
         console.log('Edit button clicekd', id)
+        navigate('/addIssue', {state: {data, mode:'UPDATE'}})
     }
     const deleteFunc = (id) => {
         let cnfrm = window.confirm('Do you want to delete this issue??')
@@ -106,7 +107,6 @@ const GetTask = () => {
         })
         setTableData(searchData)
     }
-    console.log(tableData, 'tableDataaaa')
     return (<>
     <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
         <h1>Get Task:</h1>
@@ -176,41 +176,14 @@ const GetTask = () => {
                             <th>Edit / Delete</th>
                         </tr>
                     </thead>
-                    {/* <tbody> */}
                         {
                             tableData.length ? <>
-                            {/* {
-                                tableData.map((val, idx) => {
-                                    return (
-                                        <tr key={idx}>
-                                            <td>{idx + 1}</td>
-                                            <td> {val.dName}</td>
-                                            <td> {val.cName}</td>
-                                            <td> {val.technology} </td>
-                                            <td>{val.companyName ? val.companyName : 'No Data'}</td>
-                                            <td>{val.appType ? val.appType : 'No Data'}</td>
-                                            <td style={{ cursor: 'pointer' }} title={'Click here to get full info.'} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
-                                            <td>{!val.issueStatus ? 'Null' : val.issueStatus === 'Resolved' ? 
-                                                <span><GreenDot title='Resolved' />{val.issueStatus} </span> : 
-                                                <span><RedDot title='Pending' />{val.issueStatus} </span>} 
-                                            </td>
-                                            <td> {new Date(val?.time).toLocaleString()}</td>
-                                            <td><img src={val.binaryData[0] || val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' />{val.binaryData.length > 1 && 'more....' } </td>
-                                            <td>
-                                                <button onClick={() => editFunc(val._id)} disabled={currentUser._id !== val?.developerId}>Edit</button>
-                                                <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId} >Delete</button>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            } */}
+                            
                             <Pagination currentUser={currentUser} data={tableData} gotoDesc={gotoDesc} editFunc={editFunc} deleteFunc={deleteFunc} />
-                            </> : <tr>
+                            </> : <tbody><tr>
                                 <td colSpan={11} > {tableData.length === 0 ? <h3 style={{ textAlign: 'center' }}>No result found</h3> : <Loader />} </td>
-                            </tr>
+                            </tr></tbody>
                         }
-
-                    {/* </tbody> */}
                 </table>
             </div>
         }
