@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Modal.css";
 
 export default function Modal({ isOpen, setModal, header, data, requestAcceptFunc, employee }) {
@@ -60,7 +60,7 @@ export default function Modal({ isOpen, setModal, header, data, requestAcceptFun
                   <h3>Technologies : {employee.technologies.length ? `${employee.technologies}` : "Loading...."}</h3>
                 </div>
                 <div style={{ width: '100px', height: '100px' }}>
-                  <img src={employee.binaryData} style={{ width: '100%', height: '100%' }} />
+                  <img src={employee.binaryData} style={{ width: '100%', height: '100%' }} alt='User'/>
                 </div>
               </div>
             }
