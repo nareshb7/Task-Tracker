@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
+import axios from 'axios'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 import * as Yup from 'yup'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { UserContext } from '../../App'
 import { addIssue } from '../../redux/actions/issues/Actions'
 import { fetchCall } from '../utils/fetch/UseFetch'
@@ -10,11 +11,8 @@ import { fetchCall } from '../utils/fetch/UseFetch'
 const AddData = () => {
     const dispatch = useDispatch()
     const locationState = useLocation()
-    console.log(locationState, 'location State')
     const [updateObj, setUpdateObj] = useState(locationState.state?.data)
     const [method, setMethod] = useState(locationState.state?.mode || 'ADD')
-    const issues = useSelector(state => state.issues)
-    // console.log(issues, 'issueslist')
     const { currentUserVal } = useContext(UserContext)
     const [isLoggedin, setIsLoggedIn] = useState([])
     const technologies = ['Select the technology', "React", "Angular", "JavaScript", "CSS"]
@@ -82,7 +80,7 @@ const AddData = () => {
     }
     const handleSubmit = async (newData, { resetForm }) => {
         setStatus('Submitting...')
-        if (method === 'EDIT') {
+        if (method === 'ADD') {
             newData.time = new Date().toLocaleString()
             newData.dName = isLoggedin.fName + " " + isLoggedin.lName
             newData.developerId = isLoggedin._id
@@ -96,12 +94,12 @@ const AddData = () => {
             if (response.includes('Sucessfully')) {
                 resetForm({ values: '' })
             }
-        } else {
-            console.log(method, newData, 'Submitted', updateObj._id)
+        }
+        if (method === 'UPDATE') {
             let bd = await Promise.all(newData.issueImages.map((file) => convertToBase64(file.image)))
             newData.binaryData = [...newData.binaryData, ...bd]
             newData.solutions[0] = { solution: newData.solution }
-            if (newData.binaryData.length){
+            if (newData.binaryData.length) {
                 let response = await fetchCall('api/addSolution', { newData, id: updateObj._id, mode: "UPDATE" })
                 if (response._id) {
                     setStatus('Data Updated Sucessfully')
@@ -123,7 +121,6 @@ const AddData = () => {
         setValues({ ...values, issueImages })
     }
     const imgHandler = (values, setValues, img, type) => {
-        console.log(values, img, 'imghamndler')
         if (type === 'UPDATE') {
             values.binaryData.splice(img, 1)
         }
@@ -144,7 +141,7 @@ const AddData = () => {
                             validate={handleValidate}
                         >
                             {({ values, errors, setFieldValue, touched, setValues }) => (
-                                <Form >
+                                <Form>
                                     <div>
                                         <div>
                                             <label>Enter Developer Name : </label>
@@ -275,9 +272,7 @@ const AddData = () => {
                                             <option value='Fixed'>Fixed</option>
                                         </Field>
                                         <ErrorMessage name='issueStatus' component='div' className='errMsz' />
-                                    </div>{
-                                        console.log(values, 'valuessss')
-                                    }
+                                    </div>
                                     <div>
                                         {
                                             method === 'UPDATE' &&

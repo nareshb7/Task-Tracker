@@ -7,9 +7,12 @@ export const setCookie = ( cvalue, exdays)=> {
 
 export const CookieComp = (id) => {
   const getCookie =(cname)=> {
-    let name =  cname + "="
-    let ca = document.cookie.split('=')
-    return ca[1]
+    let totalCookie = document.cookie.split(';')
+    let ca = totalCookie.find(val => val.includes(cname))
+    if (ca){
+      ca = ca.split('=')
+    }
+    return ca[1] || null
   }
   const checkCookie =()=> {
     let user = getCookie('presentTaskUser')
