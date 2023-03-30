@@ -11,8 +11,9 @@ export const CookieComp = (id) => {
     let ca = totalCookie.find(val => val.includes(cname))
     if (ca){
       ca = ca.split('=')
+      return ca[1]
     }
-    return ca[1] || null
+    return null
   }
   const checkCookie =()=> {
     let user = getCookie('presentTaskUser')
