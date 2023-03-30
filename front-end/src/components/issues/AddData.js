@@ -58,7 +58,6 @@ const AddData = () => {
     }, [updateObj])
     useEffect(() => {
         if (currentUserVal) {
-            console.log(currentUserVal, 'curent972==')
             setIsLoggedIn(currentUserVal)
         }
     }, [currentUserVal])
@@ -129,7 +128,6 @@ const AddData = () => {
         }
         setValues(values)
     }
-    console.log('972==check', Array.isArray(isLoggedin), isLoggedin)
     return (
         <div className='addIssueForm signupDiv' > {
             Array.isArray(isLoggedin) ? "Loading...." : <>
