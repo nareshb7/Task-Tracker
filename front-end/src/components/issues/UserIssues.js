@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { fetchCall } from '../utils/fetch/UseFetch'
 import { UserContext } from '../../App'
 import { GreenDot, RedDot } from '../utils/Dots/Dots'
+import { issueStatusFunc } from './Description'
 
 export const uploadedIssues =async (developerId) => {
     const response = await fetchCall('api/uploadedIssues', {developerId})
@@ -40,10 +41,6 @@ const UserIssues = ({issuesList}) => {
                                 <td>{issue.dName}</td>
                                 <td>{issue.cName}</td>
                                 <td>
-                                    <span>{issue.issueStatus === 'Resolved' ? 
-                                        <GreenDot title='Resolved' /> : 
-                                        <RedDot title='Pending'/>} 
-                                    </span> 
                                     <span>{issue.technology} </span>
                                 </td>
                                 <td style={{cursor:'pointer'}} title='Click here to check total Description' onClick={() => gotoDesc(issue)}>{issue.issue}</td>
@@ -54,8 +51,9 @@ const UserIssues = ({issuesList}) => {
                                             <option>''</option>
                                             <option value='Pending'>Pending</option>
                                             <option value='Resolved'>Resolved</option>
+                                            <option value='Fixed'> Fixed</option>
                                         </select>
-                                        : (<span> {issue.issueStatus ? issue.issueStatus : 'Null'}</span>)}
+                                        : (<span> {issue.issueStatus ? issueStatusFunc(issue.issueStatus) : 'Null'}</span>)}
                                     </div>
                                 </td>
                                 <td>{new Date(issue.time).toLocaleString()}</td>

@@ -34,10 +34,10 @@ const upload = multer({
 // {data: fs.readFileSync("uploads/"+ req.file.filename), contentType:'image/jpg' }
 
 module.exports.mailVerification = async (req, res) => {
-    const { creds } = req.body
+    const { apiPayload } = req.body
     const random = Math.random().toString(36).slice(2, 10)
     const d = new Date().toLocaleString()
-    options.to = creds.email || creds.updateValue
+    options.to = apiPayload
     options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://192.168.10.28:3030/verifymail/signup sent time : ${d}`
     transporter.sendMail(options, (err, info) => {
         if (err) {

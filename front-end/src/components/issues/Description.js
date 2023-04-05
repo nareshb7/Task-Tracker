@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { UserContext } from '../../App'
 import { fetchCall, fetchPutCall } from '../utils/fetch/UseFetch'
 import { GreenDot, RedDot } from '../utils/Dots/Dots'
+import Modal from '../modal/Modal'
 
 
 export const issueStatusFunc =(val)=> {
@@ -28,6 +29,8 @@ const Description = () => {
   const [solutions, setSolutions] = useState([])
   const [addSolutionShow, setAddSolutionShow] = useState(false)
   const [issueStatus , setIssueStatus] = useState(data.issueStatus)
+  const [isImgOpen, setImgOpen] = useState(false)
+  const [imgSrc, setImgSrc] = useState('')
   useEffect(() => {
     const getIssue = async () => {
       let result = await fetchCall('api/getParticularSolution', { id: data._id })
@@ -45,6 +48,11 @@ const Description = () => {
   const addAnswer = async () => {
     const d = new Date()
     const devName = currentUserVal.fName + " " + currentUserVal.lName
+    console.log('issue', newSolution)
+    if (newSolution.length < 4) {
+      alert('Add min 4 charcaters')
+      return
+    }
     let putApiPayload = { id: data._id, value: issueStatus}
     let result = await fetchPutCall('api/issueStatus',putApiPayload )
     const apiPayload = { newData: [...data.solutions, { solution: newSolution, updatedTime: d, uploadedBy: devName, devId: currentUserVal._id }], id: data._id }
@@ -65,7 +73,11 @@ const Description = () => {
   }
   const handleStatusChange =async (data,e )=> {
     setIssueStatus(e.target.value)
-}
+  }
+  const imgPopup =(src)=> {
+    setImgSrc(src)
+    setImgOpen(true)
+  }
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -89,8 +101,8 @@ const Description = () => {
         }
         <div style={{ width: '300px', height: 'auto' }}>
           {
-            Array.isArray(data.binaryData) ? data.binaryData.map((imgFile, idx) => <img key={idx} src={imgFile} style={{ width: '100%', height: '100%' }} />) :
-              <img src={data.binaryData} style={{ width: '100%', height: '100%' }} />
+            Array.isArray(data.binaryData) ? data.binaryData.map((imgFile, idx) => <img onClick={()=> imgPopup(imgFile)} key={idx} src={imgFile} style={{ width: '100%', height: '100%' }} />) :
+              <img onClick={()=> imgPopup(data.binaryData)} src={data.binaryData} style={{ width: '100%', height: '100%' }} />
           }
         </div>
       </div>
@@ -116,7 +128,11 @@ const Description = () => {
             <button onClick={addAnswer}>Submit</button>
           </div>
         </div>
-
+        <Modal isOpen={isImgOpen} setModal={setImgOpen} >
+          <div style={{width:'500px', height:'500px'}}>
+            <img style={{width:'100%', height:'100%'}} src={imgSrc} />
+          </div>
+        </Modal>
       </div>
     </div>
   )
