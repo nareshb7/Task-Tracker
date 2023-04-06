@@ -25,7 +25,7 @@ router.post('/mailupdatereq', mailChangeReq)
 router.get('/getmailreqIDs', getmailchangeID)
 router.post('/getParticularSolution', getParticularSolution)
 router.put('/issueStatus', issueStatus)
-router.get('/usermessages',messages )
+router.post('/usermessages',messages )
 
 
 module.exports = router

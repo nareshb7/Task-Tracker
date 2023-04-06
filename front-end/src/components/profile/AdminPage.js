@@ -91,6 +91,7 @@ const AdminPage = () => {
         let sortData = JSON.parse(JSON.stringify(users))
         if (type == 'asc') {
             sortData.sort((a, b) => {
+                console.log('sort', a)
                 if (a[val] > b[val]) {
                     return 1
                 } if (a[val] < b[val]) {
@@ -163,12 +164,12 @@ const AdminPage = () => {
 
             // Deleting the req in database
             axios.post('/api/mailupdatereq', { user: { id: id, updateKey: 'DELETE' } })
-                    .then(res => {
-                        console.log(res, 'res')
-                        let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
-                        setMailChangeReqIDs(newData)
-                    })
-                    .catch(err => console.log(err, 'else Mail Update Err'))
+                .then(res => {
+                    console.log(res, 'res')
+                    let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
+                    setMailChangeReqIDs(newData)
+                })
+                .catch(err => console.log(err, 'else Mail Update Err'))
         }
     }
     const showEmployeeData = async (empDetails) => {
@@ -264,7 +265,23 @@ const AdminPage = () => {
                         }
                     </>
                 </Modal>
-                <Modal isOpen={showEmpModal} setModal={setShowEmpModal} header={'User Data'} employee={showEmpData} />
+                <Modal isOpen={showEmpModal} setModal={setShowEmpModal}>
+                    <div style={{ display: 'flex' }}>
+                        <div>
+                            <h3>Name : {showEmpData.fName + " " + showEmpData.lName}</h3>
+                            <h3>Email: {showEmpData.email}</h3>
+                            <h3>Mobile : {showEmpData.mobile}</h3>
+                            <h3>Active User : {showEmpData.isActive ? "Yes" : 'No'}</h3>
+                            <h3>Admin : {showEmpData.isAdmin ? "Yes" : "No"}</h3>
+                            <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
+                            <h3>Uploaded Issues :{showEmpData.uploadedIssues.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
+                            <h3>Technologies : {showEmpData.technologies.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
+                        </div>
+                        <div style={{ width: '100px', height: '100px' }}>
+                            <img src={showEmpData.binaryData} style={{ width: '100%', height: '100%' }} />
+                        </div>
+                    </div>
+                </Modal>
                 {
                     users.length ? (<> <table cellPadding='10' style={{ textAlign: 'center' }} border='1'>
                         <caption>All Users</caption>

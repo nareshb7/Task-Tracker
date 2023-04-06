@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { fetchGetCall } from '../../utils/fetch/UseFetch'
+import { fetchCall } from '../../utils/fetch/UseFetch'
 
 const MessageBox = ({user, opponent, setOpenMszList})=> {
     const [message, setMessage] = useState('')
@@ -7,9 +7,11 @@ const MessageBox = ({user, opponent, setOpenMszList})=> {
     useEffect(()=> {
         console.log(user, opponent, 'userrrrr')
         const getMessages =async ()=> {
-            let messages = await fetchGetCall('api/usermessages')
+            let messages = await fetchCall('api/usermessages', {from: user._id, to: opponent._id, messages:['hiiii']})
             console.log(messages, 'mszs')
+
         }
+        getMessages()
     }, [])
 
     const sendMessage = () => {
@@ -18,7 +20,7 @@ const MessageBox = ({user, opponent, setOpenMszList})=> {
     }
     return (
         <div className='message-Box'>
-                    <h3 className='messageBox-header'><span className='icon' onClick={()=> setOpenMszList(false)}> &lt;- </span><img src={user.binaryData} className='img'/> <span className='user'> {opponent.fName} {opponent.lName} </span></h3> 
+                    <h3 className='messageBox-header'><span className='icon' onClick={()=> setOpenMszList(false)}> &lt;- </span><img src={opponent.binaryData} className='img'/> <span className='user'> {opponent.fName} {opponent.lName} </span></h3> 
                     <div className='messages-list'>
                    {
                     messages.map((msz, idx)=> {
@@ -28,7 +30,7 @@ const MessageBox = ({user, opponent, setOpenMszList})=> {
                    </div>
                     <div className='message-input'>
                         <input type='text' value={message} onChange={(e) => setMessage(e.target.value)} />
-                        <button onClick={sendMessage}>{'->'}</button>
+                        <button disabled={!message} onClick={sendMessage}>{'->'}</button>
                     </div>
                 </div>
     )
