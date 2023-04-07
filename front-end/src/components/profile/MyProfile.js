@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { setCookie } from '../utils/CookieComp'
 import UserIssues, { uploadedIssues } from '../issues/UserIssues'
-import { fetchCall } from '../utils/fetch/UseFetch'
+import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
+import ChatBox from './chatBox/ChatBox'
 
 const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
   const navigate = useNavigate()
@@ -53,7 +54,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
   const styles = {
     div: {
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'space-evenly',
       alignItems: 'center'
     },
     span: {
@@ -153,8 +154,8 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
               }
               <div style={{ height: '30px' }}>{reqMailError}</div>
               <div><button onClick={showMyIssues}>My Issues</button> </div>
-
             </div>
+            <ChatBox currentUser={currentUser}/>
 
           </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }

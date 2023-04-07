@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react'
-import axios from 'axios'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 import * as Yup from 'yup'
@@ -85,9 +84,10 @@ const AddData = () => {
             newData.dName = isLoggedin.fName + " " + isLoggedin.lName
             newData.developerId = isLoggedin._id
             delete newData.images
-            newData.issueImages = [{ image: '' }]
             newData.binaryData = await Promise.all(newData.issueImages.map((file) => convertToBase64(file.image)))
+            newData.issueImages = [{ image: '' }]
             newData.solutions = [{ solution: newData.solution }]
+            console.log('972==submit ', newData)
             let response = await fetchCall('api/setData', { data: newData })
             dispatch(addIssue(newData))
             setStatus(response)

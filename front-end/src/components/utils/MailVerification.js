@@ -11,7 +11,7 @@ const MailVerification = () => {
     const [userOtp, setUserOtp] = useState('')
     const [response, setResponse] = useState('')
     useEffect(() => {
-        if(creds.email){
+        if(creds.email || creds.updateKey){
             adminAcVerify(creds)
         }
     }, [])
@@ -30,7 +30,8 @@ const MailVerification = () => {
     }
     const adminAcVerify =(creds)=>{
         console.log(creds, 'credsss')
-        axios.post('/api/mailverification',{creds})
+        const apiPayload = creds.email || creds.updateKey
+        axios.post('/api/mailverification',{apiPayload})
         .then(data => {
             setResponse(data.data.message +" - "+ creds.email)
             setOtp(data.data.psd)
