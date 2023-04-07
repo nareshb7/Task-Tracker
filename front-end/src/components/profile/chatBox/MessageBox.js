@@ -4,7 +4,7 @@ import { fetchCall } from '../../utils/fetch/UseFetch'
 
 const MessageBox = ({ user, opponent, setOpenMszList }) => {
     const [message, setMessage] = useState('')
-    const [messages, setMessages] = useState(['hii', 'hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hii', 'hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hiii', 'hello'])
+    const [messages, setMessages] = useState(['hii', 'hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hii', 'hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hiii', 'hello','hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hiii', 'hello'])
     useEffect(() => {
         console.log(user, opponent, 'userrrrr')
         const getMessages = async () => {
@@ -23,7 +23,7 @@ const MessageBox = ({ user, opponent, setOpenMszList }) => {
         <div className='message-Box'>
             <h3 className='messageBox-header'>
                 <span className='icon' onClick={() => setOpenMszList(false)}> &lt;- </span><img src={opponent.binaryData} className='img' /> <span className='user'> {opponent.fName} {opponent.lName} </span></h3>
-            <div className='messages-header' id='message-body'>
+            <div className='message-body' id='message-body'>
                 <ScrollToBottom className='message-container' >
                     {
                         messages.map((msz, idx) => {

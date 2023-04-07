@@ -2,7 +2,7 @@
     width: 30%;
 }
 .chatBox-userList {
-    height:80vh;
+    height:70vh;
     overflow-y: scroll;
 }
 .chatBox-div {
@@ -66,6 +66,9 @@
 .messageBox-header .user {
     text-align: center;
 }
+.message-body {
+    height:50.1vh;
+}
 .user-message span {
     background-color: #e7ffdb;;
     border-radius: 4px;
@@ -82,7 +85,7 @@
 }
 .messages-body {
     overflow-y: scroll;
-    height: 60vh;
+    height: 30vh;
 }
 .modalImage {
     width:200px;
