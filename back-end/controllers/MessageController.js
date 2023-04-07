@@ -1,5 +1,5 @@
 
-const Messages = require('../models/Messages')
+const Messages = require('../models/MessageModel')
 
 module.exports.messages = async (req,res)=> {
     const {from , to, messages } = req.body

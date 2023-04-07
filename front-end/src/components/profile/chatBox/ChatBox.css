@@ -68,7 +68,7 @@
 }
 .user-message span {
     background-color: #e7ffdb;;
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 5px;
 }
 .message-Box .opponent-message {
@@ -78,9 +78,9 @@
 .opponent-message span {
     background-color:#fefdfe;
     padding: 5px;
-    border-radius: 8px;
+    border-radius: 4px;
 }
-.messages-list {
+.messages-body {
     overflow-y: scroll;
     height: 60vh;
 }
@@ -91,4 +91,17 @@
 .modalImage img {
     width: 100%;
     height:100%;
+}
+.message-container {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#message-body .message-time, #message-body .message-author {
+    font-size: 6px;
+    padding: 0;
+    background-color:#efe8e0;
+    color: #2e2a2a;
+    margin-inline: 3px;
 }

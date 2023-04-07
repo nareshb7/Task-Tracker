@@ -3,7 +3,7 @@ const router = Router()
 const { mailVerification, mailChangeReq, getmailchangeID} = require('../controllers/TaskControllers')
 const { setData, getData, addSolution, deleteSolution, updateSolution, uploadedIssues, getParticularSolution, issueStatus} = require('../controllers/IssueController')
 const {signUpData, logInUserData, setCurrentUser, getCurrentUser, deleteCurrentUser, getParticularUser, getAllUsers, deleteUser, updateUser} = require('../controllers/UserControllers')
-const { messages } = require('../controllers/Messages')
+const { messages } = require('../controllers/MessageController')
 
 router.post('/setData', setData)
 router.get('/getData', getData)

@@ -274,8 +274,8 @@ const AdminPage = () => {
                             <h3>Active User : {showEmpData.isActive ? "Yes" : 'No'}</h3>
                             <h3>Admin : {showEmpData.isAdmin ? "Yes" : "No"}</h3>
                             <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
-                            <h3>Uploaded Issues :{showEmpData.uploadedIssues.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
-                            <h3>Technologies : {showEmpData.technologies.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
+                            <h3>Uploaded Issues :{showEmpData.uploadedIssues?.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
+                            <h3>Technologies : {showEmpData.technologies?.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
                         </div>
                         <div style={{ width: '100px', height: '100px' }}>
                             <img src={showEmpData.binaryData} style={{ width: '100%', height: '100%' }} />
