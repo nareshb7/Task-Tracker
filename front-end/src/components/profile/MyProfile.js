@@ -4,6 +4,10 @@ import { setCookie } from '../utils/CookieComp'
 import UserIssues, { uploadedIssues } from '../issues/UserIssues'
 import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
 import ChatBox from './chatBox/ChatBox'
+import {io} from 'socket.io-client'
+
+const SOCKET_URL = 'http://localhost:4040'
+const socket = io(SOCKET_URL)
 
 const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
   const navigate = useNavigate()
@@ -17,6 +21,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
     updateKey: 'email',
     updateValue: ''
   })
+  
   useEffect(() => {
     setCurrentUser(currentUserVal)
   }, [currentUserVal])
@@ -155,7 +160,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
               <div style={{ height: '30px' }}>{reqMailError}</div>
               <div><button onClick={showMyIssues}>My Issues</button> </div>
             </div>
-            <ChatBox currentUser={currentUser}/>
+            <ChatBox currentUser={currentUser} socket={socket}/>
 
           </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }

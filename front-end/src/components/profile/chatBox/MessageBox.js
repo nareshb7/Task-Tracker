@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from 'react'
 import ScrollToBottom from 'react-scroll-to-bottom'
-import { fetchCall } from '../../utils/fetch/UseFetch'
 
-const MessageBox = ({ user, opponent, setOpenMszList }) => {
+const MessageBox = ({ user, opponent, setOpenMszList, socket, roomId }) => {
     const [message, setMessage] = useState('')
-    const [messages, setMessages] = useState(['hii', 'hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hii', 'hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hiii', 'hello','hello', 'hii 1', 'hello 1', ' hii 2', 'hello 2', 'hiii', 'hello'])
-    useEffect(() => {
-        console.log(user, opponent, 'userrrrr')
-        const getMessages = async () => {
-            let messages = await fetchCall('api/usermessages', { from: user._id, to: opponent._id, messages: ['hiiii'] })
-            console.log(messages, 'mszs')
+    const [messages, setMessages] = useState([])
 
-        }
-        // getMessages()
-    }, [])
+    const getFormattedDate =()=> {
+        const date = new Date()
+        const year = date.getFullYear()
+        let month = (1+ date.getMonth()).toString()
+        month = month.length > 1 ? month : "0"+ month
+        let day = date.getDate().toString()
+        day = day.length > 1 ? day : "0"+ day
+        return `${month}/${day}/${year}` 
+    }
+    const todayDate = getFormattedDate()
 
     const sendMessage = () => {
+        if(!message) return;
+        const today = new Date()
+        const minutes = today.getMinutes() < 10 ? "0"+ today.getMinutes() : today.getMinutes()
+        const time = today.getHours()+ ':'+ minutes;
+        console.log('messge-sent',roomId, message, user,time, todayDate , socket)
+        socket.emit('message-room',roomId, message, user,time, todayDate)
+        // socket.emit('check', 'check')
         setMessage('')
         setMessages([...messages, message])
+        return
     }
     return (
         <div className='message-Box'>

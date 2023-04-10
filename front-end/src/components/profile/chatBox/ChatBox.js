@@ -4,12 +4,13 @@ import './ChatBox.css'
 import MessageBox from './MessageBox'
 import Modal from '../../modal/Modal'
 
-const ChatBox = ({ currentUser }) => {
+const ChatBox = ({ currentUser, socket }) => {
     const [users, setUsers] = useState([])
     const [openMszList, setOpenMszList] = useState(false)
     const [opponent, setOpponent] = useState({})
     const [imgSrc, setImgSrc] = useState('')
     const [imgmodal, setImgmodal] = useState(false)
+    const [currentRoom, setCurrentRoom] = useState('')
 
     useEffect(() => {
         const getData = async () => {
@@ -21,8 +22,19 @@ const ChatBox = ({ currentUser }) => {
         }
         getData()
     }, [])
+    const getRoomId = (id1, id2)=> {
+        if (id1 > id2) {
+            return id1+"-"+id2
+        } else {
+            return id2+"-"+id1
+        }
+    }
     const selectedUser = (user, currentUser) => {
         // console.log(user, 'currentUser', currentUser)
+        const roomId = getRoomId(user._id, currentUser._id)
+        console.log(roomId, 'roomid', socket)
+        setCurrentRoom(roomId)
+        socket.emit('join-room', roomId)
         setOpponent(user)
         setOpenMszList(true)
     }
@@ -35,7 +47,7 @@ const ChatBox = ({ currentUser }) => {
     return (
         <div className='chatBox-main'>
             {
-                openMszList ? <MessageBox user={currentUser} opponent={opponent} setOpenMszList={setOpenMszList} /> :
+                openMszList ? <MessageBox socket={socket} user={currentUser} roomId={currentRoom} opponent={opponent} setOpenMszList={setOpenMszList} /> :
                     <div className='chatBox-userList'> {
                         users.map((user, idx) => {
                             if (user._id === currentUser._id) {

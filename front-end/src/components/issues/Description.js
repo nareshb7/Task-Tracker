@@ -73,7 +73,7 @@ const Description = () => {
   }
   const handleStatusChange =async (data,e )=> {
     setIssueStatus(e.target.value)
-}
+
   }
   const imgPopup =(src)=> {
     setImgSrc(src)
@@ -138,6 +138,6 @@ const Description = () => {
       </div>
     </div>
   )
-
+              }
 
 export default Description

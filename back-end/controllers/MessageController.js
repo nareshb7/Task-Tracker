@@ -1,9 +1,20 @@
 
-const Messages = require('../models/MessageModel')
+// const Messages = require('../models/MessageModel')
 
-module.exports.messages = async (req,res)=> {
-    const {from , to, messages } = req.body
-    const result = await Messages.create(from,to, messages).then(response => response).catch(err => err)
-    res.send(result)
-    console.log('response',  from, to)
-}
+// const {Server} = require('socket.io')
+// const server= require('../server')
+
+// module.exports.messages = async (req,res)=> {
+//     const io = new Server(server, {
+//         cors: {
+//             origin: 'http://localhost:3030',
+//             methods: ['GET', 'POST']
+//         }
+//     } )
+//     io.on('connection', (socket)=> {
+//         console.log(`USer Connected: ${socket.id}`)
+//         socket.on('send_message', (data)=> {
+//             console.log('send Message : ', data)
+//         })
+//     })
+// }
