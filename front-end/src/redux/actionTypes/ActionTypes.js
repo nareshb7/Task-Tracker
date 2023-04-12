@@ -1,1 +1,3 @@
 export const ADD = "ADD"
+export const ADD_NOTIFICATION = 'ADD_NOTIFICATION'
+export const RESET_NOTIFICATION = 'RESET_NOTIFICATION'

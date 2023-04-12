@@ -12,6 +12,7 @@ const {Server} = require('socket.io')
 const server = http.createServer(app)
 const routes = require('./routers/TaskRouters')
 const Message = require('./models/MessageModel')
+const { signUpModel } = require('./models/UsersModel')
 
 app.use(cors())
 app.use(bodyParser.json({ limit: '3mb' }));
@@ -70,20 +71,24 @@ const sortRoomMessagesByDate =(messages)=> {
 }
 io.on('connection',async (socket)=> {
     console.log('connected', socket.id)
-    socket.on('join-room',(room )=> {
-        console.log('room', room)
-        socket.join(room)
+
+    socket.on('new-user', async()=> {
+        const members = await signUpModel.find()
+        io.emit('new-user', members)
     })
-    socket.on('message-room', async (room, content,sender, time, date)=> {
-        console.log('message-room', room, content,sender, time, date)
+    socket.on('join-room',async (room, previousRoom)=> {
+        socket.join(room)
+        socket.leave(previousRoom)
+        let roomMessages = await getLastMessagesFromRoom(room)
+        roomMessages = sortRoomMessagesByDate(roomMessages)
+        socket.emit('room-messages', roomMessages)
+    })
+    socket.on('message-room', async (room, content, sender, time, date )=> {
         const newMessage =await Message.create({to: room, content,from : sender, time, date})
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         io.to(room).emit('room-messages', roomMessages)
         socket.broadcast.emit('notifications', room)
-    })
-    socket.on('check', (data)=> {
-        console.log(data, 'checkddddd')
     })
 })
 

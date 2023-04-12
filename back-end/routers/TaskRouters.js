@@ -2,7 +2,7 @@ const { Router } = require('express')
 const router = Router()
 const { mailVerification, mailChangeReq, getmailchangeID} = require('../controllers/TaskControllers')
 const { setData, getData, addSolution, deleteSolution, updateSolution, uploadedIssues, getParticularSolution, issueStatus} = require('../controllers/IssueController')
-const {signUpData, logInUserData, setCurrentUser, getCurrentUser, deleteCurrentUser, getParticularUser, getAllUsers, deleteUser, updateUser} = require('../controllers/UserControllers')
+const {signUpData, logInUserData, setCurrentUser, getCurrentUser, deleteCurrentUser, getParticularUser, getAllUsers, deleteUser, updateUser, userLogout} = require('../controllers/UserControllers')
 const { messages } = require('../controllers/MessageController')
 
 router.post('/setData', setData)
@@ -25,6 +25,7 @@ router.post('/mailupdatereq', mailChangeReq)
 router.get('/getmailreqIDs', getmailchangeID)
 router.post('/getParticularSolution', getParticularSolution)
 router.put('/issueStatus', issueStatus)
+router.post('/logout', userLogout)
 // router.get('/usermessages',messages )
 
 

@@ -1,9 +1,21 @@
 import React from "react";
-import { ADD } from "../actionTypes/ActionTypes";
+import { ADD, ADD_NOTIFICATION, RESET_NOTIFICATION } from "../actionTypes/ActionTypes";
 
 export const addUser =(val)=> {
     return {
         type:ADD,
         payload: val
+    }
+}
+export const AddNotification = (id, val)=> {
+    return {
+        type: ADD_NOTIFICATION, 
+        payload: id,
+        val
+    }
+}
+export const ResetNotification = ()=> {
+    return {
+        type: RESET_NOTIFICATION
     }
 }

@@ -39,6 +39,8 @@ module.exports.logInUserData = async (req, res) => {
         key = "mobile"
     }
     const result = await signUpModel.findOne({[key]: value })
+    result.status = 'Online'
+    await result.save()
     res.send(result)
 }
 
@@ -90,4 +92,13 @@ module.exports.updateUser = async (req, res) => {
                 res.send(user)
             })
     }
+}
+module.exports.userLogout =async (req,res)=> {
+    console.log('logout', req.body)
+    const {id} = req.body
+    const result = await signUpModel.findOne({_id: id })
+    // const obj ={...result._doc, status: 'Online'}
+    result.status = 'Offline'
+    await result.save()
+    res.send(result)
 }

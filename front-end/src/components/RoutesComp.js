@@ -11,6 +11,7 @@ import AdminPage from './profile/AdminPage'
 import UserUpdate from './profile/UserUpdate'
 import ForgotPassword from './registration/ForgotPassword'
 import MailVerification from './utils/MailVerification'
+import ChatBox from './profile/chatBox/ChatBox'
 
 const RoutesComp =()=> {
     return (
@@ -28,6 +29,7 @@ const RoutesComp =()=> {
                 <Route path='adminpage' element={<AdminPage/>} />
                 <Route path='updateuser' element={<UserUpdate />} />
                 <Route path='verifymail/:path' element={<MailVerification/>} />
+                <Route path='/chat' element={<ChatBox/>} />
             </Routes>
         </div>
     )

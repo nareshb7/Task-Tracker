@@ -5,11 +5,13 @@ import UserIssues, { uploadedIssues } from '../issues/UserIssues'
 import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
 import ChatBox from './chatBox/ChatBox'
 import {io} from 'socket.io-client'
+import { BE_URL } from '../utils/Constants'
+import { logoutFunc } from '../utils/LogoutFunc'
 
-const SOCKET_URL = 'http://localhost:4040'
+const SOCKET_URL = BE_URL
 const socket = io(SOCKET_URL)
 
-const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
+const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [currentUser, setCurrentUser] = useState({})
@@ -50,11 +52,13 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
 
   }, [location.state])
 
-  const logoutFunc = () => {
+  const logout =async  (id) => {
     setCurrentUser({})
     setCurrentUserVal({})
     setCookie("63dab3b51d791ebc7821db51", 2)
+    await logoutFunc(id)
     setResponse('Please Login')
+    socket.emit('new-user')
   }
   const styles = {
     div: {
@@ -140,7 +144,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
             <div>
               <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</button></p>
               <div>
-                <button onClick={logoutFunc} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
+                <button onClick={()=> logout(currentUser._id)} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
                 <button onClick={() => updateData(currentUser)}>Update Details</button>
               </div>
               <div>
@@ -160,8 +164,6 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse }) => {
               <div style={{ height: '30px' }}>{reqMailError}</div>
               <div><button onClick={showMyIssues}>My Issues</button> </div>
             </div>
-            <ChatBox currentUser={currentUser} socket={socket}/>
-
           </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
       {

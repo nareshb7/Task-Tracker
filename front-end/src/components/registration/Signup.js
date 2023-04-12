@@ -28,6 +28,7 @@ const Signup = () => {
             .then(res => {
                 setResponse(res.data)
                 setIsSubmitted(true)
+                navigate('/')
             })
             .catch(err => setResponse(JSON.stringify(err)))
     }   

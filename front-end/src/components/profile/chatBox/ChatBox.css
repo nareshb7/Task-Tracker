@@ -1,7 +1,8 @@
 .chatBox-main {
-    width: 30%;
+    display: flex;
 }
 .chatBox-userList {
+    width: 30%;
     height:70vh;
     overflow-y: scroll;
 }
@@ -11,6 +12,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: space-around;
     gap:15px
 }
 .chatBox-div .img {
@@ -22,13 +24,23 @@
 .chatBox-header , .chatBox-technology {
     margin: 0
 }
+.chatBox-image {
+    position: relative;
+}
+.chatBox-image .online-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+}
+
+
 .message-Box {
+    width: 70%;
     background-color: #efe8e0;
     height: 100%;
     position: relative;
 }
 .message-Box .icon {
-    cursor: pointer;
     color:#fff
 }
 .message-input {
@@ -57,6 +69,8 @@
     display: flex;
     align-items: center;
     gap:10px;
+    margin: 0;
+    cursor: pointer;
 }
 .messageBox-header .img {
     width:40px;
@@ -67,7 +81,7 @@
     text-align: center;
 }
 .message-body {
-    height:50.1vh;
+    height:60vh;
 }
 .user-message span {
     background-color: #e7ffdb;;
@@ -87,6 +101,11 @@
     overflow-y: scroll;
     height: 30vh;
 }
+.message-body .message-text {
+    max-width: 300px;
+    display: inline-block;
+    white-space: normal;
+}
 .modalImage {
     width:200px;
     height:200px;
@@ -102,7 +121,7 @@
     overflow-x: hidden;
 }
 #message-body .message-time, #message-body .message-author {
-    font-size: 6px;
+    font-size: 8px;
     padding: 0;
     background-color:#efe8e0;
     color: #2e2a2a;

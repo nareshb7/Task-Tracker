@@ -6,7 +6,7 @@ import { UserContext } from '../../App'
 import MyProfile from '../profile/MyProfile'
 
 const Login = () => {
-    const {currentUserVal, setCurrentUserVal} = useContext(UserContext)
+    const {currentUserVal, setCurrentUserVal, socket} = useContext(UserContext)
     const obj = {
         value: '',
         password: ''
@@ -23,6 +23,7 @@ const Login = () => {
         axios.post('/api/loginData', data)
             .then(res => {
                 if (res.data){
+                    console.log(res,'login' )
                     if (res.data.password == data.password ) {
                         setCurrentUser(res.data)
                     setData(obj)
@@ -38,9 +39,11 @@ const Login = () => {
         setResponse('Loading......')
     }
     const loginSucessFunc = async () => {
+        console.log('curentuser sucess', currentUser)
         setCurrentUserVal(currentUser)
         setResponse('Login Sucessfully')
         setCookie(currentUser._id, 2)
+        socket.emit('new-user')
     }
     useEffect(() => {
         if (Object.keys(currentUser).length > 2) {
@@ -74,7 +77,7 @@ const Login = () => {
                             <h3> Status: {response} </h3>
                         </div>
                     </>
-                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse}/>
+                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse} socket={socket}/>
             }
         </div>
     )

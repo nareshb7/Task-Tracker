@@ -21,10 +21,6 @@ const signinSchema = mongoose.Schema({
         type:String,
         require:true
     },
-    conPassword: {
-        type:String,
-        require: true
-    },
     binaryData : {
         type: String,
         require: true
@@ -48,15 +44,14 @@ const signinSchema = mongoose.Schema({
     gender: {
         type: String,
         require: true
+    },
+    status : {
+        type:String,
+        default: 'Online'
+    },
+    newMessages: {
+        type:Object,
+        default:{}
     }
 })
-
-const currentUserSchema = mongoose.Schema({
-    currentUser : {
-        type: String,
-        require: true
-    }
-})
-
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)
-module.exports.currentUserModel = mongoose.model('CurrentUser', currentUserSchema)
