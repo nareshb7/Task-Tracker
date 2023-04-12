@@ -1,6 +1,6 @@
 const multer = require('multer')
 
-const {signUpModel, currentUserModel} = require('../models/UsersModel')
+const {signUpModel} = require('../models/UsersModel')
 const {deletedUsers}  =require('../models/TaskModel')
 
 
@@ -21,47 +21,31 @@ const signinStorage = multer({
 }).single('profileImage')
 
 module.exports.signUpData = async (req, res) => {
-    signinStorage(req, res, (err) => {
-        const { data } = req.body
-        if (err) {
-            console.log(err)
-        } else {
-            const saveImage = new signUpModel(data)
-            saveImage.save().then(() => res.send('Account Created Sucessfully')).catch(err => res.send('Error Occured'))
-        }
-    })
+    const {data} = req.body
+    await signUpModel.create(data).then(data=> res.status(200).send(data)).catch(err=> res.status(401).send(err))
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req, res) => {
-    const { value } = req.body
+    const { value, password } = req.body
     let key = "email"
     if (value.match(/[\d]{10}/)){
         key = "mobile"
     }
     const result = await signUpModel.findOne({[key]: value })
-    result.status = 'Online'
-    await result.save()
-    res.send(result)
-}
-
-module.exports.setCurrentUser = async (req, res) => {
-    const { currentUser } = req.body
-    await currentUserModel.deleteMany()
-    const savedata = await new currentUserModel(currentUser)
-    await savedata.save().then(() => res.send('Login Sucessful')).catch(err => res.send(err))
-}
-
-module.exports.getCurrentUser = async (req, res) => {
-    await currentUserModel.find({}, { _id: 0 }).then(data => res.send(data)).catch(err => res.send(err))
-}
-
-module.exports.deleteCurrentUser = async (req, res) => {
-    await currentUserModel.deleteMany().then(data => res.send(data)).catch(err => res.send(err))
+    if (result) {
+        result.status = 'Online'
+        await result.save()
+    }
+    res.status(200).json(result)
 }
 
 module.exports.getParticularUser = async (req, res) => {
     const { id } = req.body
     const result = await signUpModel.findOne({ _id: id })
+    if(result) {
+        result.status = 'Online'
+        await result.save()
+    }
     res.send(result)
 }
 module.exports.getAllUsers = async (req, res) => {
@@ -95,9 +79,9 @@ module.exports.updateUser = async (req, res) => {
 }
 module.exports.userLogout =async (req,res)=> {
     console.log('logout', req.body)
-    const {id} = req.body
-    const result = await signUpModel.findOne({_id: id })
-    // const obj ={...result._doc, status: 'Online'}
+    const {_id, newMessages} = req.body
+    const result = await signUpModel.findById({_id })
+    result.newMessages = newMessages
     result.status = 'Offline'
     await result.save()
     res.send(result)

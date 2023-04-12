@@ -23,7 +23,6 @@ const Login = () => {
         axios.post('/api/loginData', data)
             .then(res => {
                 if (res.data){
-                    console.log(res,'login' )
                     if (res.data.password == data.password ) {
                         setCurrentUser(res.data)
                     setData(obj)
@@ -39,9 +38,9 @@ const Login = () => {
         setResponse('Loading......')
     }
     const loginSucessFunc = async () => {
-        console.log('curentuser sucess', currentUser)
         setCurrentUserVal(currentUser)
         setResponse('Login Sucessfully')
+        console.log('LoggedIn User', currentUser)
         setCookie(currentUser._id, 2)
         socket.emit('new-user')
     }

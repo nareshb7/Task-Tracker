@@ -33,14 +33,12 @@ const AdminPage = () => {
             .then(data => {
                 setUsers(data.data)
                 const val = data.data.filter(user => user?.reqforAdmin == true && user.isAdmin === false)
-                console.log(val, 'admin requestlist')
                 setAdminReqData(val)
             })
             .catch(err => console.log(err, 'err'))
         axios.get('/api/getmailreqIDs')
             .then(data => {
                 setMailChangeReqIDs(data.data)
-                console.log(data.data, 'mailreq gggdata')
             })
             .catch(err => console.log(err, 'error'))
     }, [])
@@ -57,14 +55,12 @@ const AdminPage = () => {
     const removeUser = (user) => {
         let cnfrm = window.confirm(`Do you want to delete ${user.fName}'s account ??`)
         if (cnfrm) {
-            console.log('id::', user._id)
             axios.delete('/api/deleteuser', {
                 data: { id: user._id }, headers: {
                     Authorization: `Bearer`,
                 },
             })
                 .then(data => {
-                    console.log(data, 'data deleted')
                     let newData = users.filter(user => user._id != data.data._id)
                     setUsers(newData)
                     setAlert(data.data.fName + " " + data.data.lName, 'Deleted')
@@ -74,7 +70,6 @@ const AdminPage = () => {
     }
 
     const updateUser = (user) => {
-        console.log(user, 'update')
         let status = user.isActive
         let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
         if (cnfrm) {
@@ -91,7 +86,6 @@ const AdminPage = () => {
         let sortData = JSON.parse(JSON.stringify(users))
         if (type == 'asc') {
             sortData.sort((a, b) => {
-                console.log('sort', a)
                 if (a[val] > b[val]) {
                     return 1
                 } if (a[val] < b[val]) {
@@ -120,7 +114,6 @@ const AdminPage = () => {
         setIsModalOpen(true)
     }
     const requestAcceptFunc = (id, type) => {
-        console.log(id, type)
         const updateKey = type ? 'isAdmin' : 'reqforAdmin'
         let cnfrm = window.confirm(`Do you want to ${type ? "accept" : "reject"} the request ? `)
         if (cnfrm) {
@@ -138,7 +131,6 @@ const AdminPage = () => {
     }
 
     const mailChangeAcceptFunc = (id, type) => {
-        console.log(id, type, 'mailchangeaCCEPT FUNC')
         const mailUpdateData = mailChangeReqIDs.find(val => val._id == id)
         let cnfrm = window.confirm(`Do you want to ${type ? "accept" : "reject"} the request ? `)
         if (cnfrm) {
@@ -151,7 +143,6 @@ const AdminPage = () => {
                 axios.post('api/adminupdateuser', { id, updateValue: apiPayload, update: 'MULTIPLE' })
                     .then(res => {
                         let newData = mailChangeReqIDs.filter(val => val._id != res.data._id)
-                        console.log(res, 'res', newData)
                         setMailChangeReqIDs(newData)
                     })
                     .catch(err => console.log(err, 'User Update Err'))
@@ -165,7 +156,6 @@ const AdminPage = () => {
             // Deleting the req in database
             axios.post('/api/mailupdatereq', { user: { id: id, updateKey: 'DELETE' } })
                 .then(res => {
-                    console.log(res, 'res')
                     let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
                     setMailChangeReqIDs(newData)
                 })
@@ -178,18 +168,15 @@ const AdminPage = () => {
         empDetails['technologies'] = [...new Set(result.map(val => val.technology))]
         setShowEmpData(empDetails)
         setShowEmpModal(true)
-        console.log(empDetails, 'emp')
     }
     const getMailReqIDs = () => {
         if (!mailChangeReqIDs[0]?.fName) {
             let final = users.filter(valu => valu.reqforMailChange).map(val => {
                 let obj = mailChangeReqIDs.find(ids => ids.id == val._id)
-                console.log(obj, 'obj', val)
                 val['updateData'] = obj
                 return val
             })
 
-            console.log(mailChangeReqIDs, 'mail', final)
             setMailChangeReqIDs(final)
         }
         setMailChangeModal(true)

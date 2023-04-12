@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { setCookie } from '../utils/CookieComp'
 import UserIssues, { uploadedIssues } from '../issues/UserIssues'
 import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
 import ChatBox from './chatBox/ChatBox'
 import {io} from 'socket.io-client'
 import { BE_URL } from '../utils/Constants'
 import { logoutFunc } from '../utils/LogoutFunc'
+import { setCookie } from '../utils/CookieComp'
 
 const SOCKET_URL = BE_URL
 const socket = io(SOCKET_URL)
@@ -27,12 +27,10 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
   useEffect(() => {
     setCurrentUser(currentUserVal)
   }, [currentUserVal])
-  console.log(location.state, 'location out')
 
   useEffect(() => {
     if (location.state?.status === 'Success') {
       // It will trigger only after verifying the mail with otp
-      console.log(location.state, 'location')
       async function updateMail() {
         currentUserVal['reqforMailChange'] = true
         const user = { id: currentUserVal._id, ...location.state.data }
@@ -55,8 +53,8 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
   const logout =async  (id) => {
     setCurrentUser({})
     setCurrentUserVal({})
+    await logoutFunc(currentUserVal)
     setCookie("63dab3b51d791ebc7821db51", 2)
-    await logoutFunc(id)
     setResponse('Please Login')
     socket.emit('new-user')
   }
@@ -96,7 +94,6 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
     const { updateKey, updateValue } = adminUpdates
     let length = 0
     if (updateKey == 'email') {
-      console.log(emailpattern.test(updateValue), 'email')
       if (emailpattern.test(updateValue) && updateValue != currentUser.email) {
         length = length + 1
       } else {
@@ -104,7 +101,6 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
       }
     }
     if (updateKey == 'mobile') {
-      console.log(updateValue, 'uopdateVal')
       if (mobilePattern.test(updateValue) && updateValue != currentUser.mobile) {
 
         length = length + 1
@@ -114,7 +110,6 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
       }
     }
     if (length === 1) {
-      console.log('ur mail change req is sent to admin', adminUpdates)
       setReqMailError('Requset sending...')
       setAdminUpdates({ updateKey: 'email', updateValue: '' })
       navigate('/verifymail/login', { state: adminUpdates })

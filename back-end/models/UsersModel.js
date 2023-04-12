@@ -49,9 +49,10 @@ const signinSchema = mongoose.Schema({
         type:String,
         default: 'Online'
     },
-    newMessages: {
+    newMessages : {
         type:Object,
-        default:{}
-    }
-})
+        default: {}
+    },
+    designation : String,
+}, {minimize: false})
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)

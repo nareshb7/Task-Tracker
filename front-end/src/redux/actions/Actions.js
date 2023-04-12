@@ -14,8 +14,10 @@ export const AddNotification = (id, val)=> {
         val
     }
 }
-export const ResetNotification = ()=> {
+export const ResetNotification = (room, val)=> {
     return {
-        type: RESET_NOTIFICATION
+        type: RESET_NOTIFICATION,
+        payload:room,
+        val
     }
 }

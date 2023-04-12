@@ -23,13 +23,11 @@ const MailVerification = () => {
             
             setUserOtp('')
             setOtp('')
-            console.log('accounnt created')
         } else {
             setResponse('OTP is not matching')
         }
     }
     const adminAcVerify =(creds)=>{
-        console.log(creds, 'credsss')
         const apiPayload = creds.email || creds.updateKey
         axios.post('/api/mailverification',{apiPayload})
         .then(data => {

@@ -21,13 +21,11 @@ const UserUpdate = () => {
     }
     const handleSubmit =async (updatedData)=> {
       setResponse('Submitting....')
-      console.log(updatedData, '972=updateFunc')
       const apiResponse = await fetchCall('api/adminupdateuser', {id :updatedData._id ,updateValue: updatedData, update: 'MULTIPLE'} )
       if(apiResponse._id) {
         successFunc(apiResponse)
       }else {
         setResponse('Error Occured')
-        console.log('Error', apiResponse)
       }
     }
 

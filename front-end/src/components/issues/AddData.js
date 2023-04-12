@@ -87,7 +87,6 @@ const AddData = () => {
             newData.binaryData = await Promise.all(newData.issueImages.map((file) => convertToBase64(file.image)))
             newData.issueImages = [{ image: '' }]
             newData.solutions = [{ solution: newData.solution }]
-            console.log('972==submit ', newData)
             let response = await fetchCall('api/setData', { data: newData })
             dispatch(addIssue(newData))
             setStatus(response)

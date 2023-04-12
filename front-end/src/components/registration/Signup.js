@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import './Signup.css'
 import SignupForm from './Form'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { UserContext } from '../../App'
+import { setCookie } from '../utils/CookieComp'
 
 const Signup = () => {
     const navigate = useNavigate()
+    const {setCurrentUserVal, socket} = useContext(UserContext)
     const location = useLocation()
     const [response, setResponse] = useState('')
     const [errors, setErrors] = useState({})
@@ -14,21 +17,19 @@ const Signup = () => {
         if (location.state?.status=== 'Success'){
             addUser(location.state.data)
             setResponse('Creating ur account...')
-            console.log(location.state.data, 'returned data use')
         }
         
     },[location.state])
     
     const addUser =(creds)=> {
-        axios.post('/api/signupData', { data: creds}, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            }
-        })
+        axios.post('/api/signupData', { data: creds})
             .then(res => {
-                setResponse(res.data)
+                // setResponse(res.data)
                 setIsSubmitted(true)
-                navigate('/')
+                setCurrentUserVal(res.data)
+                setCookie(res.data._id, 2)
+                socket.emit('new-user')
+                navigate('/login')
             })
             .catch(err => setResponse(JSON.stringify(err)))
     }   
@@ -36,7 +37,6 @@ const Signup = () => {
     const verifyData =async (checkdata)=> {
         let res = await axios.get('/api/getallusers')
         let isValid = await res.data.filter(val => val.email === checkdata.email || val.mobile.toString() === checkdata.mobile)
-        console.log(isValid, '972==isValid')
         if (isValid.length) {
             let val=''
             if (isValid[0].email === checkdata.email){
@@ -50,7 +50,6 @@ const Signup = () => {
         } else {
             if (checkdata.isAdmin === false) {
                 navigate('/verifymail/signup', {state: checkdata})
-                console.log(checkdata, 'data verified')
             }
         }
     }
@@ -59,7 +58,6 @@ const Signup = () => {
         const d = new Date()
         submitedData['joinedDate'] = d
         verifyData(submitedData)
-        console.log(submitedData, 'signindata', response)
         setResponse('Submitting...')
     }
     return (

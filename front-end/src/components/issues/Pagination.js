@@ -24,7 +24,6 @@ const Pagination = (props) => {
         }
     };
     const handlePagesizeChange = (e) => {
-        console.log('handleChange', e.target.value)
         setPageSize(Number(e.target.value))
         setCurrentPage(0)
     }

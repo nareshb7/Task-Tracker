@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { UserContext } from '../App'
-import { setCookie } from './utils/CookieComp'
 import { GreenDot, RedDot } from './utils/Dots/Dots'
 import { BE_URL } from './utils/Constants'
 import { fetchCall } from './utils/fetch/UseFetch'
 import { logoutFunc } from './utils/LogoutFunc'
+import { setCookie } from './utils/CookieComp'
 
 const Nav = () => {
     const { currentUserVal, setCurrentUserVal, socket } = useContext(UserContext)
@@ -26,7 +26,8 @@ const Nav = () => {
         console.log("Backend",be)
     },[window.location.pathname])
     const logout =async (id)=> {
-        await logoutFunc(id)
+        await logoutFunc(currentUserVal)
+        setCookie("63dab3b51d791ebc7821db51", 2)
         setCurrentUserVal({})
         navigate('/login')
         socket.emit('new-user')

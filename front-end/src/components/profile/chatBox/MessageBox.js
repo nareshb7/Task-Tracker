@@ -34,7 +34,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         const today = new Date()
         const minutes = today.getMinutes() < 10 ? "0"+ today.getMinutes() : today.getMinutes()
         const time = today.getHours()+ ':'+ minutes;
-        const val = {fName: user.fName, lName: user.lName, id: user._id, picture: user.binaryData}
+        const val = {fName: user.fName, lName: user.lName, id: user._id}
         socket.emit('message-room',roomId, message, val, time, todayDate)
         setMessage('')
         return

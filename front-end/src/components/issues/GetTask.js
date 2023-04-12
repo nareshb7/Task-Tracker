@@ -41,7 +41,6 @@ const GetTask = () => {
         let result = []
         if (name === 'appType') {
             result = value === 'All' ? data : data.filter(val => val.appType === value)
-            console.log(result, value)
         } else {
             applyFilters.appType = 'All'
             result = data.filter(val => {
@@ -60,7 +59,6 @@ const GetTask = () => {
         navigate(`/description`, { state: val })
     }
     const editFunc = (id, data) => {
-        console.log('Edit button clicekd', id)
         navigate('/addIssue', {state: {data, mode:'UPDATE'}})
     }
     const deleteFunc = (id) => {

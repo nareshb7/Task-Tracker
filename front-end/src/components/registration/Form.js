@@ -17,7 +17,8 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
     isAdmin:false,
     isActive: true,
     reqforAdmin: false,
-    solutions:[]
+    solutions:[],
+    designation: ''
   };
   const emailpattern =/^[a-z][a-z0-9]+@[a-z]+(?:[.][a-z]{2,})+$/   
   const mblPattern = /^[\d]{10}$/;
@@ -44,6 +45,7 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
       )
       .test('FILE-SIZE', 'File is too large', (value) => value.size < 300000)
       .required('File required'),
+    designation: Yup.string().required('Designation required')
   };
     const removeImage = ()=> {
         console.log('image dlt clicked')
@@ -64,12 +66,11 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
   const handleSubmit =async (val, actions) => {
     val.binaryData = await convertToBase64(val.profileImage)
     delete val.profileImage
-    console.log(val, 'submitted', actions);
     submitFunc(val)
     // val.setSubmitting(isSubmitted)
   };
   const handleValidate =(val)=> {
-    console.log(val, 'validate func')
+    // console.log(val, 'validate func')
   }
   return (
     <div>
@@ -129,6 +130,14 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
                           : ''
                       }`}/>
                 <ErrorMessage name='conPassword' component='div' className='errMsz' />
+            </div>
+            <div>
+              <Field type='text' name='designation' placeholder='Your role in company' className={`inputField ${
+                        errors.designation && touched.designation
+                          ? 'is-invalid'
+                          : ''
+                      }`}  />
+              <ErrorMessage name='designation' component='div' className='errMsz' />
             </div>
             <div>
                 <Field as='select' name='gender' placeholder='Enter your first name' className={`inputField ${

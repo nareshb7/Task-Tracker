@@ -25,10 +25,8 @@ const ForgotPassword = () => {
         setPassword('')
         
     }
-    console.log(mobile, 'mobile')
     const handleName = () => {
         let res = mobile.fName == fName
-        console.log(res, 'res')
         if (res){
             setPassword(`Your password is : ${mobile.password}`)
         } else {

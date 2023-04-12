@@ -12,8 +12,16 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     gap:15px
+}
+.chatBox-div .author-details {
+    width:19vw;
+}
+.chatBox-div .notification-icon {
+    background-color: #008169;
+    padding: 5px;
+    border-radius: 50%;
 }
 .chatBox-div .img {
     width: 50px;
