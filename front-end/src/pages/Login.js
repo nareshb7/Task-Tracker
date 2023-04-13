@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { setCookie } from '../components/utils/CookieComp'
 import { UserContext } from '../App'
 import MyProfile from './MyProfile'
+import { Col, Row, Form, Button } from 'react-bootstrap'
+import './style/Login.css'
 
 const Login = () => {
-    const {currentUserVal, setCurrentUserVal, socket} = useContext(UserContext)
+    const { currentUserVal, setCurrentUserVal, socket } = useContext(UserContext)
     const obj = {
         value: '',
         password: ''
@@ -22,14 +24,14 @@ const Login = () => {
         e.preventDefault()
         axios.post('/api/loginData', data)
             .then(res => {
-                if (res.data){
-                    if (res.data.password == data.password ) {
+                if (res.data) {
+                    if (res.data.password == data.password) {
                         setCurrentUser(res.data)
-                    setData(obj)
+                        setData(obj)
                     } else {
                         setResponse('Password not matching..')
                     }
-                    
+
                 } else {
                     setResponse('No user found..')
                 }
@@ -48,35 +50,44 @@ const Login = () => {
         if (Object.keys(currentUser).length > 2) {
             if (currentUser.isActive) {
                 loginSucessFunc()
-            }else {
+            } else {
                 setResponse('Access Denied')
             }
-        } 
+        }
     }, [currentUser])
     return (
         <div>
             {
                 !currentUserVal.hasOwnProperty('fName') ? (
-                    <>
-                        <form onSubmit={handleSubmit}>
+                    <Row>
+                        <Col md={7} className='login__bg'></Col>
+                        <Col md={5} className='d-flex flex-direction-column align-items-center justify-content-center bg'>
                             <div>
-                                <label>Enter your Email / Mobile: </label>
-                                <input type='text' name='value' value={data.value} onChange={handleChange} />
+                                <Form style={{ width: '80%', maxWidth: 500 }} onSubmit={handleSubmit}>
+                                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                                        <Form.Label>Email address</Form.Label>
+                                        <Form.Control type="text" placeholder="Email or Mobile" name='value' value={data.value} onChange={handleChange} />
+                                        <Form.Text className="text-muted">
+                                            We'll never share your email with anyone else.
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                                        <Form.Label>Password</Form.Label>
+                                        <Form.Control type="password" placeholder="Password" name='password' value={data.password} onChange={handleChange} />
+                                    </Form.Group>
+                                    <Button variant='primary' type='submit'>Login</Button>
+                                </Form>
+                                <div className='py-4'>
+                                    <p className='text-center'>
+                                        Don't have an account ? <Link to='/signup'>Signup</Link>
+                                    </p>
+                                    <p className='text-center'>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></p>
+                                    <h5> Status: {response} </h5>
+                                </div>
                             </div>
-                            <div>
-                                <label>Enter your password</label>
-                                <input type='text' name='password' value={data.password} onChange={handleChange} />
-                            </div>
-                            <div>
-                                <button type='submit'>Login</button>
-                            </div>
-                        </form>
-                        <div>
-                            <h4>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></h4>
-                            <h3> Status: {response} </h3>
-                        </div>
-                    </>
-                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse} socket={socket}/>
+                        </Col>
+                    </Row>
+                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse} socket={socket} />
             }
         </div>
     )

@@ -1,0 +1,11 @@
+.login__bg {
+    background-image: url('../../assets/login__bg.jpg');
+    height: 92vh;
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    overflow-x: hidden;
+}
+.bg {
+    background: linear-gradient(45deg, #a0a19f, #362d2d);
+}
