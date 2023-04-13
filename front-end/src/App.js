@@ -1,14 +1,14 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
-import Nav from './components/Nav'
 import { Provider } from 'react-redux';
-import RoutesComp from './components/RoutesComp';
+import RoutesComp from './pages/RoutesComp';
 import useAuth from './components/utils/Authentication';
 import { store } from './redux/store/Store';
-import Footer from './components/Footer';
+import Footer from './pages/Footer';
 import { BE_URL } from './components/utils/Constants';
 import { logoutFunc } from './components/utils/LogoutFunc';
 import { setCookie } from './components/utils/CookieComp';
+import Navigation from './pages/Nav';
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
@@ -43,7 +43,7 @@ function App() {
   return (
     <Provider store={store} >
       <UserContext.Provider value={value}>
-        <Nav />
+        <Navigation />
         <RoutesComp />
         <Footer/>
       </UserContext.Provider>

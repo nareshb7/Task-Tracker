@@ -3,9 +3,9 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { UserContext } from '../../App'
-import { addIssue } from '../../redux/actions/issues/Actions'
-import { fetchCall } from '../utils/fetch/UseFetch'
+import { UserContext } from '../App'
+import { addIssue } from '../redux/actions/issues/Actions'
+import { fetchCall } from '../components/utils/fetch/UseFetch'
 
 const AddData = () => {
     const dispatch = useDispatch()

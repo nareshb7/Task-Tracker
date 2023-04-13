@@ -2,10 +2,10 @@ import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { UserContext } from '../../App'
-import Loader from '../utils/loader/Loader'
-import useRandomNum from '../utils/RandomNum'
-import Pagination from './Pagination'
+import { UserContext } from '../App'
+import Loader from '../components/utils/loader/Loader'
+import useRandomNum from '../components/utils/RandomNum'
+import Pagination from '../components/issues/Pagination'
 
 const GetTask = () => {
     const stateIssues = useSelector(state => state.issues)

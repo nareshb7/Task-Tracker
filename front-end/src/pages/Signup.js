@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import './Signup.css'
-import SignupForm from './Form'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { UserContext } from '../../App'
-import { setCookie } from '../utils/CookieComp'
+import SignupForm from '../components/registration/Form'
+import { UserContext } from '../App'
+import { setCookie } from '../components/utils/CookieComp'
+import './style/Signup.css'
 
 const Signup = () => {
     const navigate = useNavigate()

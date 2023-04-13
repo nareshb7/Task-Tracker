@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import UserIssues, { uploadedIssues } from '../issues/UserIssues'
-import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
-import ChatBox from './chatBox/ChatBox'
+import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
+import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import {io} from 'socket.io-client'
-import { BE_URL } from '../utils/Constants'
-import { logoutFunc } from '../utils/LogoutFunc'
-import { setCookie } from '../utils/CookieComp'
+import { BE_URL } from '../components/utils/Constants'
+import { logoutFunc } from '../components/utils/LogoutFunc'
+import { setCookie } from '../components/utils/CookieComp'
 
 const SOCKET_URL = BE_URL
 const socket = io(SOCKET_URL)

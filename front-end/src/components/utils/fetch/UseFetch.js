@@ -15,3 +15,8 @@ export const fetchGetCall = async (url, data) => {
     .then(res=> res.data)
     .catch(err => err.message)
 }
+export const fetchDeletecall = async (url, data) => {
+    return await axios.delete(url, {data})
+    .then(res => res.data)
+    .catch(err => err.message)
+}

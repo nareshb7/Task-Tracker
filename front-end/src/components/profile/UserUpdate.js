@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import SignupForm from '../registration/Form'
 import { useLocation, useNavigate } from 'react-router-dom'
-import '../registration/Signup.css'
+// import '../registration/Signup.css'
 import { UserContext } from '../../App'
 import { fetchCall } from '../utils/fetch/UseFetch'
 

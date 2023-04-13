@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { NavLink } from 'react-router-dom'
-import { setCookie } from '../utils/CookieComp'
-import { UserContext } from '../../App'
-import MyProfile from '../profile/MyProfile'
+import { setCookie } from '../components/utils/CookieComp'
+import { UserContext } from '../App'
+import MyProfile from './MyProfile'
 
 const Login = () => {
     const {currentUserVal, setCurrentUserVal, socket} = useContext(UserContext)

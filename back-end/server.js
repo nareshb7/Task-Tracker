@@ -67,7 +67,6 @@ const sortRoomMessagesByDate =(messages)=> {
         date2 = date2[2]+ date2[0]+ date2[1] 
         return date1 < date2 ? -1 : 1
     })
-
 }
 io.on('connection',async (socket)=> {
     console.log('connected', socket.id)
@@ -101,4 +100,5 @@ server.listen(port, () => {
         })
     })
 })
+module.exports = {getLastMessagesFromRoom,sortRoomMessagesByDate }
 module.exports.server = app

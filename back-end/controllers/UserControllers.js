@@ -78,11 +78,10 @@ module.exports.updateUser = async (req, res) => {
     }
 }
 module.exports.userLogout =async (req,res)=> {
-    console.log('logout', req.body)
-    const {_id, newMessages} = req.body
+    const {_id, newMessages, status} = req.body
     const result = await signUpModel.findById({_id })
     result.newMessages = newMessages
-    result.status = 'Offline'
+    result.status = status
     await result.save()
     res.send(result)
 }

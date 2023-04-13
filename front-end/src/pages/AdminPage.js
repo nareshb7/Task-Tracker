@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
-import { UserContext } from '../../App'
-import Modal from '../modal/Modal'
-import UserIssues, { uploadedIssues } from '../issues/UserIssues'
-import Loader from '../utils/loader/Loader'
+import { UserContext } from '../App'
+import Modal from '../components/modal/Modal'
+import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
+import Loader from '../components/utils/loader/Loader'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -56,7 +56,8 @@ const AdminPage = () => {
         let cnfrm = window.confirm(`Do you want to delete ${user.fName}'s account ??`)
         if (cnfrm) {
             axios.delete('/api/deleteuser', {
-                data: { id: user._id }, headers: {
+                data: { id: user._id }, 
+                headers: {
                     Authorization: `Bearer`,
                 },
             })

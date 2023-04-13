@@ -1,20 +1,25 @@
+const Message = require('../models/MessageModel')
 
-// const Messages = require('../models/MessageModel')
-
-// const {Server} = require('socket.io')
-// const server= require('../server')
-
-// module.exports.messages = async (req,res)=> {
-//     const io = new Server(server, {
-//         cors: {
-//             origin: 'http://localhost:3030',
-//             methods: ['GET', 'POST']
-//         }
-//     } )
-//     io.on('connection', (socket)=> {
-//         console.log(`USer Connected: ${socket.id}`)
-//         socket.on('send_message', (data)=> {
-//             console.log('send Message : ', data)
-//         })
-//     })
-// }
+const getLastMessagesFromRoom =async (room)=> {
+    let roomMessages =await Message.aggregate([
+        {$match : {to: room}},
+        {$group: {_id: '$date', messageByDate: {$push : '$$ROOT'}}}
+    ])
+    return roomMessages
+}
+const sortRoomMessagesByDate =(messages)=> {
+    return messages.sort((a, b)=> {
+        let date1 = a._id.split('/')
+        let date2 = b._id.split('/')
+        date1 = date1[2]+ date1[0]+ date1[1] 
+        date2 = date2[2]+ date2[0]+ date2[1] 
+        return date1 < date2 ? -1 : 1
+    })
+}
+module.exports.deleteMessage = async (req,res)=> {
+    const {id, roomId} = req.body
+    const result = await Message.findByIdAndDelete({_id:id})
+    let roomMessages = await getLastMessagesFromRoom(roomId)
+    roomMessages = await sortRoomMessagesByDate(roomMessages)
+    res.send(roomMessages)
+}

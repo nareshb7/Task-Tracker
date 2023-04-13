@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { fetchGetCall } from '../../utils/fetch/UseFetch'
-import './ChatBox.css'
-import MessageBox from './MessageBox'
-import Modal from '../../modal/Modal'
-import { UserContext } from '../../../App'
-import { GreenDot, RedDot } from '../../utils/Dots/Dots'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { AddNotification, ResetNotification } from '../../../redux/actions/Actions'
+import './ChatBox.css'
+import MessageBox from './MessageBox'
+import Modal from '../components/modal/Modal'
+import { UserContext } from '../App'
+import {AddNotification, ResetNotification} from '../redux/actions/Actions'
+import { fetchGetCall } from '../components/utils/fetch/UseFetch'
+import { GreenDot,RedDot } from '../components/utils/Dots/Dots'
 
 const ChatBox = () => {
     const { currentUserVal, socket } = useContext(UserContext)

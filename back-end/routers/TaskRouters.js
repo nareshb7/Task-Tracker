@@ -3,7 +3,7 @@ const router = Router()
 const { mailVerification, mailChangeReq, getmailchangeID} = require('../controllers/TaskControllers')
 const { setData, getData, addSolution, deleteSolution, updateSolution, uploadedIssues, getParticularSolution, issueStatus} = require('../controllers/IssueController')
 const {signUpData, logInUserData, getParticularUser, getAllUsers, deleteUser, updateUser, userLogout} = require('../controllers/UserControllers')
-const { messages } = require('../controllers/MessageController')
+const { messages, deleteMessage } = require('../controllers/MessageController')
 
 router.post('/setData', setData)
 router.get('/getData', getData)
@@ -23,6 +23,7 @@ router.get('/getmailreqIDs', getmailchangeID)
 router.post('/getParticularSolution', getParticularSolution)
 router.put('/issueStatus', issueStatus)
 router.post('/logout', userLogout)
+router.delete('/deletemessage', deleteMessage)
 // router.get('/usermessages',messages )
 
 
