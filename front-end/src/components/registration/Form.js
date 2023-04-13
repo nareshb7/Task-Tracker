@@ -2,25 +2,26 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import './Form.css';
+import { Row, Col, Button } from 'react-bootstrap';
 
-const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
+const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => {
   const initialObj = {
     fName: '',
     lName: '',
     mobile: '',
-    email:"",
+    email: "",
     password: '',
     conPassword: '',
     gender: '',
-    profileImage:'',
-    binaryData:'',
-    isAdmin:false,
+    profileImage: '',
+    binaryData: '',
+    isAdmin: false,
     isActive: true,
     reqforAdmin: false,
-    solutions:[],
+    solutions: [],
     designation: ''
   };
-  const emailpattern =/^[a-z][a-z0-9]+@[a-z]+(?:[.][a-z]{2,})+$/   
+  const emailpattern = /^[a-z][a-z0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
   const mblPattern = /^[\d]{10}$/;
   const psdPattern = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%&*<>]).{8,}$/
   const schema = {
@@ -47,135 +48,142 @@ const SignupForm = ({submitFunc, formData, error, isSubmitted, component}) => {
       .required('File required'),
     designation: Yup.string().required('Designation required')
   };
-    const removeImage = ()=> {
-        console.log('image dlt clicked')
-    }
-  const convertToBase64 =async (file)=> {
-            let result =await new Promise((resolve, reject)=> {
-                const filereader = new FileReader()
-                filereader.readAsDataURL(file)
-                filereader.onload =()=> {
-                    resolve(filereader.result)
-                }
-                filereader.onerror =(err)=>{
-                    reject(err)
-                } 
-            })
-            return result
-        }
-  const handleSubmit =async (val, actions) => {
+  const removeImage = () => {
+    console.log('image dlt clicked')
+  }
+  const convertToBase64 = async (file) => {
+    let result = await new Promise((resolve, reject) => {
+      const filereader = new FileReader()
+      filereader.readAsDataURL(file)
+      filereader.onload = () => {
+        resolve(filereader.result)
+      }
+      filereader.onerror = (err) => {
+        reject(err)
+      }
+    })
+    return result
+  }
+  const handleSubmit = async (val, actions) => {
     val.binaryData = await convertToBase64(val.profileImage)
     delete val.profileImage
     submitFunc(val)
     // val.setSubmitting(isSubmitted)
   };
-  const handleValidate =(val)=> {
+  const handleValidate = (val) => {
     // console.log(val, 'validate func')
   }
   return (
-    <div>
-      Signup:
-      <Formik
-        initialValues={formData || initialObj}
-        validationSchema={Yup.object().shape(schema)}
-        onSubmit={handleSubmit}
-        validate={handleValidate}
-      >
-        {({ errors, touched, setFieldValue, values }) => (
-          <Form className="form">
-            <div>
-              <Field type='text' name='fName' placeholder='Enter your first name' className={`inputField ${
-                        errors.fName && touched.fName
-                          ? 'is-invalid'
-                          : ''
-                      }`}/>
-                <ErrorMessage name='fName' component='div' className='errMsz'/>
-            </div>
-            <div>
-                <Field type='text' name='lName' placeholder='Enter your Last name' className={`inputField ${
-                        errors.lName && touched.lName
-                          ? 'is-invalid'
-                          : ''
-                      }`}/>
-                <ErrorMessage name='lName' component='div' className='errMsz' />
-            </div>
-            <div>
-                <Field type='text' name='email' disabled={component} placeholder='Enter your Email' className={`inputField ${
-                        (errors.email && touched.email) || (error?.email)
-                          ? 'is-invalid'
-                          : ''
-                      }`}/>
-                <ErrorMessage name='email' component='div' className='errMsz' />
-            </div>
-            <div>
-                <Field type='text' disabled={component} name='mobile' placeholder='Enter your Mobile number' className={`inputField ${
-                        (errors.mobile && touched.mobile )|| (error?.mobile)
-                          ? 'is-invalid'
-                          : ''
-                      }`}/>
-                <ErrorMessage name='mobile' component='div' className='errMsz' />
-            </div>
-            <div>
-                <Field type='password' name='password' placeholder='Enter a new password' className={`inputField ${
-                        errors.password && touched.password
-                          ? 'is-invalid'
-                          : ''
-                      }`}/>
-                <ErrorMessage name='password' component='div' className='errMsz' />
-            </div>
-            <div>
-                <Field type='password' name='conPassword' placeholder='Confirm Password' className={`inputField ${
-                        errors.conPassword && touched.conPassword
-                          ? 'is-invalid'
-                          : ''
-                      }`}/>
-                <ErrorMessage name='conPassword' component='div' className='errMsz' />
-            </div>
-            <div>
-              <Field type='text' name='designation' placeholder='Your role in company' className={`inputField ${
-                        errors.designation && touched.designation
-                          ? 'is-invalid'
-                          : ''
-                      }`}  />
-              <ErrorMessage name='designation' component='div' className='errMsz' />
-            </div>
-            <div>
-                <Field as='select' name='gender' placeholder='Enter your first name' className={`inputField ${
-                        errors.gender && touched.gender
-                          ? 'is-invalid'
-                          : ''
-                      }`}>
+    <Row>
+      <Col md={6} className='m-auto' >
+        <h3 className='text-center py-4'>{component || 'Signup'}</h3>
+        <Formik
+          initialValues={formData || initialObj}
+          validationSchema={Yup.object().shape(schema)}
+          onSubmit={handleSubmit}
+          validate={handleValidate}
+        >
+          {({ errors, touched, setFieldValue, values }) => (
+            <Form className="form">
+              <Row>
+                <Col md={6}>
+                  <Field type='text' name='fName' placeholder='Enter your first name' className={`inputField ${errors.fName && touched.fName
+                      ? 'is-invalid'
+                      : ''
+                    }`} />
+                  <ErrorMessage name='fName' component='div' className='errMsz' />
+                </Col>
+                <Col md={6}>
+                  <Field type='text' name='lName' placeholder='Enter your Last name' className={`inputField ${errors.lName && touched.lName
+                      ? 'is-invalid'
+                      : ''
+                    }`} />
+                  <ErrorMessage name='lName' component='div' className='errMsz' />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Field type='text' name='email' disabled={component} placeholder='Enter your Email' className={`inputField ${(errors.email && touched.email) || (error?.email)
+                      ? 'is-invalid'
+                      : ''
+                    }`} />
+                  <ErrorMessage name='email' component='div' className='errMsz' />
+                </Col>
+                <Col md={6}>
+                  <Field type='text' disabled={component} name='mobile' placeholder='Enter your Mobile number' className={`inputField ${(errors.mobile && touched.mobile) || (error?.mobile)
+                      ? 'is-invalid'
+                      : ''
+                    }`} />
+                  <ErrorMessage name='mobile' component='div' className='errMsz' />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Field type='password' name='password' placeholder='Enter a new password' className={`inputField ${errors.password && touched.password
+                      ? 'is-invalid'
+                      : ''
+                    }`} />
+                  <ErrorMessage name='password' component='div' className='errMsz' />
+                </Col>
+                <Col md={6}>
+                  <Field type='password' name='conPassword' placeholder='Confirm Password' className={`inputField ${errors.conPassword && touched.conPassword
+                      ? 'is-invalid'
+                      : ''
+                    }`} />
+                  <ErrorMessage name='conPassword' component='div' className='errMsz' />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Field type='text' name='designation' placeholder='Your role in company' className={`inputField ${errors.designation && touched.designation
+                      ? 'is-invalid'
+                      : ''
+                    }`} />
+                  <ErrorMessage name='designation' component='div' className='errMsz' />
+                </Col>
+                <Col md={6}>
+                  <Field as='select' name='gender' placeholder='Enter your first name' className={`inputField ${errors.gender && touched.gender
+                      ? 'is-invalid'
+                      : ''
+                    }`}>
                     <option value=''>Select an option</option>
                     <option value='male'>Male</option>
                     <option value='female'>Female</option>
                     <option value='notspecify'>Not specify</option>
-                </Field>
-                <ErrorMessage name='gender' component='div' className='errMsz' />
-            </div>
-            <div>
-                <input id='file' onChange={(e)=> setFieldValue(`profileImage`,e.target.files[0])} type="file" className={`inputfile inputField ${
-                        errors.profileImage && touched.profileImage
-                        ? 'is-invalid'
-                        : ''
+                  </Field>
+                  <ErrorMessage name='gender' component='div' className='errMsz' />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <input id='file' onChange={(e) => setFieldValue(`profileImage`, e.target.files[0])} type="file" className={`inputfile inputField ${errors.profileImage && touched.profileImage
+                      ? 'is-invalid'
+                      : ''
                     }`} />
-				        <label htmlFor='file'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>{values.profileImage?.name ? `${values.profileImage?.name.slice(0,5)}`: 'Choose a file'} &hellip;</span></label>
-                <ErrorMessage name='profileImage' component={'div'} className='errMsz' />
-            </div>
-            <div>
-              <button type="submit">Submit</button>
-            </div>
-            <div style={{display:'flex', flexWrap:'wrap', position:'relative'}}>
-           {
-                values.binaryData && !values.binaryData.name && <div><div style={{width:'100px', height:'100px'}}>
-                <img  src={values.binaryData}  style={{width:'100%', height:'100%'}}/></div>
-                <button style={{position: 'absolute', top:'0', right:'0', padding:'5px'}} onClick={removeImage}>X</button></div>
-            }
-            
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
+                  <label htmlFor='file'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span>{values.profileImage?.name ? `${values.profileImage?.name.slice(0, 5)}` : 'Choose a file'} &hellip;</span></label>
+                  <ErrorMessage name='profileImage' component={'div'} className='errMsz' />
+                </Col>
+                <Col md={6} style={{ display: 'flex', flexWrap: 'wrap', position: 'relative' }}>
+                  {
+                    values.binaryData && !values.binaryData.name && <div><div style={{ width: '100px', height: '100px' }}>
+                      <img src={values.binaryData} style={{ width: '100%', height: '100%' }} /></div>
+                      <button style={{ position: 'absolute', top: '0', right: '0', padding: '5px' }} onClick={removeImage}>X</button></div>
+                  }
+
+                </Col>
+
+              </Row>
+              <Row>
+                <Col className='text-center'>
+                  <Button variant='primary' type="submit">Submit</Button>
+                </Col>
+              </Row>
+
+            </Form>
+          )}
+        </Formik>
+      </Col>
+    </Row>
   );
 };
 export default SignupForm;

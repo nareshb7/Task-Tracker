@@ -25,7 +25,7 @@ const RoutesComp = () => {
                 <Route path='getIssue' element={<GetTask />} />
                 <Route path='description' element={<Description />} />
                 {
-                    currentUserVal.fName && (
+                    !currentUserVal.fName && (
                         <Route path='signup' element={<Signup />} />
                     )
                 }
