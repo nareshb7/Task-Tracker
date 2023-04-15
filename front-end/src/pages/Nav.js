@@ -8,9 +8,13 @@ import { UserContext } from '../App'
 // import { fetchCall } from '../utils/fetch/UseFetch'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
+import { useSelector } from 'react-redux'
+import '../chatBox/ChatBox.css'
 
 const Navigation = () => {
     const { currentUserVal, setCurrentUserVal, socket } = useContext(UserContext)
+    let  totalMessages; 
+    console.log(totalMessages, 'msssss')
     const navigate = useNavigate()
     const logout = async (id) => {
         await logoutFunc(currentUserVal)
@@ -19,6 +23,9 @@ const Navigation = () => {
         navigate('/login')
         socket.emit('new-user')
     }
+    useEffect(()=> {
+        totalMessages = currentUserVal.newMessages && Object.values(currentUserVal?.newMessages).reduce((a,b)=> a+b)
+    }, [currentUserVal])
     const handleStatus = async (e) => {
         if (e.target.checked) {
             await logoutFunc(currentUserVal, 'Online')
@@ -77,14 +84,16 @@ const Navigation = () => {
                             <Nav.Link >Admin Page</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/chat'>
-                            <Nav.Link >Chat</Nav.Link>
+                            <Nav.Link >Chat {totalMessages &&  <span className='notification-icon'>{ totalMessages}</span>}</Nav.Link>
                         </LinkContainer>
-                        <li>
-                            <label className="switch">
-                                <input type="checkbox" onChange={handleStatus} defaultChecked={true} />
-                                <span className="slider round"></span>
-                            </label>
-                        </li>
+                        {
+                            currentUserVal.fName && <li>
+                                <label className="switch">
+                                    <input type="checkbox" onChange={handleStatus} defaultChecked={true} />
+                                    <span className="slider round"></span>
+                                </label>
+                            </li>
+                        }
                         <LinkContainer to='/login'>
                             <Nav.Link > {currentUserVal.mobile ? "My  Profile" : "Login"}</Nav.Link>
                         </LinkContainer>

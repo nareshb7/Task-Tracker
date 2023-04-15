@@ -14,7 +14,7 @@ export default function Modal({ isOpen, setModal, children }) {
   return (
     <>
       {isOpen && (
-        <div className="modal">
+        <div className="modal-local">
           <div onClick={toggleModal} className="overlay"></div>
           <div className="modal-content">
             <>{children}</>
