@@ -21,7 +21,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             setMessages([])
             if(data && data.length) {
                 console.log('data', data)
-                setMessages(data[0].messageByDate)
+                setMessages(data)
             }
         })
     }, [socket])
@@ -47,7 +47,14 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         <div className='message-body' id='message-body'>
             <ScrollToBottom className='message-container' >
                 {
-                    messages.map((msz, idx) => {
+                    console.log('mszzzzs', messages)
+                }
+                {
+                    messages.map(msz=> {
+                        return <div key={msz._id+Math.random()}>
+                            <h3 style={{textAlign:'center'}}>{msz._id}</h3>
+                            {
+                    msz.messageByDate.map((msz, idx) => {
                         return <div key={idx} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>
                             <div><span className='message-text' >{msz.content}</span></div>
                             <div>
@@ -57,6 +64,10 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                         </div>
                     })
                 }
+                        </div>
+                    })
+                }
+                
             </ScrollToBottom>
         </div>
         <div className='message-input'>
