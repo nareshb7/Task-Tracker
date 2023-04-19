@@ -17,14 +17,18 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         return `${month}/${day}/${year}`
     }
     const todayDate = getFormattedDate()
-    useEffect(() => {
-        socket.on('room-messages', (data) => {
-            setMessages([])
-            if (data && data.length) {
-                setMessages(data)
-            }
-        })
-    }, [socket])
+
+    socket.off('room-messages').on('room-messages', (roomMessages)=> {
+        setMessages(roomMessages)
+    })
+    // useEffect(() => {
+    //     socket.on('room-messages', (data) => {
+    //         setMessages([])
+    //         if (data && data.length) {
+    //             setMessages(data)
+    //         }
+    //     })
+    // }, [socket])
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behaviour: 'smooth' })
     }
@@ -35,6 +39,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes()
         const time = today.getHours() + ':' + minutes;
         const val = { fName: user.fName, lName: user.lName, id: user._id }
+        console.log('sent Room id:;', roomId)
         socket.emit('message-room', roomId, message, val, time, todayDate)
         setMessage('')
         return

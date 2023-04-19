@@ -24,7 +24,7 @@ const Navigation = () => {
         socket.emit('new-user')
     }
     useEffect(()=> {
-        totalMessages = currentUserVal.newMessages && Object.values(currentUserVal?.newMessages).reduce((a,b)=> a+b)
+        // totalMessages = currentUserVal.newMessages && Object.values(currentUserVal?.newMessages)?.reduce((a,b)=> a+b)
     }, [currentUserVal])
     const handleStatus = async (e) => {
         if (e.target.checked) {

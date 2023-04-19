@@ -39,10 +39,11 @@ const ChatBox = () => {
     }, [])
     const selectedUser = (user, currentUserVal) => {
         const roomId = getRoomId(user._id, currentUserVal._id)
-        setCurrentRoom(roomId, currentRoom)
+        console.log('generated roomID', roomId)
+        setCurrentRoom(roomId)
         socket.emit('join-room', roomId)
         socket.emit('new-user')
-        dispatch(ResetNotification(roomId, currentUserVal))
+        // dispatch(ResetNotification(roomId, currentUserVal))
         setOpponent(user)
         setOpenMszList(true)
     }
