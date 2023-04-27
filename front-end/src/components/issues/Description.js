@@ -60,6 +60,7 @@ const Description = () => {
     if (response._id) {
       setData(response)
       setNewSolution('')
+      setAddSolutionShow(!addSolutionShow)
     } else {
       console.log('error', response)
     }

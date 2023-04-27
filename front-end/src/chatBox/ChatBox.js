@@ -10,7 +10,7 @@ import { fetchGetCall } from '../components/utils/fetch/UseFetch'
 import { GreenDot,RedDot } from '../components/utils/Dots/Dots'
 
 const ChatBox = () => {
-    const { currentUserVal, socket } = useContext(UserContext)
+    const { currentUserVal, socket, setTotalMessages , setCurrentUserVal } = useContext(UserContext)
     const stateData = useSelector(state => state.user)
     const dispatch = useDispatch()
     const [users, setUsers] = useState([])
@@ -24,8 +24,13 @@ const ChatBox = () => {
         setUsers(payload)
     })
 
-    socket.off('notifications').on('notifications', (room) => {
-        if(room !=currentRoom ) dispatch(AddNotification(room, currentUserVal))
+    socket.off('notifications').on('notifications', (room, id) => {
+        if(room !=currentRoom && currentUserVal._id == id ){
+         currentUserVal.newMessages[room] = (currentUserVal.newMessages[room] || 0 )+ 1
+        let totalMessage = currentUserVal.newMessages && Object.values(currentUserVal?.newMessages)?.reduce((a,b)=> a+b)
+        setTotalMessages(totalMessage)
+        setCurrentUserVal(currentUserVal)
+        }
     })
     const getRoomId = (id1, id2) => {
         if (id1 > id2) {
@@ -39,13 +44,15 @@ const ChatBox = () => {
     }, [])
     const selectedUser = (user, currentUserVal) => {
         const roomId = getRoomId(user._id, currentUserVal._id)
-        console.log('generated roomID', roomId)
         setCurrentRoom(roomId)
-        socket.emit('join-room', roomId)
+        socket.emit('join-room', roomId,currentRoom )
         socket.emit('new-user')
-        // dispatch(ResetNotification(roomId, currentUserVal))
+        currentUserVal.newMessages &&  delete currentUserVal.newMessages[roomId]
+         setCurrentUserVal(currentUserVal)
         setOpponent(user)
         setOpenMszList(true)
+        let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a,b)=> a+b)
+        setTotalMessages(totalMessage)
     }
     const imgPopup = (src) => {
         setImgSrc(src)

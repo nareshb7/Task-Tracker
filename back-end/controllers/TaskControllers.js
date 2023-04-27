@@ -14,7 +14,7 @@ const options = {
     from: 'narehsit7@gmail.com',
     to: '',
     subject: 'Email Verification',
-    text: 'Verification Code is : '
+    html: ''
 }
 
 
@@ -38,7 +38,7 @@ module.exports.mailVerification = async (req, res) => {
     const random = Math.random().toString(36).slice(2, 10)
     const d = new Date().toLocaleString()
     options.to = apiPayload
-    options.text = `Your confirmation password is : <b>" ${random} "</b> please provide this code on http://192.168.10.28:3030/verifymail/signup sent time : ${d}`
+    options.html = `<div>Your <i> OTP </i>is : <b> ${random} </b> sent time : ${d}</div>`
     transporter.sendMail(options, (err, info) => {
         if (err) {
             res.send(err)

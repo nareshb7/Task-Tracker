@@ -17,24 +17,34 @@ const socket = io(SOCKET_URL)
 function App() {
   const userDetails = useAuth()
   const [currentUserVal, setCurrentUserVal] = useState({})
-  const value = { currentUserVal, setCurrentUserVal, socket }
+  const [totalMessages, setTotalMessages] = useState(0)
+  const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages }
   useEffect(() => {
-    const handleTabClose =async  event => {
+    const handleTabClose = async (event) => {
       event.preventDefault();
-      console.log('currentuzuser',currentUserVal);
-      if(currentUserVal._id) {
+      console.log('currentuzuser', currentUserVal);
+      if (currentUserVal._id) {
         await logoutFunc(currentUserVal)
         socket.emit('new-user')
         console.log('iffff')
       }
-      return (event.returnValue =
-        'Are you sure you want to exit?');
+      if (event) {
+        event.returnValue = 'want to close...?'
+      }
+      // return (event.returnValue =
+      //   'Are you sure you want to exit?');
     };
     window.addEventListener('beforeunload', handleTabClose);
     return () => {
       window.removeEventListener('beforeunload', handleTabClose);
     };
   }, [currentUserVal]);
+  window.addEventListener('beforeunload', async function (e) {
+    e.preventDefault();
+   currentUserVal._id && await logoutFunc(currentUserVal)
+    socket.emit('new-user')
+    e.returnValue = '';
+  });
 
   useEffect(() => {
     socket.emit('new-user')
@@ -45,7 +55,7 @@ function App() {
       <UserContext.Provider value={value}>
         <Navigation />
         <RoutesComp />
-        <Footer/>
+        <Footer />
       </UserContext.Provider>
     </Provider>
   );

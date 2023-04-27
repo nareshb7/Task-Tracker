@@ -11,7 +11,7 @@ const Home = () => {
             <Col md={6} className='d-flex flex-direction-column align-items-center justify-content-center'>
                 <div>
                     <h1>Welcome ...</h1>
-                    <p>This is the Tracker Application, It will track your daily issue status</p>
+                    <p>This is the Task-Tracker Application, It will track your daily issue status</p>
                     {
                         !currentUserVal.fName && <div className='d-flex justify-content-around'>
                         <LinkContainer to='/login'>

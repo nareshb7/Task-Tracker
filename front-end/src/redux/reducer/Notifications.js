@@ -28,14 +28,16 @@
 import { ADD_NOTIFICATION, RESET_NOTIFICATION } from "../actionTypes/ActionTypes";
 
 export const NotificationReducer =(state= null, action)=> {
-    state = action.val || state
+    
     switch(action.type) {
         case ADD_NOTIFICATION : {
+            state = action.val || state
+            console.log('action::', action.val)
             return state.newMessages[action.payload]  = (state.newMessages[action.payload] || 0) + 1
         }
         case RESET_NOTIFICATION : {
-            delete state.newMessages[action.payload]
-            return state
+            delete action.val.newMessages[action.payload]
+            return action.val
         }
         default: return state
     }

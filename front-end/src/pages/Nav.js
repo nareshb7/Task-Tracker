@@ -10,11 +10,11 @@ import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
 import { useSelector } from 'react-redux'
 import '../chatBox/ChatBox.css'
+import Time from '../components/utils/Time'
 
 const Navigation = () => {
-    const { currentUserVal, setCurrentUserVal, socket } = useContext(UserContext)
-    let  totalMessages; 
-    console.log(totalMessages, 'msssss')
+    const { currentUserVal, setCurrentUserVal, socket, totalMessages } = useContext(UserContext)
+    
     const navigate = useNavigate()
     const logout = async (id) => {
         await logoutFunc(currentUserVal)
@@ -23,9 +23,7 @@ const Navigation = () => {
         navigate('/login')
         socket.emit('new-user')
     }
-    useEffect(()=> {
-        // totalMessages = currentUserVal.newMessages && Object.values(currentUserVal?.newMessages)?.reduce((a,b)=> a+b)
-    }, [currentUserVal])
+    
     const handleStatus = async (e) => {
         if (e.target.checked) {
             await logoutFunc(currentUserVal, 'Online')
@@ -36,31 +34,6 @@ const Navigation = () => {
         }
         socket.emit('new-user')
     }
-    // return (
-    //     <Navbar bg="light" expand="lg">
-    //   <Container>
-    //     <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-    //     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    //     <Navbar.Collapse id="basic-navbar-nav">
-    //       <Nav className="me-auto">
-    //         <Nav.Link href="#home">Home</Nav.Link>
-    //         <Nav.Link href="#link">Link</Nav.Link>
-    //         <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-    //           <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-    //           <NavDropdown.Item href="#action/3.2">
-    //             Another action
-    //           </NavDropdown.Item>
-    //           <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-    //           <NavDropdown.Divider />
-    //           <NavDropdown.Item href="#action/3.4">
-    //             Separated link
-    //           </NavDropdown.Item>
-    //         </NavDropdown>
-    //       </Nav>
-    //     </Navbar.Collapse>
-    //   </Container>
-    // </Navbar>
-    // )
 
     return (
         <Navbar bg="light" expand="lg">
@@ -84,7 +57,9 @@ const Navigation = () => {
                             <Nav.Link >Admin Page</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/chat'>
-                            <Nav.Link >Chat {totalMessages &&  <span className='notification-icon'>{ totalMessages}</span>}</Nav.Link>
+                            <Nav.Link >Chat 
+                                {currentUserVal._id && totalMessages != 0 &&  <span className='notification-icon'>{ totalMessages}</span>}
+                                </Nav.Link>
                         </LinkContainer>
                         {
                             currentUserVal.fName && <li>
@@ -111,37 +86,11 @@ const Navigation = () => {
                                 </NavDropdown>
                             )
                         }
+                        <Nav.Link>
+                            <Time />
+                        </Nav.Link>
                     </Nav>
-
                 </Navbar.Collapse>
-                {/* <nav>
-            <ul style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                    <li>
-                        <img src='' alt='' />
-                        Task-Tracker
-                    </li>
-                    <li><NavLink to='/'>Home </NavLink> </li>
-                    <li><NavLink to='addIssue'>Add Issue</NavLink> </li>
-                    <li><NavLink to='getIssue'>Issue's List</NavLink> </li>
-                    <li><NavLink to='adminpage'>Admin Page </NavLink> </li>
-                    <li><NavLink to='/chat' >Members</NavLink> </li>
-                    <li>DB : {be.db == 200 ? <GreenDot /> : <RedDot />}</li>
-                    <li>Server : {be.server == 200 ? <GreenDot /> : <RedDot />}</li>
-                    <li><label className="switch">
-                        <input type="checkbox" onChange={handleStatus} defaultChecked={true} />
-                            <span className="slider round"></span>
-                    </label> </li>
-                </div>
-                <div>
-                    <li><NavLink to='login'>{currentUserVal.mobile ? "My  Profile" : "Login"}</NavLink> </li>
-                    <li style={{ display: `${currentUserVal.mobile ? 'none' : 'inline-block'}` }}><NavLink to='signup'>Sign Up</NavLink> </li>
-                    <li><h3 style={{ marginBlock: '0' }}>{currentUserVal.status == 'Online' ? <GreenDot/> : <RedDot/>} {currentUserVal.hasOwnProperty('fName') && currentUserVal.fName + " " + currentUserVal.lName} </h3></li>
-                    <li style={{ display: `${currentUserVal.mobile ? 'inline-block' : 'none'}` }}><button onClick={() => logout(currentUserVal._id)}>LogOut </button> </li>
-                    <li><button onClick={() => navigate(-1)}>Back</button></li>
-                </div>
-            </ul>
-        </nav> */}
             </Container>
         </Navbar>
     )

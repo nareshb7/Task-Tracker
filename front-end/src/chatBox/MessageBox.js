@@ -21,14 +21,6 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
     socket.off('room-messages').on('room-messages', (roomMessages)=> {
         setMessages(roomMessages)
     })
-    // useEffect(() => {
-    //     socket.on('room-messages', (data) => {
-    //         setMessages([])
-    //         if (data && data.length) {
-    //             setMessages(data)
-    //         }
-    //     })
-    // }, [socket])
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behaviour: 'smooth' })
     }
@@ -40,8 +32,9 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         const time = today.getHours() + ':' + minutes;
         const val = { fName: user.fName, lName: user.lName, id: user._id }
         console.log('sent Room id:;', roomId)
-        socket.emit('message-room', roomId, message, val, time, todayDate)
+        socket.emit('message-room', roomId, message, val, time, todayDate, opponent._id)
         setMessage('')
+        console.log('oppo', opponent)
         return
     }
     const deleteMessage =async (id, author)=> {

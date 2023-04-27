@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
@@ -9,6 +9,7 @@ import { fetchCall } from '../components/utils/fetch/UseFetch'
 
 const AddData = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const locationState = useLocation()
     const [updateObj, setUpdateObj] = useState(locationState.state?.data)
     const [method, setMethod] = useState(locationState.state?.mode || 'ADD')
@@ -92,6 +93,7 @@ const AddData = () => {
             setStatus(response)
             if (response.includes('Sucessfully')) {
                 resetForm({ values: '' })
+                navigate('/getIssue')
             }
         }
         if (method === 'UPDATE') {
@@ -103,9 +105,10 @@ const AddData = () => {
                 if (response._id) {
                     setStatus('Data Updated Sucessfully')
                     resetForm({ values: '' })
+                    navigate('/getIssue')
                 }
             } else {
-                setStatus('Add atleast one Img')
+                setStatus('Add atleast one Image')
             }
         }
 
@@ -232,9 +235,9 @@ const AddData = () => {
                                     </div>
                                     <div>
                                         <div>
-                                            <label>Issue Title : </label>
+                                            <label>Requirement : </label>
                                         </div>
-                                        <Field type='text' name='issueTitle' placeholder='Issue title...' className={`inputField ${errors.issueTitle && touched.issueTitle
+                                        <Field type='text' name='issueTitle' placeholder="What's the requirment..." className={`inputField ${errors.issueTitle && touched.issueTitle
                                             ? 'is-invalid'
                                             : ''
                                             }`} />

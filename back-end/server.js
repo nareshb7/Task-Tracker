@@ -82,12 +82,12 @@ io.on('connection',async (socket)=> {
         roomMessages = sortRoomMessagesByDate(roomMessages)
         socket.emit('room-messages', roomMessages)
     })
-    socket.on('message-room', async (room, content, sender, time, date )=> {
+    socket.on('message-room', async (room, content, sender, time, date, opponentId )=> {
         const newMessage =await Message.create({to: room, content,from : sender, time, date})
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         io.to(room).emit('room-messages', roomMessages)
-        socket.broadcast.emit('notifications', room)
+        socket.broadcast.emit('notifications', room, opponentId)
     })
 })
 

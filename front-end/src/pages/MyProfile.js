@@ -149,7 +149,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
                 <div style={{ marginBlock: '10px' }}>
                   <select name='updateKey' defaultValue={adminUpdates.updateKey} onChange={handleChangeMailReq}>
                     <option value='email'>Email</option>
-                    <option value='mobile'>Mobile</option>
+                    {/* <option value='mobile'>Mobile</option> */}
                   </select>
                   <input placeholder='enter value here' type='text' name='updateValue' value={adminUpdates.updateValue} onChange={handleChangeMailReq} />
                   <div ><button onClick={handleMailReq}>Submit</button></div>

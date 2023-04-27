@@ -83,5 +83,6 @@ module.exports.userLogout =async (req,res)=> {
     result.newMessages = newMessages
     result.status = status
     await result.save()
+    console.log('Logout::', _id)
     res.send(result)
 }

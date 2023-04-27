@@ -28,13 +28,19 @@ const MailVerification = () => {
         }
     }
     const adminAcVerify =(creds)=>{
-        const apiPayload = creds.email || creds.updateKey
+        console.log('creds', creds)
+        if (creds.updateKey == 'email' || creds.email) {
+            const apiPayload = creds.email || creds.updateValue
+        console.log('api pl', apiPayload, creds)
         axios.post('/api/mailverification',{apiPayload})
         .then(data => {
-            setResponse(data.data.message +" - "+ creds.email)
+
+            setResponse(data.data.message +" - "+ apiPayload)
             setOtp(data.data.psd)
         })
         .catch(err => console.log(err,'creds err'))
+        }
+        
         setResponse('verification code is sending to your mail...')
     }
     

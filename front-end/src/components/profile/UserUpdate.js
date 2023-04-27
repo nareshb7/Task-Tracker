@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 // import '../registration/Signup.css'
 import { UserContext } from '../../App'
 import { fetchCall } from '../utils/fetch/UseFetch'
+import { Row } from 'react-bootstrap'
 
 const UserUpdate = () => {
     const state = useLocation()
@@ -30,13 +31,14 @@ const UserUpdate = () => {
     }
 
   return (
-    <div className='signupDiv'>
+    
+      <Row>
         <h2>User Update : </h2>
       <SignupForm submitFunc={handleSubmit} formData={data} component='UPDATE' />
       <div>
         <h3>Status : {response}</h3>
       </div>
-    </div>
+      </Row>
   )
 }
 
