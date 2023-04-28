@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux'
 import { UserContext } from '../App'
 import { addIssue } from '../redux/actions/issues/Actions'
 import { fetchCall } from '../components/utils/fetch/UseFetch'
+import { Row, Form as FormStyle, Col, Button } from 'react-bootstrap'
+import './style/AddIssue.css'
 
 const AddData = () => {
     const dispatch = useDispatch()
@@ -132,10 +134,10 @@ const AddData = () => {
         setValues(values)
     }
     return (
-        <div className='addIssueForm signupDiv' > {
-            Array.isArray(isLoggedin) ? "Loading...." : <>
-                {
-                    isLoggedin.hasOwnProperty('fName') ? <div>
+        <Row className='addIssue-main'>
+            {
+                isLoggedin.hasOwnProperty('fName') ? <Col md={10} className='m-auto'>
+                    <Row>
                         <Formik
                             initialValues={updateObj || obj}
                             validationSchema={Yup.object().shape(schema)}
@@ -144,167 +146,204 @@ const AddData = () => {
                         >
                             {({ values, errors, setFieldValue, touched, setValues }) => (
                                 <Form>
-                                    <div>
-                                        <div>
-                                            <label>Enter Developer Name : </label>
-                                        </div>
-                                        <Field name='dName' disabled />
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label>Enter Client Name : </label>
-                                        </div>
-                                        <Field name='cName' placeholder='Enter Client name...' type='text' className={`inputField ${errors.cName && touched.cName
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} />
-                                        <ErrorMessage name='cName' component='div' className='errMsz' />
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label>Mention the technology: </label>
-                                        </div>
-                                        <Field as='select' name='technology' className={`inputField ${errors.technology && touched.technology
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} >
-                                            {
-                                                technologies.map((val, idx) => {
-                                                    return (
-                                                        <option key={idx} value={val}>{val}</option>
-                                                    )
-                                                })
-                                            }
-                                        </Field>
-                                        <ErrorMessage name='technology' component='div' className='errMsz' />
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label>Provide the Company Name : </label>
-                                        </div>
-                                        <Field type='text' name='companyName' placeholder='Provide company name...' className={`inputField ${errors.companyName && touched.companyName
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} />
-                                        <ErrorMessage name='companyName' component={'div'} className='errMsz' />
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label>Application Type:</label>
-                                        </div>
-                                        <Field type='text' name='appType' list='applicationTypes' placeholder='Application Type..' className={`inputField ${errors.appType && touched.appType
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} />
-                                        <datalist id='applicationTypes'>
-                                            {
-                                                AppTypesDataList.map((app, idx) => {
-                                                    return (
-                                                        <option key={idx} value={app}>{app}</option>
-                                                    )
-                                                })
-                                            }
-                                        </datalist>
-                                        <ErrorMessage name='appType' component='div' className='errMsz' />
-                                    </div>
-                                    <div className='issueImage'>
-                                        <Field>
-
-                                            {({ field }) => (
-                                                <div>
-                                                    <label>Upload Issue Image : </label>
-                                                    <button type='button' onClick={() => addImageField(values, setValues, field)}>Add Image</button>
-                                                </div>
-                                            )}
-
-                                        </Field>
-                                        <FieldArray >
-                                            {() =>
-                                                values.issueImages?.map((image, idx) => {
-                                                    return (
-                                                        <div key={idx} style={{ position: 'relative' }}>
-                                                            <input id={`file${idx}`} onChange={(e) => setFieldValue(`issueImages.${idx}.image`, e.target.files[0])} type="file" className={`inputfile inputField ${true ? 'is-invalid' : ''}`} />
-                                                            <label htmlFor={`file${idx}`} ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span>{values.issueImages[idx]?.image?.name ? `${values.issueImages[idx]?.image.name.slice(0, 5)}` : ''} &hellip;</span></label>
-                                                            <button style={{ display: idx == 0 ? 'none' : 'inline-block', padding: '0', position: 'absolute' }} type='button' onClick={() => imgHandler(values, setValues, `${idx}`, "ADD")}>X</button>
-                                                            <ErrorMessage name={`issueImages.${idx}`} component={'div'} className='errMsz' />
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </FieldArray>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label>Requirement : </label>
-                                        </div>
-                                        <Field type='text' name='issueTitle' placeholder="What's the requirment..." className={`inputField ${errors.issueTitle && touched.issueTitle
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} />
-                                        <ErrorMessage name='issueTitle' component='div' className='errMsz' />
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label>Describe the issue :  </label>
-                                        </div>
-                                        <Field as='textarea' rows='5' cols={50} name='issue' placeholder='Describe issue here..' className={`inputField ${errors.issue && touched.issue
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} />
-                                        <ErrorMessage name='issue' component='div' className='errMsz' />
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label>Describe the Solution :  </label>
-                                        </div>
-                                        <Field as='textarea' rows='5' cols={50} name='solution' placeholder='What are the changes u made..' className={`inputField ${errors.solution && touched.solution
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} />
-                                        <ErrorMessage name='solution' component='div' className='errMsz' />
-                                    </div>
-                                    <div>
-                                        <Field as='select' name='issueStatus' className={`inputField ${errors.issueStatus && touched.issueStatus
-                                            ? 'is-invalid'
-                                            : ''
-                                            }`} >
-                                            <option value=''>Select the status</option>
-                                            <option value='Pending'>Pending</option>
-                                            <option value='Resolved'>Resolved</option>
-                                            <option value='Fixed'>Fixed</option>
-                                        </Field>
-                                        <ErrorMessage name='issueStatus' component='div' className='errMsz' />
-                                    </div>
-                                    <div>
-                                        {
-                                            method === 'UPDATE' &&
-                                            updateObj.binaryData.map((imgSrc, idx) => {
-                                                return <div key={idx} style={{ width: '100px', height: '100px' }}>
-                                                    <button onClick={() => imgHandler(values, setValues, `${idx}`, "UPDATE")} >x</button>
-                                                    <img src={imgSrc} alt='issueImg' style={{ width: '100%', height: '100%' }} /></div>
-                                            })
-                                        }
-                                    </div>
-                                    <div>
-                                        <button type='submit'>Add Data</button>
-                                    </div>
+                                    <Row>
+                                        <Col className='text-center'> <h3>Enter Client Details:</h3></Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Enter Developer Name : </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field className="form-control" name='dName' disabled />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Enter Client Name : </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field name='cName' placeholder='Enter Client name...' type='text' className={`inputField form-control ${errors.cName && touched.cName
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} />
+                                                    <ErrorMessage name='cName' component='div' className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Mention the technology: </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field as='select' name='technology' className={`form-control inputField ${errors.technology && touched.technology
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} >
+                                                        {
+                                                            technologies.map((val, idx) => {
+                                                                return (
+                                                                    <option key={idx} value={val}>{val}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Field>
+                                                    <ErrorMessage name='technology' component='div' className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Provide the Company Name : </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field type='text' name='companyName' placeholder='Provide company name...' className={`form-control inputField ${errors.companyName && touched.companyName
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} />
+                                                    <ErrorMessage name='companyName' component={'div'} className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Application Type:</FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field type='text' name='appType' list='applicationTypes' placeholder='Application Type..' className={`form-control inputField ${errors.appType && touched.appType
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} />
+                                                    <datalist id='applicationTypes'>
+                                                        {
+                                                            AppTypesDataList.map((app, idx) => {
+                                                                return (
+                                                                    <option key={idx} value={app}>{app}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </datalist>
+                                                    <ErrorMessage name='appType' component='div' className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='issueImage my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Upload Issue Image : </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Row>
+                                                        <Field>
+                                                            {({ field }) => (
+                                                                <Col>
+                                                                    <Button variant='info' type='button' onClick={() => addImageField(values, setValues, field)}>Add Image</Button>
+                                                                </Col>
+                                                            )}
+                                                        </Field>
+                                                        <Col>
+                                                            <FieldArray >
+                                                                {() =>
+                                                                    values.issueImages?.map((image, idx) => {
+                                                                        return (
+                                                                            <div key={idx} style={{ position: 'relative' }}>
+                                                                                <input id={`file${idx}`} onChange={(e) => setFieldValue(`issueImages.${idx}.image`, e.target.files[0])} type="file" className={`inputfile inputField ${true ? 'is-invalid' : ''}`} />
+                                                                                <FormStyle.Label htmlFor={`file${idx}`} ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span>{values.issueImages[idx]?.image?.name ? `${values.issueImages[idx]?.image.name.slice(0, 5)}` : ''} &hellip;</span></FormStyle.Label>
+                                                                                <Button variant='secondary' style={{ display: idx == 0 ? 'none' : 'inline-block', padding: '0', position: 'absolute' }} type='button' onClick={() => imgHandler(values, setValues, `${idx}`, "ADD")}>X</Button>
+                                                                                <ErrorMessage name={`issueImages.${idx}`} component={'div'} className='errMsz' />
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </FieldArray>
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                        <Col>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Requirement : </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field type='text' name='issueTitle' placeholder="What's the requirment..." className={`form-control inputField ${errors.issueTitle && touched.issueTitle
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} />
+                                                    <ErrorMessage name='issueTitle' component='div' className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Describe the requirement :  </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field as='textarea' rows='5' cols={50} name='issue' placeholder='Describe the requirement...' className={`form-control inputField ${errors.issue && touched.issue
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} />
+                                                    <ErrorMessage name='issue' component='div' className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Describe the Solution :  </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field as='textarea' rows='5' cols={50} name='solution' placeholder='What are the changes u made..' className={`form-control inputField ${errors.solution && touched.solution
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} />
+                                                    <ErrorMessage name='solution' component='div' className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Requirement Status :  </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                    <Field as='select' name='issueStatus' className={`form-control inputField ${errors.issueStatus && touched.issueStatus
+                                                        ? 'is-invalid'
+                                                        : ''
+                                                        }`} >
+                                                        <option value=''>Select the status</option>
+                                                        <option value='Pending'>Pending</option>
+                                                        <option value='Resolved'>Resolved</option>
+                                                        <option value='Fixed'>Fixed</option>
+                                                    </Field>
+                                                    <ErrorMessage name='issueStatus' component='div' className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                {
+                                                    method === 'UPDATE' &&
+                                                    updateObj.binaryData.map((imgSrc, idx) => {
+                                                        return <div key={idx} style={{ width: '100px', height: '100px' }}>
+                                                            <button onClick={() => imgHandler(values, setValues, `${idx}`, "UPDATE")} >x</button>
+                                                            <img src={imgSrc} alt='issueImg' style={{ width: '100%', height: '100%' }} /></div>
+                                                    })
+                                                }
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <Row >
+                                        <Col className='text-center'>
+                                            <Button variant='primary' type='submit'>Add Data</Button>
+                                        </Col>
+                                    </Row>
                                 </Form>
                             )}
 
                         </Formik>
-
-
-                        <div>
-                            <h3>Status : {status}</h3>
-                        </div>
-                    </div> : <div>
+                    </Row>
+                    <Row>
+                        <h3>Status : {status}</h3>
+                    </Row>
+                </Col> : <Row>
+                    <Col>
                         <h2>U can't add data please login</h2>
                         <div>Click here to <NavLink to='/login' >Login</NavLink></div>
-                    </div>
-                }
-            </>
-        }
-        </div>
+                    </Col>
+                </Row>
+            }
+        </Row>
     )
 }
 

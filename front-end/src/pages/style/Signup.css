@@ -3,6 +3,7 @@
     width: 300px;
     margin: auto;
     text-align: center;
+    background: linear-gradient(45deg, #a0a19f, #362d2d);
 }
 .signupDiv input, .signupDiv select {
     padding: 10px 20px;

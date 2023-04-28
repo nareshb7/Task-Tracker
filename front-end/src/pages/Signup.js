@@ -62,7 +62,7 @@ const Signup = () => {
         setResponse('Submitting...')
     }
     return (
-        <Row style={{ background: 'linear-gradient(45deg, #466433, #362d2d)' }}>
+        <Row className='bg'>
             <SignupForm submitFunc={handleSubmit} error={errors} isSubmitted={isSubmitted} />
             <div className='py-4'>
                 <p className='text-center'>

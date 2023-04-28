@@ -1,11 +1,12 @@
 import React from 'react'
+import './style/Footer.css'
 
 const Footer = () => {
   return (
-    <div style={{background:'#666', display:'flex', justifyContent:'space-evenly'}}>
+    <div className='footer-main'>
       <div>
-        <div style={{width:'100px', height:'100px', textAlign:'center', margin:'10px'}}>
-            <img style={{borderRadius:'50%', wodth:'100%', height:'100%'}} src='https://media.licdn.com/dms/image/C560BAQFYCcCZ6hWFGA/company-logo_200_200/0/1519910499757?e=1687996800&v=beta&t=FHGu7-sMUPe_ZZJswZq7QGA19UZf2AWJVoJ8t5WiNdA' alt='cmpnyLogo' />
+        <div className='footer-logo'>
+            <img src='https://media.licdn.com/dms/image/C560BAQFYCcCZ6hWFGA/company-logo_200_200/0/1519910499757?e=1687996800&v=beta&t=FHGu7-sMUPe_ZZJswZq7QGA19UZf2AWJVoJ8t5WiNdA' alt='cmpnyLogo' />
         </div>
         <h3>ResourceOne IT Solutions.</h3>
       </div>

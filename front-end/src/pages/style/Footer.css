@@ -1,0 +1,17 @@
+.footer-main {
+    background:#aaa;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+.footer-logo {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    margin: 10px;
+}
+.footer-logo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
