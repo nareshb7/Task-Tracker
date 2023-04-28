@@ -4,6 +4,8 @@ import { UserContext } from '../App'
 import Modal from '../components/modal/Modal'
 import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
 import Loader from '../components/utils/loader/Loader'
+import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
+import { Button, Table } from 'react-bootstrap'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -28,6 +30,7 @@ const AdminPage = () => {
         { header: 'Uploaded Issues' },
         { header: 'Remove User' }
     ]
+    const statusIndicatorStyle = { position: 'absolute', top:'0', right:'0'}
     useEffect(() => {
         axios.get('/api/getallusers')
             .then(data => {
@@ -187,10 +190,10 @@ const AdminPage = () => {
             currentUser && currentUser.isAdmin ? <div>
                 <h1>All Users : </h1>
                 <div style={{ textAlign: 'end' }}>
-                    <button onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </button>
-                    <button onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </button>
+                    <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
+                    <Button className='mx-2' onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </Button>
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />
-                    <button style={{ marginInline: '10px' }} >Search</button>
+                    <Button style={{ marginInline: '10px' }} >Search</Button>
                 </div>
                 <Modal isOpen={mailChangeModal} setModal={setMailChangeModal}>
                     <>
@@ -211,8 +214,8 @@ const AdminPage = () => {
                                                 </div>
 
                                                 <div>
-                                                    <button onClick={() => mailChangeAcceptFunc(user._id, true)}>Approve</button>
-                                                    <button onClick={() => mailChangeAcceptFunc(user._id, false)}>Deny</button>
+                                                    <Button onClick={() => mailChangeAcceptFunc(user._id, true)}>Approve</Button>
+                                                    <Button onClick={() => mailChangeAcceptFunc(user._id, false)}>Deny</Button>
                                                 </div>
                                             </li>
                                         )
@@ -271,7 +274,7 @@ const AdminPage = () => {
                     </div>
                 </Modal>
                 {
-                    users.length ? (<> <table cellPadding='10' style={{ textAlign: 'center' }} border='1'>
+                    users.length ? (<> <Table striped hover responsive>
                         <caption>All Users</caption>
                         <thead>
                             <tr>
@@ -305,16 +308,17 @@ const AdminPage = () => {
                                                     <td>{user.fName} {user.lName}</td>
                                                     <td>{user.email}</td>
                                                     <td>{user.mobile}</td>
-                                                    <td style={{ width: '100px', height: '100px', cursor: 'pointer' }}>
+                                                    <td style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>
+                                                        {user.status=== 'Online' ?  <GreenDot styles={statusIndicatorStyle}/>: <RedDot styles={statusIndicatorStyle}/>}
                                                         <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
                                                     </td>
                                                     <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
                                                     <td>
-                                                        <button onClick={() => uploadedIssuesList(user._id)}>Click Here</button>
+                                                        <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button>
                                                     </td>
                                                     <td>
-                                                        <button disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => removeUser(user)}>Remove</button>
-                                                        <button disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => updateUser(user)}>Update</button>
+                                                        <Button variant='info' disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => updateUser(user)}>Update</Button>
+                                                        <Button variant='danger' disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => removeUser(user)}>Remove</Button>
                                                     </td>
                                                 </tr>
                                             )
@@ -325,7 +329,7 @@ const AdminPage = () => {
                                 </tr>
                             }
                         </tbody>
-                    </table>
+                    </Table>
                         <hr style={{ border: '3px dashed #888' }} />
                         <div style={{ marginBlock: '20px' }}>
                             {

@@ -18,6 +18,9 @@ body.active-modal {
     bottom: 0;
     position: fixed;
 }
+.modal-local {
+    z-index: 1;
+}
 
 .overlay {
     background: rgba(49,49,49,0.8);
@@ -31,8 +34,8 @@ body.active-modal {
     background: #f1f1f1;
     padding: 14px 28px;
     border-radius: 3px;
-    max-width: 600px;
-    min-width: 300px;
+    max-width: fit-content;
+    min-width: 200px;
 }
 
 .close-modal {

@@ -337,7 +337,7 @@ const AddData = () => {
                         <h3>Status : {status}</h3>
                     </Row>
                 </Col> : <Row>
-                    <Col>
+                    <Col className='text-center'>
                         <h2>U can't add data please login</h2>
                         <div>Click here to <NavLink to='/login' >Login</NavLink></div>
                     </Col>

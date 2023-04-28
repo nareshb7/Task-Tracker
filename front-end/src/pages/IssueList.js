@@ -6,6 +6,7 @@ import { UserContext } from '../App'
 import Loader from '../components/utils/loader/Loader'
 import useRandomNum from '../components/utils/RandomNum'
 import Pagination from '../components/issues/Pagination'
+import './style/IssueList.css'
 
 const GetTask = () => {
     const stateIssues = useSelector(state => state.issues)
@@ -105,21 +106,21 @@ const GetTask = () => {
         })
         setTableData(searchData)
     }
-    return (<>
-    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-        <h1>Get Task:</h1>
+    return (<div className='bgi' style={{color:'#eee'}}>
+    <div className='issueList-main'>
+        <h1 style={{color:'#000'}}>Get Task: </h1>
         <div>
-            <input style={{padding:'10px', margin:'10px', borderRadius:'8px'}} type='search' value={searchVal} onChange={handleSearch} placeholder='Search Here' />
+            <input className='searchIpt' type='search' value={searchVal} onChange={handleSearch} placeholder='Search Here' />
         </div>
         </div>
         {
-            loading ? <h3>Loading....</h3> : <div>
-                <table border='1' cellPadding={10}>
-                    <thead>
+            loading ? <h3>Loading....</h3> : <div >
+                <table border='1' cellPadding={10} className='table table-striped table-hover'>
+                    <thead className='thead-dark'>
                         <tr>
-                            <th>Sl. No</th>
+                            <th scope='col'>Sl. No</th>
                             <th><div>Developer Name</div>
-                                <select onClick={handleSort} defaultValue={applyFilters.dName} name='dName'>
+                                <select className='form-control' onClick={handleSort} defaultValue={applyFilters.dName} name='dName'>
                                     <option value='All'>All</option>
                                     {
                                         sortNames.dName.map((val, idx) => {
@@ -131,7 +132,7 @@ const GetTask = () => {
                                 </select>
                             </th>
                             <th><div>Client Name</div>
-                                <select onClick={handleSort} defaultValue={applyFilters.dName} name='cName'>
+                                <select className='form-control' onClick={handleSort} defaultValue={applyFilters.dName} name='cName'>
                                     <option value='All'>All</option>
                                     {
                                         sortNames.cName.map((val, idx) => {
@@ -143,7 +144,7 @@ const GetTask = () => {
                                 </select>
                             </th>
                             <th><div>Technology</div>
-                                <select onClick={handleSort} defaultValue={applyFilters.dName} name='technology'>
+                                <select className='form-control' onClick={handleSort} defaultValue={applyFilters.dName} name='technology'>
                                     <option value='All'>All</option>
                                     {
                                         sortNames.technology.map((val, idx) => {
@@ -155,8 +156,8 @@ const GetTask = () => {
                                 </select>
                             </th>
                             <th>CompanyName</th>
-                            <th>Application Type
-                                <select onClick={handleSort} defaultValue={applyFilters.appType} name='appType'>
+                            <th><span className='form-label'>Application Type</span>
+                                <select className='form-control' onClick={handleSort} defaultValue={applyFilters.appType} name='appType'>
                                     <option value='All'>All</option>
                                     {
                                         sortNames.appType.map((val, idx) => {
@@ -185,7 +186,7 @@ const GetTask = () => {
                 </table>
             </div>
         }
-    </>
+    </div>
 
     )
 }

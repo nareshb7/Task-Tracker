@@ -10,8 +10,8 @@
 .inputfile + label {
     font-size: 1.25em;
     font-weight: 700;
-    color: white;
-    background-color: #d3394c;
+    color: #000;
+    background-color: #fff;
     display: inline-block;
     padding:7px 22px;
     cursor: pointer;
