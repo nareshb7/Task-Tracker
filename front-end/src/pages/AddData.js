@@ -134,10 +134,10 @@ const AddData = () => {
         setValues(values)
     }
     return (
-        <Row className='addIssue-main'>
+        <Row className='addIssue-main card'>
             {
                 isLoggedin.hasOwnProperty('fName') ? <Col md={10} className='m-auto'>
-                    <Row>
+                    <Row className='card mt-3 p-2'>
                         <Formik
                             initialValues={updateObj || obj}
                             validationSchema={Yup.object().shape(schema)}
@@ -333,7 +333,8 @@ const AddData = () => {
 
                         </Formik>
                     </Row>
-                    <Row>
+                    <Row className='card my-1'>
+                        
                         <h3>Status : {status}</h3>
                     </Row>
                 </Col> : <Row>

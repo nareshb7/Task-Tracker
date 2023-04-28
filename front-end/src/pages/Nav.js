@@ -11,6 +11,7 @@ import { setCookie } from '../components/utils/CookieComp'
 import { useSelector } from 'react-redux'
 import '../chatBox/ChatBox.css'
 import Time from '../components/utils/Time'
+import './style/Navigation.css'
 
 const Navigation = () => {
     const { currentUserVal, setCurrentUserVal, socket, totalMessages } = useContext(UserContext)
@@ -36,7 +37,7 @@ const Navigation = () => {
     }
 
     return (
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="dark" variant='dark' expand="lg">
             <Container>
                 <LinkContainer to='/'>
                     <Navbar.Brand >Task- Tracker</Navbar.Brand>
@@ -63,7 +64,7 @@ const Navigation = () => {
                         </LinkContainer>
                         {
                             currentUserVal.fName && <li>
-                                <label className="switch">
+                                <label className="switch mt-2">
                                     <input type="checkbox" onChange={handleStatus} defaultChecked={true} />
                                     <span className="slider round"></span>
                                 </label>

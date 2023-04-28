@@ -1,6 +1,7 @@
 .addIssue-main {
-    background: linear-gradient(45deg, #a0a19f, #362d2d);
+    /* background: linear-gradient(45deg, #a0a19f, #362d2d); */
+    background-color: #95e8f3;
 }
 .addIssue-main label {
-    color: #eee;
+    color: #000;
 }
