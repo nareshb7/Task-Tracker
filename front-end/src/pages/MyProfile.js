@@ -6,7 +6,7 @@ import {io} from 'socket.io-client'
 import { BE_URL } from '../components/utils/Constants'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
-import { Button } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 
 const SOCKET_URL = BE_URL
 const socket = io(SOCKET_URL)
@@ -126,17 +126,17 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
     <div>
       {
         Object.keys(currentUser).length > 2 ?
-          <div style={styles.div}>
-            <div>
+          <Row md={12}>
+            <Col md={5} className='card m-3'>
               <h2>Name : {currentUser.fName} {currentUser.lName}  <span style={styles.span}>{currentUser.isAdmin && '( Admin )'}</span></h2>
               <h2>Email : {currentUser.email}</h2>
               <h2>Mobile : {currentUser.mobile}</h2>
               <h2>Password :{currentUser.password.slice(0, 2)}{''.padEnd(currentUser.password.length - 4, '*')}{currentUser.password.slice(-2)}</h2>
-            </div>
-            <div>
+            </Col>
+            <Col md={2} className='m-3'>
               <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
-            </div>
-            <div>
+            </Col>
+            <Col md={4} className='card m-3'>
               <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <Button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</Button></p>
               <div>
                 <Button onClick={()=> logout(currentUser._id)} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</Button>
@@ -158,8 +158,8 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
               }
               <div style={{ height: '30px' }}>{reqMailError}</div>
               <div><Button onClick={showMyIssues}>My Issues</Button> </div>
-            </div>
-          </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
+            </Col>
+          </Row> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
       {
         showIssues && issuesList &&  <div>
