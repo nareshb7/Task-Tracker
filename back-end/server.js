@@ -78,6 +78,7 @@ io.on('connection',async (socket)=> {
     socket.on('join-room',async (room, previousRoom)=> {
         socket.join(room)
         socket.leave(previousRoom)
+        console.log('room::', room, previousRoom)
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         socket.emit('room-messages', roomMessages)
@@ -87,7 +88,7 @@ io.on('connection',async (socket)=> {
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         io.to(room).emit('room-messages', roomMessages)
-        socket.broadcast.emit('notifications', room, opponentId)
+        socket.broadcast.emit('notifications', room, opponentId, sender)
     })
 })
 

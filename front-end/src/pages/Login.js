@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { setCookie } from '../components/utils/CookieComp'
 import { UserContext } from '../App'
 import MyProfile from './MyProfile'
@@ -13,6 +13,7 @@ const Login = () => {
         value: '',
         password: ''
     }
+    const navigate = useNavigate()
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
@@ -45,6 +46,7 @@ const Login = () => {
         console.log('LoggedIn User', currentUser)
         setCookie(currentUser._id, 2)
         socket.emit('new-user')
+        navigate(-1)
     }
     useEffect(() => {
         if (Object.keys(currentUser).length > 2) {

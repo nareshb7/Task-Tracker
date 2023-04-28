@@ -6,6 +6,7 @@ import {io} from 'socket.io-client'
 import { BE_URL } from '../components/utils/Constants'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
+import { Button } from 'react-bootstrap'
 
 const SOCKET_URL = BE_URL
 const socket = io(SOCKET_URL)
@@ -136,13 +137,13 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
               <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
             </div>
             <div>
-              <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</button></p>
+              <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <Button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</Button></p>
               <div>
-                <button onClick={()=> logout(currentUser._id)} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</button>
-                <button onClick={() => updateData(currentUser)}>Update Details</button>
+                <Button onClick={()=> logout(currentUser._id)} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</Button>
+                <Button onClick={() => updateData(currentUser)}>Update Details</Button>
               </div>
               <div>
-                <button disabled={currentUserVal.reqforMailChange} onClick={() => setMailUpdatereq(!mailUpdatereq)}> Req for Mail update</button>
+                <Button disabled={currentUserVal.reqforMailChange} onClick={() => setMailUpdatereq(!mailUpdatereq)}> Req for Mail update</Button>
               </div>
               {
                 mailUpdatereq &&
@@ -152,11 +153,11 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
                     {/* <option value='mobile'>Mobile</option> */}
                   </select>
                   <input placeholder='enter value here' type='text' name='updateValue' value={adminUpdates.updateValue} onChange={handleChangeMailReq} />
-                  <div ><button onClick={handleMailReq}>Submit</button></div>
+                  <div ><Button onClick={handleMailReq}>Submit</Button></div>
                 </div>
               }
               <div style={{ height: '30px' }}>{reqMailError}</div>
-              <div><button onClick={showMyIssues}>My Issues</button> </div>
+              <div><Button onClick={showMyIssues}>My Issues</Button> </div>
             </div>
           </div> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }

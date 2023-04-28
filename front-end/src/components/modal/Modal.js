@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Modal.css";
+import { Button } from "react-bootstrap";
 
 export default function Modal({ isOpen, setModal, children }) {
   const toggleModal = () => {
@@ -18,9 +19,9 @@ export default function Modal({ isOpen, setModal, children }) {
           <div onClick={toggleModal} className="overlay"></div>
           <div className="modal-content">
             <>{children}</>
-            <button className="close-modal" onClick={toggleModal}>
+            <Button className="close-modal" onClick={toggleModal}>
               X
-            </button>
+            </Button>
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 import React, {useContext} from 'react'
+import { Table } from 'react-bootstrap'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { fetchCall } from '../utils/fetch/UseFetch'
@@ -21,7 +22,7 @@ const UserIssues = ({issuesList}) => {
     }
     return (
         <div>{
-            issuesList.length ? <table border='1'>
+            issuesList.length ? <Table border='1' striped hover >
             <caption>Uploaded Issues</caption>
             <thead>
                 <tr>
@@ -67,7 +68,7 @@ const UserIssues = ({issuesList}) => {
                     })
                 }
             </tbody>
-        </table> : <h3>No Issues added</h3>
+        </Table> : <h3>No Issues added</h3>
             }
             
         </div>

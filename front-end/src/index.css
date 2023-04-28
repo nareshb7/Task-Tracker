@@ -23,18 +23,8 @@ nav ul li{
   color: #fff;
   text-decoration: none;
 }
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer
-}
-button:hover {
-  color:#fff;
-  background-color: #333;
-}
-table tr:hover {
-  background-color: #ccc;
+table  tbody tr:hover {
+  background-color: #999;
 }
 
 /* Togglwe Switch */

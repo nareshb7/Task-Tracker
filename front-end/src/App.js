@@ -18,11 +18,12 @@ function App() {
   const userDetails = useAuth()
   const [currentUserVal, setCurrentUserVal] = useState({})
   const [totalMessages, setTotalMessages] = useState(0)
-  const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages }
+  const [currentRoom, setCurrentRoom] = useState('')
+  const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom }
   useEffect(() => {
+    socket.emit('new-user')
     const handleTabClose = async (event) => {
       event.preventDefault();
-      console.log('currentuzuser', currentUserVal);
       if (currentUserVal._id) {
         await logoutFunc(currentUserVal)
         socket.emit('new-user')
@@ -41,14 +42,27 @@ function App() {
   }, [currentUserVal]);
   window.addEventListener('beforeunload', async function (e) {
     e.preventDefault();
-   currentUserVal._id && await logoutFunc(currentUserVal)
+    currentUserVal._id && await logoutFunc(currentUserVal)
     socket.emit('new-user')
     e.returnValue = '';
   });
+  socket.off('notifications').on('notifications', (room, id, sender) => {
+    if (room != currentRoom && currentUserVal._id == id) {
+        currentUserVal.newMessages[room] = (currentUserVal.newMessages[room] || 0) + 1
+        let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
+        setTotalMessages(totalMessage)
+        setCurrentUserVal(currentUserVal)
+        alert('You got a message from ' + sender.fName)
+    }
+})
 
   useEffect(() => {
     socket.emit('new-user')
     setCurrentUserVal(userDetails)
+    if (userDetails?.newMessages) {
+      let totalMessage = Object.values(userDetails?.newMessages).length && Object.values(userDetails?.newMessages)?.reduce((a,b)=> a+b)
+      setTotalMessages(totalMessage)
+    }
   }, [userDetails])
   return (
     <Provider store={store} >

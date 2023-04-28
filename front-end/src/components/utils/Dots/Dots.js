@@ -1,13 +1,13 @@
 import React from 'react'
 
-export const GreenDot = ({title}) => {
+export const GreenDot = ({title, styles}) => {
   return (
-    <span title={title}  style={{ background:'#0f0', height:'15px', width:'15px', display:'inline-block', borderRadius:'50%'}}></span>
+    <span title={title}  style={{ background:'#0f0', height:'15px', width:'15px', display:'inline-block', borderRadius:'50%', ...styles}}></span>
   )
 }
 
-export const RedDot = ({title}) => {
+export const RedDot = ({title, styles}) => {
   return (
-    <span title={title} style={{ background:'#f00', height:'15px', width:'15px', display:'inline-block', borderRadius:'50%'}}></span>
+    <span title={title} style={{ background:'#f00', height:'15px', width:'15px', display:'inline-block', borderRadius:'50%', ...styles}}></span>
   )
 }

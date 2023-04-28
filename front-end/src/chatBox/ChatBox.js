@@ -5,12 +5,12 @@ import './ChatBox.css'
 import MessageBox from './MessageBox'
 import Modal from '../components/modal/Modal'
 import { UserContext } from '../App'
-import {AddNotification, ResetNotification} from '../redux/actions/Actions'
+import { AddNotification, ResetNotification } from '../redux/actions/Actions'
 import { fetchGetCall } from '../components/utils/fetch/UseFetch'
-import { GreenDot,RedDot } from '../components/utils/Dots/Dots'
+import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 
 const ChatBox = () => {
-    const { currentUserVal, socket, setTotalMessages , setCurrentUserVal } = useContext(UserContext)
+    const { currentUserVal, socket, setTotalMessages, setCurrentUserVal,  currentRoom, setCurrentRoom } = useContext(UserContext)
     const stateData = useSelector(state => state.user)
     const dispatch = useDispatch()
     const [users, setUsers] = useState([])
@@ -18,20 +18,10 @@ const ChatBox = () => {
     const [opponent, setOpponent] = useState({})
     const [imgSrc, setImgSrc] = useState('')
     const [imgmodal, setImgmodal] = useState(false)
-    const [currentRoom, setCurrentRoom] = useState('')
-
     socket.off('new-user').on('new-user', (payload) => {
         setUsers(payload)
     })
 
-    socket.off('notifications').on('notifications', (room, id) => {
-        if(room !=currentRoom && currentUserVal._id == id ){
-         currentUserVal.newMessages[room] = (currentUserVal.newMessages[room] || 0 )+ 1
-        let totalMessage = currentUserVal.newMessages && Object.values(currentUserVal?.newMessages)?.reduce((a,b)=> a+b)
-        setTotalMessages(totalMessage)
-        setCurrentUserVal(currentUserVal)
-        }
-    })
     const getRoomId = (id1, id2) => {
         if (id1 > id2) {
             return id1 + "-" + id2
@@ -41,21 +31,25 @@ const ChatBox = () => {
     }
     useEffect(() => {
         socket.emit('new-user')
+        return ()=> {
+            socket.emit('join-room', 'sample', currentRoom)
+            setCurrentRoom('sample')
+        }
     }, [])
     const selectedUser = (user, currentUserVal) => {
         const roomId = getRoomId(user._id, currentUserVal._id)
         setCurrentRoom(roomId)
-        socket.emit('join-room', roomId,currentRoom )
+        socket.emit('join-room', roomId, currentRoom)
         socket.emit('new-user')
-        currentUserVal.newMessages &&  delete currentUserVal.newMessages[roomId]
-         setCurrentUserVal(currentUserVal)
+        currentUserVal.newMessages && delete currentUserVal.newMessages[roomId]
+        setCurrentUserVal(currentUserVal)
         setOpponent(user)
         setOpenMszList(true)
-        let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a,b)=> a+b)
+        let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
         setTotalMessages(totalMessage)
     }
-    const imgPopup = (src) => {
-        setImgSrc(src)
+    const imgPopup = (src, fName) => {
+        setImgSrc({ src, fName })
         setImgmodal(true)
     }
 
@@ -71,7 +65,7 @@ const ChatBox = () => {
                                     return
                                 }
                                 return <div key={idx} className='chatBox-div'  >
-                                    <div onClick={() => imgPopup(user.binaryData)} className='chatBox-image'>
+                                    <div onClick={() => imgPopup(user.binaryData, user.fName)} className='chatBox-image'>
                                         <img className='img' src={user.binaryData} />
                                         <span className='online-indicator'>{user.status == 'Online' ? <GreenDot /> : <RedDot />}</span>
                                     </div>
@@ -90,8 +84,11 @@ const ChatBox = () => {
                     </div>
                     <MessageBox socket={socket} user={currentUserVal} setOpponent={setOpponent} roomId={currentRoom} opponent={opponent} setOpenMszList={setOpenMszList} imgPopup={imgPopup} /> :
                     <Modal isOpen={imgmodal} setModal={setImgmodal} >
-                        <div className='modalImage' >
-                            <img src={imgSrc} />
+                        <div>
+                            <h3>{imgSrc.fName}</h3>
+                            <div className='modalImage' >
+                                <img src={imgSrc.src} />
+                            </div>
                         </div>
                     </Modal>
                 </div> : <div style={{ textAlign: 'center' }}>Login to <NavLink to='/login'>click here </NavLink></div>

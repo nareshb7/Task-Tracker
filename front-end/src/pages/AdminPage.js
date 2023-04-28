@@ -276,9 +276,8 @@ const AdminPage = () => {
                 {
                     users.length ? (<> <Table striped hover responsive>
                         <caption>All Users</caption>
-                        <thead>
+                        <thead style={{color:'#000'}}>
                             <tr>
-
                                 {
                                     tHead.map((th, idx) => {
                                         return (
@@ -286,8 +285,7 @@ const AdminPage = () => {
                                                 <span>{th.header}</span>
                                                 {
                                                     th.filter && <select onClick={(e) => sortFunc(th.filter, e.target.value)}>
-                                                        <option value='none'></option>
-                                                        <option value='asc'>Up</option>
+                                                        <option value='asc'> Up</option>
                                                         <option value='desc'>Down</option>
                                                     </select>
                                                 }

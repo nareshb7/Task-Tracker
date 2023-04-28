@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { GreenDot, RedDot } from '../utils/Dots/Dots'
 import { issueStatusFunc } from './Description'
+import './Pagination.css'
+import { Button } from 'react-bootstrap'
 
 const Pagination = (props) => {
     const { data, gotoDesc, editFunc, deleteFunc, currentUser }= props
@@ -27,7 +29,7 @@ const Pagination = (props) => {
         setPageSize(Number(e.target.value))
         setCurrentPage(0)
     }
-    return <tbody>
+    return <tbody className='pagination-main'>
         {
             currentData.map((val, idx) => {
                 let id = currentPage * pageSize + idx + 1
@@ -41,10 +43,10 @@ const Pagination = (props) => {
                     <td style={{ cursor: 'pointer' }} title={'Click here to get full info.'} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                     <td> {issueStatusFunc(val.issueStatus)} </td>
                     <td> {new Date(val?.time).toLocaleString()}</td>
-                    <td><img src={val.binaryData[0] || val.binaryData} style={{ width: '100px', height: '100px' }} alt='img' />{val.binaryData.length > 1 && 'more....'} </td>
+                    <td><img src={val.binaryData[0] || val.binaryData} className='img' alt='img' />{val.binaryData.length > 1 && 'more....'} </td>
                     <td>
-                        <button onClick={() => editFunc(val._id, val)} disabled={currentUser._id !== val?.developerId}>Edit</button>
-                        <button onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId} >Delete</button>
+                        <Button variant='warning' onClick={() => editFunc(val._id, val)} disabled={currentUser._id !== val?.developerId}>Edit <i className='fas fa-edit'></i></Button>
+                        <Button variant='danger' onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId} >Delete <i className='fas fa-trash'></i></Button>
                     </td>
                 </tr>
             })
@@ -53,21 +55,18 @@ const Pagination = (props) => {
             <td colSpan={6}>.....</td>
             <td >
                 <div>
-                    <label>Select page Size</label>
-                    <select onChange={handlePagesizeChange} defaultValue={pageSize}>
+                    <label className='form-label'>Select page Size</label>
+                    <select className='form-control' onChange={handlePagesizeChange} defaultValue={pageSize}>
                         <option value={5}>5 rows</option>
                         <option value={10}>10 rows</option> 
                     </select>
                 </div>
             </td>
             <td colSpan={4}>
-                <button disabled={currentPage === 0} onClick={() => showDataFunc(currentPage, '-')}> Back </button>
-            
+                <Button disabled={currentPage === 0} onClick={() => showDataFunc(currentPage, '-')}> Back </Button>
                 <span> {currentPage + 1} </span>
-           
                 <span> of Page : {lastPage + 1} </span>
-            
-                <button disabled={currentPage === lastPage} onClick={() => showDataFunc(currentPage, '+')}> Next </button>
+                <Button disabled={currentPage === lastPage} onClick={() => showDataFunc(currentPage, '+')}> Next </Button>
             </td>
             
         </tr>
