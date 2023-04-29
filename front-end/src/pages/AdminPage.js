@@ -6,6 +6,7 @@ import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
 import Loader from '../components/utils/loader/Loader'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 import { Button, Table } from 'react-bootstrap'
+import { lastSeenTimeFormat } from '../chatBox/MessageBox'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -30,7 +31,7 @@ const AdminPage = () => {
         { header: 'Uploaded Issues' },
         { header: 'Remove User' }
     ]
-    const statusIndicatorStyle = { position: 'absolute', top:'0', right:'0'}
+    const statusIndicatorStyle = { position: 'absolute', top: '0', right: '0' }
     useEffect(() => {
         axios.get('/api/getallusers')
             .then(data => {
@@ -59,7 +60,7 @@ const AdminPage = () => {
         let cnfrm = window.confirm(`Do you want to delete ${user.fName}'s account ??`)
         if (cnfrm) {
             axios.delete('/api/deleteuser', {
-                data: { id: user._id }, 
+                data: { id: user._id },
                 headers: {
                     Authorization: `Bearer`,
                 },
@@ -172,6 +173,7 @@ const AdminPage = () => {
         empDetails['technologies'] = [...new Set(result.map(val => val.technology))]
         setShowEmpData(empDetails)
         setShowEmpModal(true)
+        console.log('Employee::', empDetails)
     }
     const getMailReqIDs = () => {
         if (!mailChangeReqIDs[0]?.fName) {
@@ -262,6 +264,10 @@ const AdminPage = () => {
                             <h3>Name : {showEmpData.fName + " " + showEmpData.lName}</h3>
                             <h3>Email: {showEmpData.email}</h3>
                             <h3>Mobile : {showEmpData.mobile}</h3>
+                            {
+                                showEmpData.status === 'Online' ? <h3>Status : Online</h3> :
+                                    <h3>Last Active On : {lastSeenTimeFormat(showEmpData.lastActiveOn)}</h3>
+                            }
                             <h3>Active User : {showEmpData.isActive ? "Yes" : 'No'}</h3>
                             <h3>Admin : {showEmpData.isAdmin ? "Yes" : "No"}</h3>
                             <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
@@ -276,7 +282,7 @@ const AdminPage = () => {
                 {
                     users.length ? (<> <Table striped hover responsive>
                         <caption>All Users</caption>
-                        <thead style={{color:'#000'}}>
+                        <thead style={{ color: '#000' }}>
                             <tr>
                                 {
                                     tHead.map((th, idx) => {
@@ -307,7 +313,7 @@ const AdminPage = () => {
                                                     <td>{user.email}</td>
                                                     <td>{user.mobile}</td>
                                                     <td style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>
-                                                        {user.status=== 'Online' ?  <GreenDot styles={statusIndicatorStyle}/>: <RedDot styles={statusIndicatorStyle}/>}
+                                                        {user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
                                                         <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
                                                     </td>
                                                     <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>

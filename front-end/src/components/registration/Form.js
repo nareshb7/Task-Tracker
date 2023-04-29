@@ -22,7 +22,7 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
     designation: ''
   };
   const emailpattern = /^[a-z][a-z.0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
-  const mblPattern = /^[\d]{10}$/;
+  const mblPattern = /^[6,7,8,9][\d]{9}$/;
   const psdPattern = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%&*<>]).{8,}$/
   const schema = {
     fName: Yup.string().required('First Name is Required'),

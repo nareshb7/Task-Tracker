@@ -54,11 +54,17 @@ const Signup = () => {
             }
         }
     }
-
-    const handleSubmit = (submitedData) => {
+    const nameFormat =(data)=> {
         const d = new Date()
-        submitedData['joinedDate'] = d
-        verifyData(submitedData)
+        let {fName, lName} = data
+        data.fName = fName.slice(0,1).toUpperCase() + fName.slice(1)
+        data.lName = lName.slice(0,1).toUpperCase() + lName.slice(1)
+        data['joinedDate'] = d
+        return data
+    }
+    const handleSubmit = (submitedData) => {
+        const updatedData = nameFormat(submitedData)
+         verifyData(updatedData)
         setResponse('Submitting...')
     }
     return (

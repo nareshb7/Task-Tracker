@@ -2,6 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import { fetchDeletecall } from '../components/utils/fetch/UseFetch'
 
+export const lastSeenTimeFormat = (time)=> {
+    const val = new Date(time).toLocaleString()
+    return val
+}
+
 const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
@@ -49,11 +54,18 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         }
         
     }
+    
     return (<>
         {
             opponent._id ? <div className='message-Box'>
-                <h3 className='messageBox-header'>
-                    <span className='icon' onClick={() => setOpponent('')}> &lt;- </span><img src={opponent.binaryData} className='img' onClick={() => imgPopup(opponent.binaryData)} /> <span > {opponent.fName} {opponent.lName} </span> </h3>
+                <div className='messageBox-header'>
+                    <span className='icon' onClick={() => setOpponent('')}> <i className='fas fa-arrow-left'></i> </span>
+                    <img src={opponent.binaryData} className='img' onClick={() => imgPopup(opponent.binaryData)} />
+                    <span className='opponent-header'>
+                        <span className='opponent-name' > {opponent.fName} {opponent.lName}</span>
+                        <span className='last-seen'>{opponent.status === 'Online' ? 'Online' : lastSeenTimeFormat(opponent.lastActiveOn)}</span>
+                    </span>
+                </div>
                 <div className='message-body' id='message-body'>
                     <ScrollToBottom className='message-container' >
                         {

@@ -136,3 +136,14 @@
     color: #2e2a2a;
     margin-inline: 3px;
 }
+.opponent-header {
+    display: flex;
+    flex-direction: column;
+}
+.opponent-header .last-seen {
+    font-size: 10px;
+}
+.opponent-name {
+    font-weight: bold;
+    font-size: 20px;
+}

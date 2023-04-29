@@ -82,6 +82,7 @@ module.exports.userLogout =async (req,res)=> {
     const result = await signUpModel.findById({_id })
     result.newMessages = newMessages
     result.status = status
+    result.lastActiveOn = new Date()
     await result.save()
     console.log('Logout::', _id)
     res.send(result)

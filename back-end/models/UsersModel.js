@@ -54,5 +54,10 @@ const signinSchema = mongoose.Schema({
         default: {}
     },
     designation : String,
-}, {minimize: false})
+    lastActiveOn : {
+        type: Date,
+        require: true,
+        default: new Date()
+    }
+}, {minimize: false, timestamps: true})
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)
