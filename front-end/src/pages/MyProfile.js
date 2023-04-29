@@ -131,7 +131,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
               <h2>Name : {currentUser.fName} {currentUser.lName}  <span style={styles.span}>{currentUser.isAdmin && '( Admin )'}</span></h2>
               <h2>Email : {currentUser.email}</h2>
               <h2>Mobile : {currentUser.mobile}</h2>
-              <h2>Password :{currentUser.password.slice(0, 2)}{''.padEnd(currentUser.password.length - 4, '*')}{currentUser.password.slice(-2)}</h2>
+              {/* <h2>Password :{currentUser.password.slice(0, 2)}{''.padEnd(currentUser.password.length - 4, '*')}{currentUser.password.slice(-2)}</h2> */}
             </Col>
             <Col md={2} className='m-3'>
               <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />

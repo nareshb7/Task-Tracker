@@ -1,4 +1,5 @@
 const multer = require('multer')
+const bcrypt = require('bcrypt')
 
 const {signUpModel} = require('../models/UsersModel')
 const {deletedUsers}  =require('../models/TaskModel')
@@ -22,6 +23,7 @@ const signinStorage = multer({
 
 module.exports.signUpData = async (req, res) => {
     const {data} = req.body
+    data.password =await bcrypt.hash(data.password, 10)
     await signUpModel.create(data).then(data=> res.status(200).send(data)).catch(err=> res.status(401).send(err))
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
@@ -43,6 +45,7 @@ module.exports.getParticularUser = async (req, res) => {
     const { id } = req.body
     const result = await signUpModel.findOne({ _id: id })
     if(result) {
+        
         result.status = 'Online'
         await result.save()
     }
@@ -80,7 +83,8 @@ module.exports.updateUser = async (req, res) => {
 module.exports.userLogout =async (req,res)=> {
     const {_id, newMessages, status} = req.body
     const result = await signUpModel.findById({_id })
-    result.newMessages = newMessages
+    console.log('newMessages', newMessages)
+    result.newMessages = newMessages || {}
     result.status = status
     result.lastActiveOn = new Date()
     await result.save()
