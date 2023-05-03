@@ -21,21 +21,9 @@ app.use(bodyParser.urlencoded({ limit: '3mb', extended: false }))
 mongoose.set('strictQuery', true)
 mongoose.connect(process.env.MONGODB_URL)
     .then(() => {
-        app.use('/db', (req, res) => {
-            res.send({
-                message:'DB Connected',
-                statusCode:200
-            })
-        })
         console.log(`MongoDB is connected`)
     })
     .catch(err => {
-        app.use('/db', (req, res) => {
-            res.send({
-                message:'DB Error',
-                statusCode:400
-            })
-        })
         console.log(`Error ${err}`)
     })
 
@@ -78,7 +66,6 @@ io.on('connection',async (socket)=> {
     socket.on('join-room',async (room, previousRoom)=> {
         socket.join(room)
         socket.leave(previousRoom)
-        console.log('room::', room, previousRoom)
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         socket.emit('room-messages', roomMessages)
@@ -94,12 +81,6 @@ io.on('connection',async (socket)=> {
 
 server.listen(port, () => {
     console.log(`server is running on ${port}`)
-    app.use('/server', (req, res) => {
-        res.send({
-            message:'server is running....',
-            statusCode:200
-        })
-    })
 })
 module.exports = {getLastMessagesFromRoom,sortRoomMessagesByDate }
 module.exports.server = app

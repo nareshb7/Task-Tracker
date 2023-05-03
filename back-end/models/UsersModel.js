@@ -11,11 +11,15 @@ const signinSchema = mongoose.Schema({
     },
     email:{
         type:String,
-        require:true
+        require:true,
+        unique: true,
+        dropDups:true
     }, 
     mobile:{
         type:Number,
-        require: true
+        require: true,
+        unique:true,
+        dropDups:true
     },
     password:{
         type:String,

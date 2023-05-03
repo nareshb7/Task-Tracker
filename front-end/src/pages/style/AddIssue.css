@@ -5,3 +5,7 @@
 .addIssue-main label {
     color: #000;
 }
+.errMsz {
+    color: #f00;
+    padding: 5px 10px  ;
+  }

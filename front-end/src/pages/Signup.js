@@ -32,15 +32,26 @@ const Signup = () => {
                 socket.emit('new-user')
                 navigate('/login')
             })
-            .catch(err => setResponse(JSON.stringify(err)))
+            .catch(err => {
+                let val = ''
+                if(err.response.data.keyValue?.mobile) {
+                    val ='Mobile'
+                    setErrors({ ...errors, 'mobile': 'Try new Mobile number...' })
+                }
+                if (err.response.data.keyValue?.email) {
+                    val = 'Email'
+                    setErrors({ ...errors, "email": 'Try new Email Id.' })
+                }
+                setResponse(`Check the ${val} field`)
+            })
     }
 
     const verifyData = async (checkdata) => {
         let res = await axios.get('/api/getallusers')
-        let isValid = await res.data.filter(val => val.email === checkdata.email || val.mobile.toString() === checkdata.mobile)
-        if (isValid.length) {
+        let isValid = await res.data.find(val => val.email === checkdata.email || val.mobile.toString() === checkdata.mobile)
+        if (isValid) {
             let val = ''
-            if (isValid[0].email === checkdata.email) {
+            if (isValid.email === checkdata.email) {
                 val = 'email'
                 setErrors({ ...errors, "email": 'Try new Email Id.' })
             } else {
@@ -68,14 +79,16 @@ const Signup = () => {
         setResponse('Submitting...')
     }
     return (
-        <Row className='bg'>
+        <Row className='card py-2 signup-main'>
+            <Col md={10} className='card m-auto'>
             <SignupForm submitFunc={handleSubmit} error={errors} isSubmitted={isSubmitted} />
-            <div className='py-4'>
+            <Col className=' py-4'>
                 <p className='text-center'>
                     Already have an account ? <Link to='/login'>Login</Link>
                 </p>
-            </div>
-            <Col className='text-center'><h3>Status : {response}</h3></Col>
+            </Col>
+            </Col>
+            <Col md={10} className='card my-1 m-auto'><h3>Status : {response}</h3></Col>
         </Row>
     )
 }

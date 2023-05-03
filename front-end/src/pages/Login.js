@@ -26,18 +26,11 @@ const Login = () => {
         axios.post('/api/loginData', data)
             .then(res => {
                 if (res.data) {
-                    if (res.data.password == data.password) {
-                        setCurrentUser(res.data)
-                        setData(obj)
-                    } else {
-                        setResponse('Password not matching..')
-                    }
-
-                } else {
-                    setResponse('No user found..')
+                    setCurrentUser(res.data)
+                    setData(obj)    
                 }
             })
-            .catch(err => console.log(err, 'login err'))
+            .catch(err => setResponse(err.response.data))
         setResponse('Loading......')
     }
     const loginSucessFunc = async () => {

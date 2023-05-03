@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import './Form.css';
+// import './Form.css';
 import { Row, Col, Button } from 'react-bootstrap';
+import { emailpattern, mblPattern, psdPattern } from '../utils/Constants';
 
 const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => {
   const initialObj = {
@@ -21,9 +22,7 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
     solutions: [],
     designation: ''
   };
-  const emailpattern = /^[a-z][a-z.0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
-  const mblPattern = /^[6,7,8,9][\d]{9}$/;
-  const psdPattern = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%&*<>]).{8,}$/
+  
   const schema = {
     fName: Yup.string().required('First Name is Required'),
     lName: Yup.string().required('Last Name is required'),
@@ -109,14 +108,14 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
                 <Col md={6}>{
                   console.log('errors', errors)
                 }
-                  <Field type='text' name='fName' placeholder='Enter your first name' className={`inputField ${errors.fName && touched.fName
+                  <Field type='text' name='fName' placeholder='Enter your first name' className={`m-1 form-control inputField ${errors.fName && touched.fName
                     ? 'is-invalid'
                     : ''
                     }`} />
                   <ErrorMessage name='fName' component='div' className='errMsz' />
                 </Col>
                 <Col md={6}>
-                  <Field type='text' name='lName' placeholder='Enter your Last name' className={`inputField ${errors.lName && touched.lName
+                  <Field type='text' name='lName' placeholder='Enter your Last name' className={`m-1 form-control inputField ${errors.lName && touched.lName
                     ? 'is-invalid'
                     : ''
                     }`} />
@@ -125,14 +124,14 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
               </Row>
               <Row>
                 <Col md={6}>
-                  <Field type='text' name='email' disabled={component} placeholder='Enter your Email' className={`inputField ${(errors.email && touched.email) || (error?.email)
+                  <Field type='text' name='email' disabled={component} placeholder='Enter your Email' className={`m-1 form-control inputField ${(errors.email && touched.email) || (error?.email)
                     ? 'is-invalid'
                     : ''
                     }`} />
                   <ErrorMessage name='email' component='div' className='errMsz' />
                 </Col>
                 <Col md={6}>
-                  <Field type='text' disabled={component} name='mobile' placeholder='Enter your Mobile number' className={`inputField ${(errors.mobile && touched.mobile) || (error?.mobile)
+                  <Field type='text' disabled={component} name='mobile' placeholder='Enter your Mobile number' className={`m-1 form-control inputField ${(errors.mobile && touched.mobile) || (error?.mobile)
                     ? 'is-invalid'
                     : ''
                     }`} />
@@ -141,14 +140,14 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
               </Row>
               <Row>
                 <Col md={6}>
-                  <Field type='password' name='password' placeholder='Enter a new password' className={`inputField ${errors.password && touched.password
+                  <Field type='password' name='password' placeholder='Enter a new password' className={`m-1 form-control inputField ${errors.password && touched.password
                     ? 'is-invalid'
                     : ''
                     }`} />
                   <ErrorMessage name='password' component='div' className='errMsz' />
                 </Col>
                 <Col md={6}>
-                  <Field type='password' name='conPassword' placeholder='Confirm Password' className={`inputField ${errors.conPassword && touched.conPassword
+                  <Field type='password' name='conPassword' placeholder='Confirm Password' className={`m-1 form-control inputField ${errors.conPassword && touched.conPassword
                     ? 'is-invalid'
                     : ''
                     }`} />
@@ -157,14 +156,14 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
               </Row>
               <Row>
                 <Col md={6}>
-                  <Field type='text' name='designation' placeholder='Your role in company' className={`inputField ${errors.designation && touched.designation
+                  <Field type='text' name='designation' placeholder='Your role in company' className={`m-1 form-control inputField ${errors.designation && touched.designation
                     ? 'is-invalid'
                     : ''
                     }`} />
                   <ErrorMessage name='designation' component='div' className='errMsz' />
                 </Col>
                 <Col md={6}>
-                  <Field as='select' name='gender' placeholder='Enter your first name' className={`inputField ${errors.gender && touched.gender
+                  <Field as='select' name='gender' placeholder='Enter your first name' className={`m-1 form-control inputField ${errors.gender && touched.gender
                     ? 'is-invalid'
                     : ''
                     }`}>
@@ -178,11 +177,11 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
               </Row>
               <Row>
                 <Col md={6}>
-                  <input id='file' onChange={(e) => setFieldValue(`profileImage`, e.target.files[0])} type="file" className={`inputfile inputField ${errors.profileImage && touched.profileImage
+                  <input id='file' onChange={(e) => setFieldValue(`profileImage`, e.target.files[0])} type="file" className={`m-1 form-control inputfile inputField ${errors.profileImage && touched.profileImage
                     ? 'is-invalid'
                     : ''
                     }`} />
-                  <label htmlFor='file'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span>{values.profileImage?.name ? `${values.profileImage?.name.slice(0, 5)}` : 'Choose a file'} &hellip;</span></label>
+                  {/* <label htmlFor='file'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span>{values.profileImage?.name ? `${values.profileImage?.name.slice(0, 5)}` : 'Choose a file'} &hellip;</span></label> */}
                   <ErrorMessage name='profileImage' component={'div'} className='errMsz' />
                 </Col>
                 <Col md={6} style={{ display: 'flex', flexWrap: 'wrap', position: 'relative' }}>
@@ -195,8 +194,8 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
                 </Col>
 
               </Row>
-              <Row>
-                <Col className='text-center'>
+              <Row className='m-2'>
+                <Col className='text-center '>
                   <Button variant='primary' type="submit">Submit</Button>
                 </Col>
               </Row>
