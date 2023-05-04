@@ -62,6 +62,9 @@ const Navigation = () => {
                                 {currentUserVal._id && totalMessages != 0 &&  <span className='notification-icon'>{ totalMessages}</span>}
                                 </Nav.Link>
                         </LinkContainer>
+                        <LinkContainer to='/dashboard'>
+                            <Nav.Link>Dashboard</Nav.Link>
+                        </LinkContainer>
                         {
                             currentUserVal.fName && <li>
                                 <label className="switch mt-2">
