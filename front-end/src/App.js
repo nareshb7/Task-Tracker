@@ -9,6 +9,7 @@ import { BE_URL } from './components/utils/Constants';
 import { logoutFunc } from './components/utils/LogoutFunc';
 import { setCookie } from './components/utils/CookieComp';
 import Navigation from './pages/Nav';
+import { Toast } from 'react-bootstrap';
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
@@ -19,6 +20,7 @@ function App() {
   const [currentUserVal, setCurrentUserVal] = useState({})
   const [totalMessages, setTotalMessages] = useState(0)
   const [currentRoom, setCurrentRoom] = useState('')
+  const [messageClose, setMessageClose] = useState(false)
   const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom }
   useEffect(() => {
     socket.emit('new-user')

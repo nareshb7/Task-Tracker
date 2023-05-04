@@ -83,7 +83,7 @@ const Signup = () => {
             <Col md={10} className='card m-auto'>
             <SignupForm submitFunc={handleSubmit} error={errors} isSubmitted={isSubmitted} />
             <Col className=' py-4'>
-                <p className='text-center'>
+                <p className='text-center fw-bolder'>
                     Already have an account ? <Link to='/login'>Login</Link>
                 </p>
             </Col>
