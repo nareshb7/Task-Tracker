@@ -10,6 +10,10 @@ const Pagination = (props) => {
     const [currentPage, setCurrentPage] = useState(0)
     const [pageSize, setPageSize] = useState(5)
     const lastPage = parseInt(data.length / pageSize);
+    useEffect(()=> {
+        setCurrentPage(0)
+        setPageSize(5)
+    }, [data])
     useEffect(() => {
         setCurreentData(data.slice(currentPage * pageSize, currentPage * pageSize + pageSize))
     }, [currentPage, pageSize, data])
@@ -56,7 +60,7 @@ const Pagination = (props) => {
             <td >
                 <div>
                     <label className='form-label'>Select page Size</label>
-                    <select className='form-control' onChange={handlePagesizeChange} defaultValue={pageSize}>
+                    <select className='form-control' onChange={handlePagesizeChange} value={pageSize} >
                         <option value={5}>5 rows</option>
                         <option value={10}>10 rows</option> 
                     </select>

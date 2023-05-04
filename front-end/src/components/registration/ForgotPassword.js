@@ -3,8 +3,10 @@ import React, { useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { fetchCall } from '../utils/fetch/UseFetch'
 import { psdPattern } from '../utils/Constants'
+import { Link, useNavigate } from 'react-router-dom'
 
 const ForgotPassword = () => {
+    const navigate = useNavigate()
     const [searchIpt, setSearchIpt] = useState('')
     const [data, setData] = useState({})
     const [response, setResponse] = useState('')
@@ -15,6 +17,7 @@ const ForgotPassword = () => {
         conPsd: ''
     })
     const [isValid, setIsValid] = useState(false)
+    const [isReady, setIsReady] = useState(false)
 
     const handleClick = () => {
         axios.get('/api/getallusers')
@@ -28,6 +31,7 @@ const ForgotPassword = () => {
                     setResponse(otp.message)
                     setOtp(otp.psd)
                     setIsValid(false)
+                    setIsReady(false)
                 } else {
                     setResponse('No details found')
                     setData({})
@@ -55,11 +59,18 @@ const ForgotPassword = () => {
         setNewpsd({ ...newPsd, [e.target.name]: e.target.value })
     }
     const passwordChangeFunc = async () => {
+        if (newPsd.psd == data.password) {
+            setResponse('Ur old password is same as the new password , please check')
+            return 
+        }
         setResponse('Updating...')
         const res = await fetchCall('api/adminupdateuser', { id: data._id, updateKey: 'password', updateValue: newPsd.psd })
-        setResponse('Successfully Changed')
+        setResponse(`Successfully Changed`)
         console.log('Passsowrd', res)
-        setNewpsd({})
+        setNewpsd({psd:'', conPsd:''})
+        setIsValid(false)
+        setIsReady(true)
+        // navigate('/login')
     }
     const handlePasswordSubmit = async (e) => {
         e.preventDefault()
@@ -81,7 +92,7 @@ const ForgotPassword = () => {
                     <Button onClick={handleClick}>Search</Button>
                 </Col>
             </Row>
-            <Row><h3>Status : {response}</h3></Row>
+            <Row><h5>Status : {response}</h5></Row>
             {
                 data.hasOwnProperty('mobile') && <Row>
                     {
@@ -94,10 +105,15 @@ const ForgotPassword = () => {
                     }
                     {
                         isValid && <Form className='my-2' onSubmit={handlePasswordSubmit}>
-                            <Form.Control className='my-1' type='password' value={newPsd.psd} name='psd' placeholder='Enter new Password' onChange={handlePasswordChange} />
-                            <Form.Control className='my-1' type='password' value={newPsd.conPsd} name='conPsd' placeholder='Confirm Password' onChange={handlePasswordChange} />
+                            <Form.Control className='my-1' type='password' value={newPsd.psd} name='psd' placeholder='Enter new Password' onChange={handlePasswordChange} required />
+                            <Form.Control className='my-1' type='password' value={newPsd.conPsd} name='conPsd' placeholder='Confirm Password' onChange={handlePasswordChange} required/>
                             <Button type='submit' >Submit</Button>
                         </Form>
+                    } 
+                    {
+                        isReady && <Col>
+                            <p className='fw-bold'>Click here to go to <Link to='/home'>Home page</Link> </p>
+                        </Col>
                     }
                 </Row>
             }

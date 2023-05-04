@@ -12,8 +12,8 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
     const [messages, setMessages] = useState([])
     const messageEndRef = useRef(null)
 
-    const getFormattedDate = () => {
-        const date = new Date()
+    const getFormattedDate = (date) => {
+        // const date = new Date()
         const year = date.getFullYear()
         let month = (1 + date.getMonth()).toString()
         month = month.length > 1 ? month : "0" + month
@@ -21,7 +21,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         day = day.length > 1 ? day : "0" + day
         return `${month}/${day}/${year}`
     }
-    const todayDate = getFormattedDate()
+    const todayDate = getFormattedDate(new Date())
 
     socket.off('room-messages').on('room-messages', (roomMessages)=> {
         setMessages(roomMessages)
@@ -36,10 +36,8 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes()
         const time = today.getHours() + ':' + minutes;
         const val = { fName: user.fName, lName: user.lName, id: user._id }
-        console.log('sent Room id:;', roomId)
         socket.emit('message-room', roomId, message, val, time, todayDate, opponent._id)
         setMessage('')
-        console.log('oppo', opponent)
         return
     }
     const deleteMessage =async (id, author)=> {
@@ -54,7 +52,16 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         }
         
     }
-    
+    const dateIndicator =(date) => {
+        const dt = new Date()
+        const today = getFormattedDate(dt)
+        const y = new Date(dt.setDate(dt.getDate()-1))
+        const yesterday = getFormattedDate(y)
+        const d = getFormattedDate(new Date(date))
+        if (today == d) return 'Today'
+        if (yesterday == d) return 'Yesterday'
+        return date
+    }
     return (<>
         {
             opponent._id ? <div className='message-Box'>
@@ -70,7 +77,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                     <ScrollToBottom className='message-container' >
                         {
                             messages.map((dayMsz) => (
-                                <div key={dayMsz._id}> <h3 style={{textAlign:'center'}}>{dayMsz._id}</h3>
+                                <div key={dayMsz._id} className='m-auto text-center'> <span className='p-1 text-center fw-bolder' style={{borderRadius:'8px', border:'1px solid #ccc', color:'#85807b' }}>{dateIndicator(dayMsz._id)}</span>
                                     {
                                         dayMsz.messageByDate.map((msz) => {
                                             return <div key={msz._id} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>

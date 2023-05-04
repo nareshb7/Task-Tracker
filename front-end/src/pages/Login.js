@@ -73,11 +73,11 @@ const Login = () => {
                                     <Button variant='primary' type='submit'>Login</Button>
                                 </Form>
                                 <div className='py-4'>
+                                    <h5> Status: {response} </h5>
                                     <p className='text-center fw-bolder'>
                                         Don't have an account ? <Link to='/signup'>Signup</Link>
                                     </p>
                                     <p className='text-center fw-bolder'>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></p>
-                                    <h5> Status: {response} </h5>
                                 </div>
                             </div>
                         </Col>
