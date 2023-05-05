@@ -15,7 +15,7 @@ import './style/Navigation.css'
 
 const Navigation = () => {
     const { currentUserVal, setCurrentUserVal, socket, totalMessages } = useContext(UserContext)
-    
+
     const navigate = useNavigate()
     const logout = async (id) => {
         await logoutFunc(currentUserVal)
@@ -24,7 +24,7 @@ const Navigation = () => {
         navigate('/login')
         socket.emit('new-user')
     }
-    
+
     const handleStatus = async (e) => {
         if (e.target.checked) {
             await logoutFunc(currentUserVal, 'Online')
@@ -58,13 +58,17 @@ const Navigation = () => {
                             <Nav.Link >Admin Page</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/chat'>
-                            <Nav.Link >Chat 
-                                {currentUserVal._id && totalMessages != 0 &&  <span className='notification-icon'>{ totalMessages}</span>}
-                                </Nav.Link>
+                            <Nav.Link >Chat
+                                {currentUserVal._id && totalMessages != 0 && <span className='notification-icon'>{totalMessages}</span>}
+                            </Nav.Link>
                         </LinkContainer>
-                        <LinkContainer to='/dashboard'>
-                            <Nav.Link>Dashboard</Nav.Link>
-                        </LinkContainer>
+                        {
+                            currentUserVal.fName &&
+                            <LinkContainer to='/dashboard'>
+                                <Nav.Link>Dashboard</Nav.Link>
+                            </LinkContainer>
+                        }
+
                         {
                             currentUserVal.fName && <li>
                                 <label className="switch mt-2">

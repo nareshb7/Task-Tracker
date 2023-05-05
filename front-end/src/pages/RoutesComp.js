@@ -25,19 +25,23 @@ const RoutesComp = () => {
                 <Route path='addIssue' element={<AddData />} />
                 <Route path='getIssue' element={<GetTask />} />
                 <Route path='description' element={<Description />} />
+                <Route path='/chat' element={<ChatBox />} />
+                <Route path='adminpage' element={<AdminPage />} />
+                <Route path='login' element={<Login />} /> 
+                <Route path='verifymail/:path' element={<MailVerification />} />
                 {
                     !currentUserVal.fName && (
                         <Route path='signup' element={<Signup />} />
                     )
                 }
-                <Route path='login' element={<Login />} />
-                <Route path='/forgotpassword' element={<ForgotPassword />} />
+                {
+                    currentUserVal.fName && <>
+                        <Route path='/forgotpassword' element={<ForgotPassword />} />
+                        <Route path='updateuser' element={<UserUpdate />} />
+                        <Route path='/dashboard' element={<Dashboard />} />
+                    </>
+                }
                 {/* <Route path='profile' element={<MyProfile/> } /> */}
-                <Route path='adminpage' element={<AdminPage />} />
-                <Route path='updateuser' element={<UserUpdate />} />
-                <Route path='verifymail/:path' element={<MailVerification />} />
-                <Route path='/chat' element={<ChatBox />} />
-                <Route path='/dashboard' element={<Dashboard />} />
             </Routes>
         </div>
     )

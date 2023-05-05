@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useContext} from 'react'
 import { Col, Row } from 'react-bootstrap'
-import Maintanance from './MaintanancePage'
+import MaintanancePage from './MaintanancePage'
+import AdminDashboard from './AdminDashboard'
+import { UserContext } from '../App'
+import UserDashboard from './UserDashboard'
 
-const Dashboard = ()=> {
+const Dashboard = () => {
+    const {currentUserVal, socket} = useContext(UserContext)
     return <Row>
         <Col>
-            <Maintanance />
-            {/* <p className='text-center fw-bolder fs-1'>DashBoard Component</p> */}
+            <MaintanancePage />
+            <span className='fw-bold fs-1'>Welcome Back, {currentUserVal.fName}</span>
+            {
+                currentUserVal.isAdmin ? 
+                <AdminDashboard currentUserVal={currentUserVal} socket={socket} /> : 
+                <UserDashboard currentUserVal={currentUserVal}/>
+            }            
         </Col>
     </Row>
 }
