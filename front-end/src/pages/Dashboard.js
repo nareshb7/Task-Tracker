@@ -10,7 +10,7 @@ const Dashboard = () => {
     return <Row>
         <Col>
             <MaintanancePage />
-            <span className='fw-bold fs-1'>Welcome Back, {currentUserVal.fName}</span>
+            <span className='fw-bold fs-1 text-primary'>Welcome Back, {currentUserVal.fName}</span>
             {
                 currentUserVal.isAdmin ? 
                 <AdminDashboard currentUserVal={currentUserVal} socket={socket} /> : 

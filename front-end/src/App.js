@@ -21,7 +21,8 @@ function App() {
   const [totalMessages, setTotalMessages] = useState(0)
   const [currentRoom, setCurrentRoom] = useState('')
   const [messageClose, setMessageClose] = useState(false)
-  const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom }
+  const [quote, setQuote] = useState({})
+  const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom , quote}
   useEffect(() => {
     socket.emit('new-user')
     const handleTabClose = async (event) => {
@@ -57,7 +58,15 @@ function App() {
         alert('You got a message from ' + sender.fName)
     }
 })
-
+useEffect(()=> {
+  fetch("https://type.fit/api/quotes")
+  .then(res => res.json())
+  .then(data => {
+      const num = Math.floor(Math.random() * ((data.length -2) +1) )
+      console.log('Random',num,  data[num])
+      setQuote(data[num])
+  })
+},[])
   useEffect(() => {
     socket.emit('new-user')
     setCurrentUserVal(userDetails)
