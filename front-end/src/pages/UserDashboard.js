@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { uploadedIssues } from '../components/issues/UserIssues'
+import { useNavigate } from 'react-router-dom'
 
 const UserDashboard = ({ currentUserVal }) => {
+    const navigate = useNavigate()
     const [dashboardData, setDashboardData] = useState({
         totalIssues: [],
         resolved: 0,
@@ -21,6 +23,7 @@ const UserDashboard = ({ currentUserVal }) => {
     }, [])
     const updateIssue = (tkt)=> {
         console.log('Update::', tkt)
+        // navigate('/addIssue', )
     }
     return <Row>
         <Col >
