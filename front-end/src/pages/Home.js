@@ -12,7 +12,7 @@ const Home = () => {
         <Row>
             <Col md={6} className='d-flex flex-direction-column align-items-center justify-content-center'>
                 <div>
-                    <h1>Welcome ...</h1>
+                    <h1>Welcome,</h1>
                     <p>This is the Task-Tracker Application, It will track your daily issue status</p>
                     <Row>
                         <Col className='card m-1 bg-primary'>

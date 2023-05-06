@@ -4,6 +4,7 @@ import MaintanancePage from './MaintanancePage'
 import AdminDashboard from './AdminDashboard'
 import { UserContext } from '../App'
 import UserDashboard from './UserDashboard'
+import './style/Dashboard.css'
 
 const Dashboard = () => {
     const {currentUserVal, socket} = useContext(UserContext)

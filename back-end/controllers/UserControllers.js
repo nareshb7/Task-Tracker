@@ -99,3 +99,18 @@ module.exports.userLogout = async (req, res) => {
     }
     res.send(result)
 }
+
+module.exports.assignTicket = async (req,res)=> {
+    console.log('Assigned', req.body)
+    try {
+
+        const {id, ticket} = req.body
+        ticket['assignedDate'] = new Date()
+        const devData = await signUpModel.findById({ _id: id })
+        devData.todayTickets = [...devData.todayTickets, ticket]
+        await devData.save()
+        res.status(200).json('Assigned')
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+}

@@ -6,21 +6,32 @@ export const lastSeenTimeFormat = (time)=> {
     const val = new Date(time).toLocaleString()
     return val
 }
+const getFormattedDate = (date) => {
+    // const date = new Date()
+    const year = date.getFullYear()
+    let month = (1 + date.getMonth()).toString()
+    month = month.length > 1 ? month : "0" + month
+    let day = date.getDate().toString()
+    day = day.length > 1 ? day : "0" + day
+    return `${month}/${day}/${year}`
+}
+export const dateIndicator =(date) => {
+    const dt = new Date()
+    const today = getFormattedDate(dt)
+    const y = new Date(dt.setDate(dt.getDate()-1))
+    const yesterday = getFormattedDate(y)
+    const d = getFormattedDate(new Date(date))
+    if (today == d) return 'Today'
+    if (yesterday == d) return 'Yesterday'
+    return d
+}
 
 const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const messageEndRef = useRef(null)
 
-    const getFormattedDate = (date) => {
-        // const date = new Date()
-        const year = date.getFullYear()
-        let month = (1 + date.getMonth()).toString()
-        month = month.length > 1 ? month : "0" + month
-        let day = date.getDate().toString()
-        day = day.length > 1 ? day : "0" + day
-        return `${month}/${day}/${year}`
-    }
+    
     const todayDate = getFormattedDate(new Date())
 
     socket.off('room-messages').on('room-messages', (roomMessages)=> {
@@ -52,16 +63,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         }
         
     }
-    const dateIndicator =(date) => {
-        const dt = new Date()
-        const today = getFormattedDate(dt)
-        const y = new Date(dt.setDate(dt.getDate()-1))
-        const yesterday = getFormattedDate(y)
-        const d = getFormattedDate(new Date(date))
-        if (today == d) return 'Today'
-        if (yesterday == d) return 'Yesterday'
-        return date
-    }
+    
     return (<>
         {
             opponent._id ? <div className='message-Box'>

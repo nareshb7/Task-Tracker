@@ -3,6 +3,7 @@ import { GreenDot, RedDot } from '../utils/Dots/Dots'
 import { issueStatusFunc } from './Description'
 import './Pagination.css'
 import { Button } from 'react-bootstrap'
+import { dateIndicator } from '../../chatBox/MessageBox'
 
 const Pagination = (props) => {
     const { data, gotoDesc, editFunc, deleteFunc, currentUser }= props
@@ -46,7 +47,7 @@ const Pagination = (props) => {
                     <td>{val.appType ? val.appType : 'No Data'}</td>
                     <td style={{ cursor: 'pointer' }} title={'Click here to get full info.'} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                     <td> {issueStatusFunc(val.issueStatus)} </td>
-                    <td> {new Date(val?.time).toLocaleString()}</td>
+                    <td>{dateIndicator(val?.time) }</td>
                     <td><img src={val.binaryData[0] || val.binaryData} className='img' alt='img' />{val.binaryData.length > 1 && 'more....'} </td>
                     <td>
                         <Button variant='warning' onClick={() => editFunc(val._id, val)} disabled={currentUser._id !== val?.developerId}>Edit <i className='fas fa-edit'></i></Button>
