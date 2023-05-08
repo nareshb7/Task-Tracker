@@ -6,10 +6,16 @@ import Modal from '../components/modal/Modal'
 
 const AdminDashboard = ({ currentUserVal, socket }) => {
 
-    const [todayTickets, setTodayTickets] = useState([])
     const [modelOpen, setModelOpen] = useState(false)
     const [selectedDev, setSelectedDev] = useState('')
     const [selectedTicket, setSelectedTicket] = useState({})
+    const [todayTickets, setTodayTickets] = useState({
+        total:[],
+        assigned:0,
+        resolved:0,
+        pending:0,
+        percentage: 0
+    })
     const [employeesdata, setEmployeesdata] = useState({
         employees: [],
         total: 0,
@@ -19,13 +25,14 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
     })
     const [ticketsData, setTicketsData] = useState({
         total: 15,
-        assigned: 12,
+        fixed: 12,
         resolved: 10,
         pending: 5,
         percentage: 65
     })
 
     socket.off('new-user').on('new-user', (employees) => {
+        // Employees data
         const total = employees.length
         const active = employees.filter(user => user.status == "Online").length
         const offline = employees.filter(user => user.status == "Offline").length
@@ -36,12 +43,32 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         socket.emit('new-user')
     }, [])
     useEffect(() => {
-        const getTickets = async () => {
+        const getTodayTickets = async () => {
             const tickets = await fetchGetCall('/api/todaytickets')
-            console.log('Tickets', tickets)
-            if (tickets.length) setTodayTickets(tickets)
+            if (tickets.length) {
+                // Today Tickets 
+                const total = tickets
+                const resolved = tickets.filter(tkt => tkt.issueStatus == "Resolved").length
+                const pending =  tickets.filter(tkt => tkt.issueStatus == "Pending").length
+                const assigned =  tickets.filter(tkt => tkt.issueStatus == "Fixed").length
+                const percentage =( resolved /total.length *100).toFixed(2)
+                setTodayTickets({total, resolved, pending, assigned, percentage})
+            }
         }
-        getTickets()
+        const getIssues =async ()=> {
+            // Total Tickets 
+            const res = await fetchGetCall('/api/getData', {})
+            if (res.length) {
+                const total = res
+                const resolved = res.filter(tkt => tkt.issueStatus == "Resolved").length
+                const pending =  res.filter(tkt => tkt.issueStatus == "Pending").length
+                const fixed =  res.filter(tkt => tkt.issueStatus == "Fixed").length
+                const percentage =( resolved /total.length *100).toFixed(2)
+                setTicketsData({total, resolved, pending, fixed, percentage})
+            }
+        }
+        getIssues()
+        getTodayTickets()
     }, [])
 
     const selectDev = (ticketData) => {
@@ -69,6 +96,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
     }
     return <Col>
         <p>Admin Dashboard</p>
+        {/* Employess Data */}
         <Row className='d-flex m-2 gap-3 fw-bolder'>
             <Col className='card bg-primary '>
                 <span className='fs-4 px-1'>Total Employees: </span>
@@ -87,12 +115,17 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                 <span className='fs-1 text-start'>{employeesdata.percentage}%</span>
             </Col>
         </Row>
+        {/* Total Tickets data */}
         <Row className='d-flex m-2 gap-3 fw-bolder'>
             <Col className='card bg-primary'>
                 <span className='fs-3 px-1'>Total Tickets :</span>
-                <span className='fs-1 text-start'>{ticketsData.total}</span>
+                <span className='fs-1 text-start'>{ticketsData.total.length}</span>
             </Col>
             <Col className='card bg-success'>
+                <span className='fs-3 px-1'>Fixed Tickets :</span>
+                <span className='fs-1 text-start'>{ticketsData.fixed}</span>
+            </Col>
+            <Col className='card bg-secondary'>
                 <span className='fs-3 px-1'>Resolved Tickets :</span>
                 <span className='fs-1 text-start'>{ticketsData.resolved}</span>
             </Col>
@@ -105,6 +138,30 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                 <span className='fs-1 text-start'>{ticketsData.percentage}%</span>
             </Col>
         </Row>
+        {/* Today Tickets data */}
+        <Row className='d-flex m-2 gap-3 fw-bold'>
+        <Col className='card bg-primary'>
+                <span className='fs-3 px-1'>Today Tickets: </span>
+                <span className='fs-1 text-start'>{todayTickets.total.length}</span>
+            </Col>
+            <Col className='card bg-success'>
+                <span className='fs-3 px-1'>Assigned: </span>
+                <span className='fs-1 text-start'>{todayTickets.assigned}</span>
+            </Col>
+            <Col className='card bg-info'>
+                <span className='fs-3 px-1'>Resolved: </span>
+                <span className='fs-1 text-start'>{todayTickets.resolved}</span>
+            </Col>
+            <Col className='card bg-warning'>
+                <span className='fs-3 px-1'>Pending: </span>
+                <span className='fs-1 text-start'>{todayTickets.pending}</span>
+            </Col>
+            <Col className='card bg-info'>
+                <span className='fs-3 px-1'>Percentage: </span>
+                <span className='fs-1 text-start'>{todayTickets.percentage}%</span>
+            </Col> 
+        </Row>
+        {/* Maping today tickets into a table */}
         <Row>
             <Col className='card my-3' style={{ height: '400px' }}>
                 <span className='fs-3 fw-bold' >Today Tickets : </span>
@@ -130,7 +187,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                         </thead>
                         <tbody>
                             {
-                                todayTickets.map((ticket, idx) => (
+                                todayTickets.total.map((ticket, idx) => (
                                     <tr key={idx + Math.random()} onClick={() => selectDev(ticket)}>
                                         <td>{idx + 1}.</td>
                                         <td>{ticket.name}</td>
@@ -167,7 +224,9 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                             <span className='fs-4 fst-italic'> {selectedTicket.technology}</span>
                         </div>
                         <div>
-                            <span className='fs-4 fw-bold'>Select Developer: </span>
+                            <span className='fs-4 fw-bold'>Select Developer: </span>{
+                                console.log('Selected Dev', selectedDev)
+                            }
                             <select className='form-control fst-italic' defaultValue={selectedDev} onChange={(e) => setSelectedDev(JSON.parse(e.target.value))}>
                                 {
                                     employeesdata.employees.map((val, idx) => {

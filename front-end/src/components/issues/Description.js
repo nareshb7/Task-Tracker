@@ -19,7 +19,7 @@ export const issueStatusFunc =(val)=> {
     case "Fixed": {
       return <span style={{color:'#0f5'}}> &#x2713; Fixed</span>
     }
-    default: return ''
+    default: return '---'
   }
 }
 

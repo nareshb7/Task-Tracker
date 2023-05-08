@@ -2,6 +2,6 @@
 
 .ticketsTable th {
     background-color: #fff;
-    /* position: sticky;
-    top:0 */
+    position: sticky;
+    top:0
 }
