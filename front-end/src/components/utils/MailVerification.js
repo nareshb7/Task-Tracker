@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 
 const MailVerification = () => {
     const location = useLocation()
@@ -49,7 +50,7 @@ const MailVerification = () => {
         {
             otp ? <div>
                 <input type='text' name='otp' value={userOtp} onChange={(e) => setUserOtp(e.target.value)} placeholder='Entere Otp here....' />
-                <button onClick={otpCheck}>Enter Otp</button>
+                <Button onClick={otpCheck}>Enter Otp</Button>
                 <h3>{response}</h3>
             </div> : <h3>{response}</h3>
         }

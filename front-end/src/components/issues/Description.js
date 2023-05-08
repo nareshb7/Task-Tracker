@@ -4,6 +4,7 @@ import { UserContext } from '../../App'
 import { fetchCall, fetchPutCall } from '../utils/fetch/UseFetch'
 import { GreenDot, RedDot } from '../utils/Dots/Dots'
 import Modal from '../modal/Modal'
+import { Button } from 'react-bootstrap'
 
 
 
@@ -109,7 +110,7 @@ const Description = () => {
         </div>
       </div>
       <div>
-        <button title='U can add data only after login' onClick={() => addAnswerFunc()} > Add Answer</button>
+        <Button title='U can add data only after login' onClick={() => addAnswerFunc()} > Add Answer</Button>
         <div style={{ visibility: `${addSolutionShow ? 'visible' : 'hidden'}` }}>
           <div style={{ marginBlock: '10px' }}>
             <textarea placeholder='Add Solution here....' rows={6} cols='50' value={newSolution} onChange={(e) => setNewSolution(e.target.value)}></textarea>
@@ -127,7 +128,7 @@ const Description = () => {
             </div>
           </div>
           <div>
-            <button onClick={addAnswer}>Submit</button>
+            <Button onClick={addAnswer}>Submit</Button>
           </div>
         </div>
 

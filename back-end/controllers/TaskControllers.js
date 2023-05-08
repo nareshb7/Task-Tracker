@@ -1,7 +1,11 @@
 const multer = require('multer')
 const nodemailer = require('nodemailer')
 const fs = require('fs')
+const express = require('express')
 const { mailChangeReq } = require('../models/TaskModel')
+const app = express()
+const fetch = (...args) =>
+	import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -68,4 +72,24 @@ module.exports.getmailchangeID = async (req,res)=> {
     await mailChangeReq.find({})
     .then(data => res.send(data))
     .catch(err => res.semd(err))
+}
+const getRandom = (data = 1642)=> {
+    const num = Math.floor(Math.random() * ((data -2) +1) )
+    console.log('number', num)
+    return num
+}
+let d = new Date().toLocaleDateString()
+let num = getRandom()
+
+module.exports.getQuote = async (req,res)=> {
+    const {date } = req.query
+    const quotes = await fetch('https://type.fit/api/quotes').then(res => res.json())
+    const userDate = new Date(date).toLocaleDateString()
+    if (userDate == d) {
+        return res.status(200).json(quotes[num])
+    } else {
+        num = getRandom()
+        d = new Date().toLocaleDateString()
+        return res.status(200).json(quotes[num])
+    }
 }

@@ -10,8 +10,8 @@ export const fetchPutCall = async (url,data)=> {
     .then(res=> res.data)
     .catch(err => err.message)
 }
-export const fetchGetCall = async (url, data) => {
-    return await axios.get(url, data)
+export const fetchGetCall = async (url, params) => {
+    return await axios.get(url, {params})
     .then(res=> res.data)
     .catch(err => err.message)
 }

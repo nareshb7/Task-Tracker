@@ -10,6 +10,7 @@ import { logoutFunc } from './components/utils/LogoutFunc';
 import { setCookie } from './components/utils/CookieComp';
 import Navigation from './pages/Nav';
 import { Toast } from 'react-bootstrap';
+import { fetchCall, fetchGetCall } from './components/utils/fetch/UseFetch';
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
@@ -59,13 +60,13 @@ function App() {
     }
 })
 useEffect(()=> {
-  fetch("https://type.fit/api/quotes")
-  .then(res => res.json())
-  .then(data => {
-      const num = Math.floor(Math.random() * ((data.length -2) +1) )
-      console.log('Random',num,  data[num])
-      setQuote(data[num])
-  })
+    const getQuote = async ()=> {
+      const d = new Date()
+      const quote =await fetchGetCall('/api/getquote', {date: d})
+      setQuote(quote)
+}
+getQuote()
+
 },[])
   useEffect(() => {
     socket.emit('new-user')

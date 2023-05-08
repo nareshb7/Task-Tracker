@@ -108,7 +108,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         <Row>
             <Col className='card my-3' style={{ height: '400px' }}>
                 <span className='fs-3 fw-bold' >Today Tickets : </span>
-                <Col className='container-fluid m-auto text-center' style={{ overflowY: 'scroll' }}>
+                <Col className='container-fluid m-auto text-center' style={{ overflow: 'hidden scroll' }}>
                     <Table className='striped ticketsTable'>
                         <thead>
                             <tr>
