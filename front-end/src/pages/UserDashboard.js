@@ -23,7 +23,29 @@ const UserDashboard = ({ currentUserVal }) => {
     }, [])
     const updateIssue = (tkt)=> {
         console.log('Update::', tkt)
-        // navigate('/addIssue', )
+        // {
+        //     dName: isLoggedin.fName + " " + isLoggedin.lName,
+        //     cName: '',
+        //     technology: '',
+        //     issue: '',
+        //     time: '',
+        //     binaryData: '',
+        //     issueTitle: '',
+        //     solutions: [],
+        //     solution: '',
+        //     companyName: '',
+        //     appType: '',
+        //     developerId: '',
+        //     images: "",
+        //     issueImages: [{ image: '' }],
+        //     issueStatus: '',
+        // }
+        const obj = {
+            cName: tkt.name,
+            technology: tkt.technology,
+            
+        }
+        navigate('/addIssue', )
     }
     return <Row>
         <Col >
@@ -66,8 +88,8 @@ const UserDashboard = ({ currentUserVal }) => {
                         {
                             currentUserVal.todayTickets.map((tkt, idx) => {
                                 return <tr key={idx + Math.random()}>
-                                    <td>{tkt.name}</td>
-                                    <td>{tkt.phn}</td>
+                                    <td>{tkt.consultantName}</td>
+                                    <td>{tkt.phone}</td>
                                     <td>{tkt.technology}</td>
                                     <td>{tkt.assignedBy}</td>
                                     <td> {new Date(tkt.assignedDate).toLocaleString()}</td>

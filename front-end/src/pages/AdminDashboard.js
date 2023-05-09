@@ -42,20 +42,22 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
     useEffect(() => {
         socket.emit('new-user')
     }, [])
-    useEffect(() => {
-        const getTodayTickets = async () => {
-            const tickets = await fetchGetCall('/api/todaytickets')
-            if (tickets.length) {
-                // Today Tickets 
-                const total = tickets
-                const resolved = tickets.filter(tkt => tkt.issueStatus == "Resolved").length
-                const pending =  tickets.filter(tkt => tkt.issueStatus == "Pending").length
-                const assigned =  tickets.filter(tkt => tkt.issueStatus == "Fixed").length
-                const percentage =( resolved /total.length *100).toFixed(2)
-                setTodayTickets({total, resolved, pending, assigned, percentage})
-            }
+    const getTodayTickets = async () => {
+        const tickets = await fetchGetCall('/api/todaytickets')
+        console.log('TotalTkts', tickets)
+        if (tickets.length) {
+            // Today Tickets 
+            const total = tickets
+            const resolved = tickets.filter(tkt => tkt.issueStatus == "Resolved").length
+            const pending =  tickets.filter(tkt => tkt.issueStatus == "Pending").length
+            const assigned =  tickets.filter(tkt => tkt.issueStatus == "Fixed").length
+            const percentage =( resolved /total.length *100).toFixed(2)
+            setTodayTickets({total, resolved, pending, assigned, percentage})
         }
-        const getIssues =async ()=> {
+    }
+    useEffect(() => {
+        
+        const getTotalTickets =async ()=> {
             // Total Tickets 
             const res = await fetchGetCall('/api/getData', {})
             if (res.length) {
@@ -67,7 +69,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                 setTicketsData({total, resolved, pending, fixed, percentage})
             }
         }
-        getIssues()
+        getTotalTickets()
         getTodayTickets()
     }, [])
 
@@ -81,6 +83,9 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         selectedTicket['assignedBy'] = currentUserVal.fName +" "+ currentUserVal.lName
         const assignTickets = await fetchCall('/api/assignticket', { id: selectedDev._id, ticket: selectedTicket, })
         console.log('Assign Res', assignTickets)
+        const updateTicket = await fetchCall('/api/updateticket', {selectedDev, selectedTicket})
+        console.log('UpdateTicket', updateTicket)
+        await getTodayTickets()
         if (assignTickets == 'Assigned') {
             setModelOpen(false)
             alert('Ticket Assigned ')
@@ -171,6 +176,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                             <tr>
                                 <th>Sl.NO</th>
                                 <th>Consultant</th>
+                                <th>Phone</th>
                                 <th>Assigned to</th>
                                 <th>Status</th>
                                 <th>Helped Dev</th>
@@ -182,7 +188,6 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                 <th>Technology</th>
                                 <th>Task Description</th>
                                 <th>Comments</th>
-                                <th>Phone</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -190,19 +195,19 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                 todayTickets.total.map((ticket, idx) => (
                                     <tr key={idx + Math.random()} onClick={() => selectDev(ticket)}>
                                         <td>{idx + 1}.</td>
-                                        <td>{ticket.name}</td>
-                                        <td>{currentUserVal.fName}</td>
-                                        <td>Not assigned</td>
+                                        <td>{ticket.consultantName}</td>
+                                        <td>{ticket.phone}</td>
+                                        <td>{ticket.assignedTo ? ticket.assignedTo.name : "Null"}</td>
+                                        <td>{ticket.status ? ticket.status : "Not assigned"}</td>
                                         <td>Sai</td>
                                         <td>{ticket.location}</td>
                                         <td>{new Date(ticket.receivedDate).toLocaleDateString()}</td>
-                                        <td>{new Date().toLocaleDateString()}</td>
-                                        <td>{new Date(new Date().setDate(+5)).toLocaleDateString()}</td>
-                                        <td>{new Date().toLocaleDateString()}</td>
+                                        <td>{new Date(ticket.assignedDate).toLocaleDateString()}</td>
+                                        <td>{new Date(ticket.targetDate).toLocaleDateString()}</td>
+                                        <td>{new Date(ticket.completedDate).toLocaleDateString()}</td>
                                         <td>{ticket.technology}</td>
                                         <td>Description</td>
                                         <td>Comments</td>
-                                        <td>{ticket.phn}</td>
                                     </tr>
                                 ))
                             }

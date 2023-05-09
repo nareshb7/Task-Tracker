@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 
 const { signUpModel } = require('../models/UsersModel')
 const { deletedUsers } = require('../models/TaskModel')
+const { updateTicket } = require('./TicketsController')
 
 
 const UserStorage = multer.diskStorage({
@@ -103,7 +104,6 @@ module.exports.userLogout = async (req, res) => {
 module.exports.assignTicket = async (req,res)=> {
     console.log('Assigned', req.body)
     try {
-
         const {id, ticket} = req.body
         ticket['assignedDate'] = new Date()
         const devData = await signUpModel.findById({ _id: id })
