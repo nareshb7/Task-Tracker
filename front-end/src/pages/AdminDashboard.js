@@ -44,13 +44,12 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
     }, [])
     const getTodayTickets = async () => {
         const tickets = await fetchGetCall('/api/todaytickets')
-        console.log('TotalTkts', tickets)
         if (tickets.length) {
             // Today Tickets 
             const total = tickets
-            const resolved = tickets.filter(tkt => tkt.issueStatus == "Resolved").length
-            const pending =  tickets.filter(tkt => tkt.issueStatus == "Pending").length
-            const assigned =  tickets.filter(tkt => tkt.issueStatus == "Fixed").length
+            const resolved = tickets.filter(tkt => tkt.status == "Resolved").length
+            const pending =  tickets.filter(tkt => tkt.status == "Pending").length
+            const assigned =  tickets.filter(tkt => tkt.status == "Assigned").length
             const percentage =( resolved /total.length *100).toFixed(2)
             setTodayTickets({total, resolved, pending, assigned, percentage})
         }
@@ -76,13 +75,11 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
     const selectDev = (ticketData) => {
         setModelOpen(true)
         setSelectedTicket(ticketData)
-        console.log('selected Tkt::', ticketData)
     }
     const assignTicket = async () => {
         console.log('Selectd Dev: ', selectedDev, selectedTicket)
         selectedTicket['assignedBy'] = currentUserVal.fName +" "+ currentUserVal.lName
         const assignTickets = await fetchCall('/api/assignticket', { id: selectedDev._id, ticket: selectedTicket, })
-        console.log('Assign Res', assignTickets)
         const updateTicket = await fetchCall('/api/updateticket', {selectedDev, selectedTicket})
         console.log('UpdateTicket', updateTicket)
         await getTodayTickets()
@@ -98,6 +95,10 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         setModelOpen(false)
         setSelectedTicket({})
         setSelectedDev('')
+    }
+    const dateFormatter = (data) => {
+        if (!data) return "---"
+        return new Date(data).toLocaleDateString()
     }
     return <Col>
         <p>Admin Dashboard</p>
@@ -201,10 +202,10 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                         <td>{ticket.status ? ticket.status : "Not assigned"}</td>
                                         <td>Sai</td>
                                         <td>{ticket.location}</td>
-                                        <td>{new Date(ticket.receivedDate).toLocaleDateString()}</td>
-                                        <td>{new Date(ticket.assignedDate).toLocaleDateString()}</td>
-                                        <td>{new Date(ticket.targetDate).toLocaleDateString()}</td>
-                                        <td>{new Date(ticket.completedDate).toLocaleDateString()}</td>
+                                        <td>{dateFormatter(ticket.receivedDate)}</td>
+                                        <td>{dateFormatter(ticket.assignedDate)}</td>
+                                        <td>{dateFormatter(ticket.targetDate)}</td>
+                                        <td>{dateFormatter(ticket.completedDate)}</td>
                                         <td>{ticket.technology}</td>
                                         <td>Description</td>
                                         <td>Comments</td>
