@@ -85,6 +85,14 @@ const mockTicketSchema = mongoose.Schema({
     helpedDev: {
         type:Object,
         require: true
+    },
+    description: {
+        type: String,
+        require: true
+    },
+    comments: {
+        type: String,
+        require: true
     }
 })
 

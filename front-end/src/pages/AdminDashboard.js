@@ -80,7 +80,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         console.log('Selectd Dev: ', selectedDev, selectedTicket)
         selectedTicket['assignedBy'] = currentUserVal.fName +" "+ currentUserVal.lName
         const assignTickets = await fetchCall('/api/assignticket', { id: selectedDev._id, ticket: selectedTicket, })
-        const updateTicket = await fetchCall('/api/updateticket', {selectedDev, selectedTicket})
+        const updateTicket = await fetchCall('/api/updateticket', {id: selectedDev._id,  selectedDev, selectedTicket})
         console.log('UpdateTicket', updateTicket)
         await getTodayTickets()
         if (assignTickets == 'Assigned') {
@@ -207,8 +207,8 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                         <td>{dateFormatter(ticket.targetDate)}</td>
                                         <td>{dateFormatter(ticket.completedDate)}</td>
                                         <td>{ticket.technology}</td>
-                                        <td>Description</td>
-                                        <td>Comments</td>
+                                        <td>{ticket.description}</td>
+                                        <td>{ticket.comments}</td>
                                     </tr>
                                 ))
                             }

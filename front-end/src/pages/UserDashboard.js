@@ -45,7 +45,7 @@ const UserDashboard = ({ currentUserVal }) => {
             technology: tkt.technology,
             
         }
-        navigate('/addIssue', )
+        navigate('/addIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
     }
     return <Row>
         <Col >

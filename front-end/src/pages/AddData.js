@@ -5,25 +5,28 @@ import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
 import { UserContext } from '../App'
 import { addIssue } from '../redux/actions/issues/Actions'
-import { fetchCall } from '../components/utils/fetch/UseFetch'
+import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import { Row, Form as FormStyle, Col, Button } from 'react-bootstrap'
 import './style/AddIssue.css'
 
 const AddData = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const locationState = useLocation()
-    const [updateObj, setUpdateObj] = useState(locationState.state?.data)
-    const [method, setMethod] = useState(locationState.state?.mode || 'ADD')
-    const { currentUserVal } = useContext(UserContext)
+    // the location will work from dashboard page and issues page while u r updating issue
+    const {state} = useLocation()
+    console.log('State', state)
+    const [updateObj, setUpdateObj] = useState(state?.data)
+    const [method, setMethod] = useState(state?.mode || 'ADD')
+    const { currentUserVal, socket } = useContext(UserContext)
     const [isLoggedin, setIsLoggedIn] = useState([])
-    const technologies = ['Select the technology', "React", "Angular", "JavaScript", "CSS"]
+    const technologies = ['Select the technology', "React", "Angular", "JavaScript", "CSS", "Vue"]
     const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics', 'OTT']
+    const [employeesList,setEmployeesList] = useState([])
     const [status, setStatus] = useState('')
     const obj = {
         dName: isLoggedin.fName + " " + isLoggedin.lName,
-        cName: '',
-        technology: '',
+        cName: state?.cName || '',
+        technology: state?.technology || '',
         issue: '',
         time: '',
         binaryData: '',
@@ -36,6 +39,7 @@ const AddData = () => {
         images: "",
         issueImages: [{ image: '' }],
         issueStatus: '',
+        helpedDev:''
     }
     const schema = {
         cName: Yup.string().required('String required'),
@@ -52,6 +56,23 @@ const AddData = () => {
             .test('FILE-SIZE', 'File is too large (max : 300 KB) ', (value) => value.image?.size < 300000)),
         issueStatus: Yup.string().required('Select the issue status')
     }
+
+    // socket.off('new-user').on('new-user', (employees) => {
+    //     // Employees data
+    //     const total = employees.length
+    //     const active = employees.filter(user => user.status == "Online").length
+    //     const offline = employees.filter(user => user.status == "Offline").length
+    //     const percentage = (active / total * 100).toFixed(2)
+    //     setEmployeesdata({ total, active, offline, employees, percentage })
+    // })
+    useEffect(() => {
+        const getUsers = async ()=> {
+            const users = await fetchGetCall('/api/getallusers')
+            console.log('All Users', users)
+            if(users.length) setEmployeesList(users)
+        }
+        getUsers()
+    }, [])
     useEffect(() => {
         if (method === "UPDATE") {
             updateObj['images'] = ''
@@ -91,12 +112,18 @@ const AddData = () => {
             newData.issueImages = [{ image: '' }]
             newData.solutions = [{ solution: newData.solution }]
             let response = await fetchCall('api/setData', { data: newData })
+            console.log('ADD::', newData)
+            if (state?.id) {
+                const obj = {status:newData.issueStatus, description: newData.issue, comments: newData.solution }
+                const tktUpdate = await fetchCall('/api/updateticket', {id: state.id, from:'ADDISSUE',obj })
+                console.log('Ticket Update', tktUpdate)
+            }
             dispatch(addIssue(newData))
             setStatus(response)
-            if (response.includes('Sucessfully')) {
-                resetForm({ values: '' })
-                navigate('/getIssue')
-            }
+            // if (response.includes('Sucessfully')) {
+            //     resetForm({ values: '' })
+            //     navigate('/getIssue')
+            // }
         }
         if (method === 'UPDATE') {
             let bd = await Promise.all(newData.issueImages.map((file) => convertToBase64(file.image)))
@@ -116,7 +143,7 @@ const AddData = () => {
 
     }
     const handleValidate = (val) => {
-        //  console.log('validate', val)
+         console.log('validate', val)
     }
 
     const addImageField = (values, setValues, field) => {
@@ -201,6 +228,22 @@ const AddData = () => {
                                                         : ''
                                                         }`} />
                                                     <ErrorMessage name='companyName' component={'div'} className='errMsz' />
+                                                </Col>
+                                            </Row>
+                                            <Row className='my-3'>
+                                                <Col md={5}>
+                                                    <FormStyle.Label>Helped Developer :<span style={{color:'#888'}}> (optional)</span> </FormStyle.Label>
+                                                </Col>
+                                                <Col md={7}>
+                                                <Field as='select' name='helpedDev' className='form-control'>
+                                                        {
+                                                            ['select option',...employeesList].map((val, idx) => {
+                                                                return (
+                                                                    <option key={idx} value={JSON.stringify({id: val?._id, name: `${val?.fName} ${val?.lName}`})}>{val?.fName}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Field>
                                                 </Col>
                                             </Row>
                                             <Row className='my-3'>

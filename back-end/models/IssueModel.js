@@ -52,6 +52,10 @@ const taskSchema = new mongoose.Schema({
     issueStatus: {
         type:String,
         require: true
+    },
+    helpedDev: {
+        type:Object,
+        require: true
     }
 
 })

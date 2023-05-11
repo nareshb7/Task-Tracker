@@ -14,8 +14,16 @@ module.exports.todayTickts = async (req,res)=> {
 }
 module.exports.updateTicket = async (req,res)=> {
     console.log('req',req.body)
-    const {selectedTicket, selectedDev} = req.body
-    let tkt = await MockTicket.findById({_id: selectedTicket._id})
+    const {selectedTicket, selectedDev, from , obj, id} = req.body
+    let tkt = await MockTicket.findById({_id: id})
+    if (from== 'ADDISSUE') {
+        tkt['status'] = obj.status
+        tkt['description'] = obj.description
+        tkt['comments'] = obj.comments
+        await tkt.save()
+        console.log('from', from, obj, id)
+        return res.status(200).json(tkt)
+    }
     tkt['assignedTo'] = {name: `${selectedDev.fName} ${selectedDev.lName}`, id : selectedDev._id}
     tkt['status'] = 'Assigned'
     tkt['assignedDate'] = new Date()
