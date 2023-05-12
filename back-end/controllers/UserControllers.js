@@ -25,6 +25,8 @@ const signinStorage = multer({
 module.exports.signUpData = async (req, res) => {
     const { data } = req.body
     data.password = await bcrypt.hash(data.password, 10)
+    data['userLevel'] = 1
+    data['userId'] = data.fName.slice(0,3).toLowerCase() + (Math.random() *1000).toFixed(0)+ data.lName.slice(0,3).toLowerCase()
     await signUpModel.create(data).then(data => res.status(200).send(data)).catch(err => res.status(401).send(err))
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
@@ -101,16 +103,16 @@ module.exports.userLogout = async (req, res) => {
     res.send(result)
 }
 
-module.exports.assignTicket = async (req,res)=> {
-    console.log('Assigned', req.body)
-    try {
-        const {id, ticket} = req.body
-        ticket['assignedDate'] = new Date()
-        const devData = await signUpModel.findById({ _id: id })
-        devData.todayTickets = [...devData.todayTickets, ticket]
-        await devData.save()
-        res.status(200).json('Assigned')
-    } catch (e) {
-        res.status(400).json(e.message)
-    }
-}
+// module.exports.assignTicket = async (req,res)=> {
+//     console.log('Assigned', req.body)
+//     try {
+//         const {id, ticket} = req.body
+//         ticket['assignedDate'] = new Date()
+//         const devData = await signUpModel.findById({ _id: id })
+//         devData.todayTickets = [...devData.todayTickets, ticket]
+//         await devData.save()
+//         res.status(200).json('Assigned')
+//     } catch (e) {
+//         res.status(400).json(e.message)
+//     }
+// }

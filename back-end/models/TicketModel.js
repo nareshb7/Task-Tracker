@@ -76,7 +76,7 @@ const mockTicketSchema = mongoose.Schema({
     targetDate: {
         type: Date,
         require: true,
-        default: new Date()
+        default: new Date('05/14/2023')
     },
     completedDate: {
         type:Date,
@@ -92,6 +92,10 @@ const mockTicketSchema = mongoose.Schema({
     },
     comments: {
         type: String,
+        require: true
+    },
+    assignedBy: {
+        type: Object, 
         require: true
     }
 })

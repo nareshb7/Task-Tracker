@@ -75,7 +75,11 @@ io.on('connection',async (socket)=> {
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         io.to(room).emit('room-messages', roomMessages)
-        socket.broadcast.emit('notifications', room, opponentId, sender)
+        socket.emit('notifications', room, opponentId, sender)
+    })
+    socket.on('AssignTicket', (val, id, sender)=> {
+        console.log('vall', val)
+        socket.broadcast.emit('ticketAssigned', val, id, sender)
     })
 })
 

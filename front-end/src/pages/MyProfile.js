@@ -68,18 +68,18 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
       color: '#888'
     }
   }
-  const reqAdminAccess = async () => {
-    let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
-    if (cnfrm) {
-      const apiPayload = { id: currentUser._id, updateKey: 'reqforAdmin', updateValue: true, update: 'single' }
-      let resp = await fetchCall('/api/adminupdateuser', apiPayload)
-      if (resp._id) {
-        setCurrentUserVal(resp)
-      } else {
-        console.log('AdminAccess Error : ', resp)
-      }
-    }
-  }
+  // const reqAdminAccess = async () => {
+  //   let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
+  //   if (cnfrm) {
+  //     const apiPayload = { id: currentUser._id, updateKey: 'reqforAdmin', updateValue: true, update: 'single' }
+  //     let resp = await fetchCall('/api/adminupdateuser', apiPayload)
+  //     if (resp._id) {
+  //       setCurrentUserVal(resp)
+  //     } else {
+  //       console.log('AdminAccess Error : ', resp)
+  //     }
+  //   }
+  // }
   const updateData = (data) => {
     navigate('/updateuser', { state: data })
   }
@@ -137,7 +137,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
               <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
             </Col>
             <Col md={4} className='card m-3'>
-              <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <Button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</Button></p>
+              {/* <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <Button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</Button></p> */}
               <div>
                 <Button onClick={()=> logout(currentUser._id)} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</Button>
                 <Button onClick={() => updateData(currentUser)}>Update Details</Button>

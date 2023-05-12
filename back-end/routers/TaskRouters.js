@@ -4,7 +4,7 @@ const { mailVerification, mailChangeReq, getmailchangeID, getQuote} = require('.
 const { setData, getData, addSolution, deleteSolution, updateSolution, uploadedIssues, getParticularSolution, issueStatus} = require('../controllers/IssueController')
 const {signUpData, logInUserData, getParticularUser, getAllUsers, deleteUser, updateUser, userLogout, assignTicket} = require('../controllers/UserControllers')
 const { messages, deleteMessage } = require('../controllers/MessageController')
-const { todayTickts, updateTicket } = require('../controllers/TicketsController')
+const { todayTickts, updateTicket, getTodayTicket } = require('../controllers/TicketsController')
 
 router.post('/setData', setData)
 router.get('/getData', getData)
@@ -26,9 +26,10 @@ router.put('/issueStatus', issueStatus)
 router.post('/logout', userLogout)
 router.delete('/deletemessage', deleteMessage)
 router.get('/todaytickets', todayTickts)
-router.post('/assignticket', assignTicket)
+// router.post('/assignticket', assignTicket)
 router.get('/getquote', getQuote)
 router.post('/updateticket',updateTicket)
+router.get('/gettodayticket', getTodayTicket)
 // router.get('/usermessages',messages )
 
 

@@ -50,6 +50,11 @@ function App() {
     socket.emit('new-user')
     e.returnValue = '';
   });
+  socket.off("ticketAssigned").on("ticketAssigned", (val, id,sender)=> {
+    if (currentUserVal._id == id) {
+      alert(`${sender.fName} assigned you ticket`)
+    }
+  })
   socket.off('notifications').on('notifications', (room, id, sender) => {
     if (room != currentRoom && currentUserVal._id == id) {
         currentUserVal.newMessages[room] = (currentUserVal.newMessages[room] || 0) + 1

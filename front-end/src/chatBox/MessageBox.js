@@ -16,6 +16,7 @@ const getFormattedDate = (date) => {
     return `${month}/${day}/${year}`
 }
 export const dateIndicator =(date) => {
+
     const dt = new Date()
     const today = getFormattedDate(dt)
     const y = new Date(dt.setDate(dt.getDate()-1))

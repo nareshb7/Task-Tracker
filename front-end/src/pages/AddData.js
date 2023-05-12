@@ -13,7 +13,7 @@ const AddData = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     // the location will work from dashboard page and issues page while u r updating issue
-    const {state} = useLocation()
+    const { state } = useLocation()
     console.log('State', state)
     const [updateObj, setUpdateObj] = useState(state?.data)
     const [method, setMethod] = useState(state?.mode || 'ADD')
@@ -21,7 +21,7 @@ const AddData = () => {
     const [isLoggedin, setIsLoggedIn] = useState([])
     const technologies = ['Select the technology', "React", "Angular", "JavaScript", "CSS", "Vue"]
     const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics', 'OTT']
-    const [employeesList,setEmployeesList] = useState([])
+    const [employeesList, setEmployeesList] = useState([])
     const [status, setStatus] = useState('')
     const obj = {
         dName: isLoggedin.fName + " " + isLoggedin.lName,
@@ -39,7 +39,8 @@ const AddData = () => {
         images: "",
         issueImages: [{ image: '' }],
         issueStatus: '',
-        helpedDev:''
+        helpedDev: '',
+        id: state?.id || ''
     }
     const schema = {
         cName: Yup.string().required('String required'),
@@ -66,10 +67,10 @@ const AddData = () => {
     //     setEmployeesdata({ total, active, offline, employees, percentage })
     // })
     useEffect(() => {
-        const getUsers = async ()=> {
+        const getUsers = async () => {
             const users = await fetchGetCall('/api/getallusers')
             console.log('All Users', users)
-            if(users.length) setEmployeesList(users)
+            if (users.length) setEmployeesList(users)
         }
         getUsers()
     }, [])
@@ -104,7 +105,7 @@ const AddData = () => {
     const handleSubmit = async (newData, { resetForm }) => {
         setStatus('Submitting...')
         if (method === 'ADD') {
-            newData.time = new Date().toLocaleString()
+            newData.time = new Date()
             newData.dName = isLoggedin.fName + " " + isLoggedin.lName
             newData.developerId = isLoggedin._id
             delete newData.images
@@ -112,18 +113,12 @@ const AddData = () => {
             newData.issueImages = [{ image: '' }]
             newData.solutions = [{ solution: newData.solution }]
             let response = await fetchCall('api/setData', { data: newData })
-            console.log('ADD::', newData)
-            if (state?.id) {
-                const obj = {status:newData.issueStatus, description: newData.issue, comments: newData.solution }
-                const tktUpdate = await fetchCall('/api/updateticket', {id: state.id, from:'ADDISSUE',obj })
-                console.log('Ticket Update', tktUpdate)
-            }
             dispatch(addIssue(newData))
             setStatus(response)
-            // if (response.includes('Sucessfully')) {
-            //     resetForm({ values: '' })
-            //     navigate('/getIssue')
-            // }
+            if (response.includes('Sucessfully')) {
+                resetForm({ values: '' })
+                navigate('/getIssue')
+            }
         }
         if (method === 'UPDATE') {
             let bd = await Promise.all(newData.issueImages.map((file) => convertToBase64(file.image)))
@@ -140,10 +135,20 @@ const AddData = () => {
                 setStatus('Add atleast one Image')
             }
         }
+        if (newData.id) {
+            const obj = {
+                status: newData.issueStatus,
+                description: newData.issue,
+                comments: newData.solution,
+                helpedDev: newData.helpedDev
+            }
+            const tktUpdate = await fetchCall('/api/updateticket', { id: newData.id, from: 'ADDISSUE', obj })
+            console.log('Ticket Update', tktUpdate)
+        }
 
     }
     const handleValidate = (val) => {
-         console.log('validate', val)
+        console.log('validate', val)
     }
 
     const addImageField = (values, setValues, field) => {
@@ -232,14 +237,14 @@ const AddData = () => {
                                             </Row>
                                             <Row className='my-3'>
                                                 <Col md={5}>
-                                                    <FormStyle.Label>Helped Developer :<span style={{color:'#888'}}> (optional)</span> </FormStyle.Label>
+                                                    <FormStyle.Label>Helped Developer :<span style={{ color: '#888' }}> (optional)</span> </FormStyle.Label>
                                                 </Col>
                                                 <Col md={7}>
-                                                <Field as='select' name='helpedDev' className='form-control'>
+                                                    <Field as='select' name='helpedDev' className='form-control'>
                                                         {
-                                                            ['select option',...employeesList].map((val, idx) => {
+                                                            ['select option', ...employeesList].map((val, idx) => {
                                                                 return (
-                                                                    <option key={idx} value={JSON.stringify({id: val?._id, name: `${val?.fName} ${val?.lName}`})}>{val?.fName}</option>
+                                                                    <option key={idx} value={JSON.stringify({ id: val?._id, name: `${val?.fName} ${val?.lName}` })}>{val?.fName}</option>
                                                                 )
                                                             })
                                                         }
@@ -377,14 +382,14 @@ const AddData = () => {
                         </Formik>
                     </Row>
                     <Row className='card my-1'>
-                        
+
                         <h3>Status : {status}</h3>
                     </Row>
                 </Col> : <Row className='m-1'>
                     <Col md={10} className='text-center card m-auto'>
                         <div>
-                        <h2>U can't add data please login</h2>
-                        <div>Click here to <NavLink to='/login' >Login</NavLink></div>
+                            <h2>U can't add data please login</h2>
+                            <div>Click here to <NavLink to='/login' >Login</NavLink></div>
                         </div>
                     </Col>
                 </Row>

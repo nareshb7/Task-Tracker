@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Button, Col, Row } from 'react-bootstrap'
+import { Button, Col, Container, Row } from 'react-bootstrap'
 import MaintanancePage from './MaintanancePage'
 import AdminDashboard from './AdminDashboard'
 import { UserContext } from '../App'
@@ -9,7 +9,7 @@ import './style/Dashboard.css'
 const Dashboard = () => {
     const { currentUserVal, socket } = useContext(UserContext)
     const [render, setRender] = useState(false)
-    return <Row>
+    return <Container fluid bg="dark">
         <Col>
             <MaintanancePage />
             <Row>
@@ -26,6 +26,6 @@ const Dashboard = () => {
                     <UserDashboard currentUserVal={currentUserVal} />
             }
         </Col>
-    </Row>
+    </Container>
 }
 export default Dashboard

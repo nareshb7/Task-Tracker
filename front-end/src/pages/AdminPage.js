@@ -5,11 +5,13 @@ import Modal from '../components/modal/Modal'
 import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
 import Loader from '../components/utils/loader/Loader'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
-import { Button, Table } from 'react-bootstrap'
+import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from '../chatBox/MessageBox'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
+    const [openUpdateModal, setOpenUpdateModal] = useState(false)
+    const [updateUserObj, setUpdateUserObj] = useState({})
     const [users, setUsers] = useState([])
     const [issuesList, setIssuesList] = useState([])
     const [currentUser, setCurrentUser] = useState({})
@@ -32,7 +34,7 @@ const AdminPage = () => {
         { header: 'Remove User' }
     ]
     const statusIndicatorStyle = { position: 'absolute', top: '0', right: '0' }
-    useEffect(() => {
+    const getAllUsers  =async ()=> {
         axios.get('/api/getallusers')
             .then(data => {
                 setUsers(data.data)
@@ -40,6 +42,9 @@ const AdminPage = () => {
                 setAdminReqData(val)
             })
             .catch(err => console.log(err, 'err'))
+    }
+    useEffect(() => {
+        getAllUsers()
         axios.get('/api/getmailreqIDs')
             .then(data => {
                 setMailChangeReqIDs(data.data)
@@ -74,19 +79,7 @@ const AdminPage = () => {
         }
     }
 
-    const updateUser = (user) => {
-        let status = user.isActive
-        let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
-        if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id: user._id, updateValue: !status, updateKey: 'isActive', update: 'single' })
-                .then(res => {
-                    let newData = users.map(user => user._id == res.data._id ? res.data : user)
-                    setUsers(newData)
-                    setAlert(res.data.fName + res.data.lName, 'Updated')
-                })
-                .catch(err => console.log(err, 'err'))
-        }
-    }
+    
     const sortFunc = (val, type) => {
         let sortData = JSON.parse(JSON.stringify(users))
         if (type == 'asc') {
@@ -118,14 +111,37 @@ const AdminPage = () => {
     const adminRequests = () => {
         setIsModalOpen(true)
     }
-    const requestAcceptFunc = (id, type) => {
-        const updateKey = type ? 'isAdmin' : 'reqforAdmin'
-        let cnfrm = window.confirm(`Do you want to ${type ? "accept" : "reject"} the request ? `)
+
+    // Update Functionality
+    const updateUser = (user) => {
+        setUpdateUserObj(user)
+        setOpenUpdateModal(true)
+    }
+    const userLoginPermission = (user, access) => {
+        let status = access
+        let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
+        if (cnfrm) {
+            axios.post('/api/adminupdateuser', { id: user._id, updateValue: status, updateKey: 'isActive', update: 'single' })
+                .then(res => {
+                    let newData = users.map(user => user._id == res.data._id ? res.data : user)
+                    setUsers(newData)
+                    setAlert(res.data.fName + res.data.lName, 'Updated')
+                    setOpenUpdateModal(false)
+                })
+                .catch(err => console.log(err, 'err'))
+        }
+    }
+    const requestAcceptFunc = (id, type, updateField) => {
+        const updateKey =updateField || type ? 'isAdmin' : 'reqforAdmin'
+        let cnfrm = window.confirm(`Do you want to ${type ? "give" : "remove"} the Admin Access ? `)
         if (cnfrm) {
             axios.post('/api/adminupdateuser', { id, updateKey: updateKey, updateValue: type, update: 'single' })
                 .then(res => {
                     let newReqData = adminReqData.filter(user => user._id != res.data._id)
                     setAdminReqData(newReqData)
+                    setOpenUpdateModal(false)
+                    alert('Request Updated')
+                    getAllUsers()
                 })
                 .catch(err => console.log(err, 'Admin access rejected'))
         }
@@ -182,7 +198,6 @@ const AdminPage = () => {
                 val['updateData'] = obj
                 return val
             })
-
             setMailChangeReqIDs(final)
         }
         setMailChangeModal(true)
@@ -197,6 +212,23 @@ const AdminPage = () => {
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />
                     <Button style={{ marginInline: '10px' }} >Search</Button>
                 </div>
+                <Modal isOpen={openUpdateModal} setModal={setOpenUpdateModal}>
+                    <>
+                        <h3>Update the user</h3>
+                        <Row className='d-flex flex-column'>
+                            <Col>
+                                <span className='fw-bold fs-3'>Admin Access : </span>
+                                 <Button onClick={()=> requestAcceptFunc(updateUserObj._id,true )} > Allow </Button> 
+                                 <Button variant='warning' onClick={()=> requestAcceptFunc(updateUserObj._id,false, 'isAdmin' )} >Deny</Button>
+                            </Col>
+                            <Col>
+                                <span className='fw-bold fs-3'>Login Access : </span>
+                                  <Button onClick={()=> userLoginPermission(updateUserObj, true) } > Allow </Button> 
+                                  <Button variant='warning' onClick={()=> userLoginPermission(updateUserObj, false) }>Deny</Button>
+                            </Col>
+                        </Row>
+                    </>
+                </Modal>
                 <Modal isOpen={mailChangeModal} setModal={setMailChangeModal}>
                     <>
                         <h2>Profile Update Requests</h2>
@@ -321,8 +353,8 @@ const AdminPage = () => {
                                                         <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button>
                                                     </td>
                                                     <td>
-                                                        <Button variant='info' disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => updateUser(user)}>Update</Button>
-                                                        <Button variant='danger' disabled={currentUser.mobile == user.mobile || user.isAdmin} onClick={() => removeUser(user)}>Remove</Button>
+                                                        <Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
+                                                        <Button variant='danger' disabled={currentUser.mobile == user.mobile} onClick={() => removeUser(user)}>Remove</Button>
                                                     </td>
                                                 </tr>
                                             )

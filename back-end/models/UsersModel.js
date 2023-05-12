@@ -66,6 +66,16 @@ const signinSchema = mongoose.Schema({
     todayTickets: {
         type: Array,
         default:[],
+    },
+    userId : {
+        type:String,
+        require: true,
+        unique:true,
+        dropDups:true
+    },
+    userLevel: {
+        type:Number,
+        require: true
     }
 }, {minimize: false, timestamps: true})
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)

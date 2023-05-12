@@ -51,7 +51,7 @@ const Pagination = (props) => {
                     <td><img src={val.binaryData[0] || val.binaryData} className='img' alt='img' />{val.binaryData.length > 1 && 'more....'} </td>
                     <td>
                         <Button variant='warning' onClick={() => editFunc(val._id, val)} disabled={currentUser._id !== val?.developerId}>Edit <i className='fas fa-edit'></i></Button>
-                        <Button variant='danger' onClick={() => deleteFunc(val._id)} disabled={currentUser._id !== val?.developerId} >Delete <i className='fas fa-trash'></i></Button>
+                        <Button variant='danger' onClick={() => deleteFunc(val._id)} disabled={!currentUser.isAdmin} >Delete <i className='fas fa-trash'></i></Button>
                     </td>
                 </tr>
             })

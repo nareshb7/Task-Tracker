@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { uploadedIssues } from '../components/issues/UserIssues'
 import { useNavigate } from 'react-router-dom'
+import { fetchGetCall } from '../components/utils/fetch/UseFetch'
+import { setTrBg } from './AdminDashboard'
 
 const UserDashboard = ({ currentUserVal }) => {
     const navigate = useNavigate()
@@ -10,6 +12,7 @@ const UserDashboard = ({ currentUserVal }) => {
         resolved: 0,
         pending: 0,
         fixed: 0,
+        todayTickets:[]
     })
     useEffect(() => {
         const getIssues = async () => {
@@ -17,7 +20,9 @@ const UserDashboard = ({ currentUserVal }) => {
             const resolved = totalIssues.filter(issue => issue.issueStatus == 'Resolved').length
             const pending = totalIssues.filter(issue => issue.issueStatus == 'Pending').length
             const fixed = totalIssues.filter(issue => issue.issueStatus == 'Fixed').length
-            setDashboardData({ totalIssues, resolved, pending, fixed })
+            const todayTickets = await fetchGetCall('/api/gettodayticket', {id: currentUserVal._id})
+            setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets })
+            console.log('Today', todayTickets)
         }
         getIssues()
     }, [])
@@ -47,6 +52,7 @@ const UserDashboard = ({ currentUserVal }) => {
         }
         navigate('/addIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
     }
+    console.log('Current User Dashboard::', currentUserVal)
     return <Row>
         <Col >
             <p className='text-center fw-bold fs-3 card m-3'>User DashBoard</p>
@@ -70,7 +76,7 @@ const UserDashboard = ({ currentUserVal }) => {
             </Row>
             <Row>
                 <Row>
-                    <Col><span className='fs-5 fw-bold'>Today Tickets : </span><span className='fs-3 fw-bold'>{currentUserVal.todayTickets.length}</span></Col>
+                    <Col><span className='fs-5 fw-bold'>Today Tickets : </span><span className='fs-3 fw-bold'>{dashboardData.todayTickets.length}</span></Col>
                 </Row>
                 <Row>
                 <Table>
@@ -81,19 +87,21 @@ const UserDashboard = ({ currentUserVal }) => {
                             <th>Technology</th>
                             <th>AssignedBy</th>
                             <th>Assigned Time</th>
+                            <th>Status</th>
                             <th>Update</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            currentUserVal.todayTickets.map((tkt, idx) => {
-                                return <tr key={idx + Math.random()}>
+                            dashboardData.todayTickets.map((tkt, idx) => {
+                                return <tr key={idx + Math.random()} className={setTrBg(tkt.status)} >
                                     <td>{tkt.consultantName}</td>
                                     <td>{tkt.phone}</td>
                                     <td>{tkt.technology}</td>
-                                    <td>{tkt.assignedBy}</td>
+                                    <td>{tkt.assignedBy.name}</td>
                                     <td> {new Date(tkt.assignedDate).toLocaleString()}</td>
-                                    <td><Button onClick={()=> updateIssue(tkt)}>Update</Button></td>
+                                    <td>{tkt.status}</td>
+                                    <td><Button disabled={tkt.status == 'Resolved'} onClick={()=> updateIssue(tkt)}>Update</Button></td>
                                 </tr>
                             })
                         }

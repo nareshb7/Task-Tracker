@@ -56,6 +56,10 @@ const taskSchema = new mongoose.Schema({
     helpedDev: {
         type:Object,
         require: true
+    },
+    id : {
+        type:String,
+        require:true
     }
 
 })

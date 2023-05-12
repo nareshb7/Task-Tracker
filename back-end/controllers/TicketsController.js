@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const {MockTicket} = require('../models/TicektModel')
+const {MockTicket} = require('../models/TicketModel')
 const { collection } = require('../models/MessageModel')
 
 
@@ -13,22 +13,31 @@ module.exports.todayTickts = async (req,res)=> {
     }
 }
 module.exports.updateTicket = async (req,res)=> {
-    console.log('req',req.body)
     const {selectedTicket, selectedDev, from , obj, id} = req.body
     let tkt = await MockTicket.findById({_id: id})
     if (from== 'ADDISSUE') {
         tkt['status'] = obj.status
         tkt['description'] = obj.description
         tkt['comments'] = obj.comments
+        tkt['helpedDev'] = obj.helpedDev && JSON.parse(obj.helpedDev)
+        if(obj.status == 'Resolved') {
+            tkt['completedDate'] = new Date()
+        }
         await tkt.save()
-        console.log('from', from, obj, id)
         return res.status(200).json(tkt)
     }
+    tkt['assignedBy'] = selectedTicket.assignedBy
     tkt['assignedTo'] = {name: `${selectedDev.fName} ${selectedDev.lName}`, id : selectedDev._id}
     tkt['status'] = 'Assigned'
     tkt['assignedDate'] = new Date()
     await tkt.save()
     res.status(200).json(tkt)
+}
+
+module.exports.getTodayTicket = async (req,res)=> {
+    const {id} = req.query
+    const tkts = await MockTicket.find({"assignedTo.id": id})
+    res.status(200).json(tkts)
 }
 
 // mongoose.connection.db.collection('mocktickets').find({}).toArray(function(err, result) {
