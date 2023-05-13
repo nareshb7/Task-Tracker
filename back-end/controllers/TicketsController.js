@@ -27,7 +27,7 @@ module.exports.updateTicket = async (req,res)=> {
         return res.status(200).json(tkt)
     }
     tkt['assignedBy'] = selectedTicket.assignedBy
-    tkt['assignedTo'] = {name: `${selectedDev.fName} ${selectedDev.lName}`, id : selectedDev._id}
+    tkt['assignedTo'] = {name: selectedDev.name, id : selectedDev._id}
     tkt['status'] = 'Assigned'
     tkt['assignedDate'] = new Date()
     await tkt.save()

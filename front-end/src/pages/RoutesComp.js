@@ -14,6 +14,7 @@ import MailVerification from '../components/utils/MailVerification'
 import ChatBox from '../chatBox/ChatBox'
 import { UserContext } from '../App'
 import Dashboard from './Dashboard'
+import EmployeeStats from './employeeStats/EmployeeStats'
 
 const RoutesComp = () => {
     const { currentUserVal } = useContext(UserContext)
@@ -39,6 +40,7 @@ const RoutesComp = () => {
                         <Route path='/forgotpassword' element={<ForgotPassword />} />
                         <Route path='updateuser' element={<UserUpdate />} />
                         <Route path='/dashboard' element={<Dashboard />} />
+                        <Route path='/empstats' element={<EmployeeStats/>}/>
                     </>
                 }
                 {/* <Route path='profile' element={<MyProfile/> } /> */}

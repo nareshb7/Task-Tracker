@@ -7,9 +7,11 @@ import Loader from '../components/utils/loader/Loader'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from '../chatBox/MessageBox'
+import { useNavigate } from 'react-router-dom'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
+    const navigate = useNavigate()
     const [openUpdateModal, setOpenUpdateModal] = useState(false)
     const [updateUserObj, setUpdateUserObj] = useState({})
     const [users, setUsers] = useState([])
@@ -305,6 +307,7 @@ const AdminPage = () => {
                             <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
                             <h3>Uploaded Issues :{showEmpData.uploadedIssues?.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
                             <h3>Technologies : {showEmpData.technologies?.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
+                            <div><Button onClick={()=> navigate('/empstats', {state: showEmpData})}>Go to Stats page</Button> </div>
                         </div>
                         <div style={{ width: '100px', height: '100px' }}>
                             <img src={showEmpData.binaryData} style={{ width: '100%', height: '100%' }} />

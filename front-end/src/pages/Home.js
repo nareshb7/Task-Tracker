@@ -15,7 +15,7 @@ const Home = () => {
                     <h1>Welcome,</h1>
                     <p>This is the Task-Tracker Application, It will track your daily issue status</p>
                     <Row>
-                        <Col className='card m-1 bg-primary'>
+                        <Col className='card m-1 ' style={{background:'#999'}}>
                             <span className='fw-bold'>Quote of the Day: </span>
                             <span className='fst-italic p-1 '>{quote.text}</span>
                             <span className='fw-bold text-end px-2'>--- {quote.author}</span>

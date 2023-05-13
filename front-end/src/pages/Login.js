@@ -13,10 +13,20 @@ const Login = () => {
         value: '',
         password: ''
     }
+    const [loginClicked, setLoginClicked] = useState(false)
     const navigate = useNavigate()
     const [data, setData] = useState(obj)
     const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
+    useEffect(() => {
+        if (Object.keys(currentUser).length > 2) {
+            if (currentUser.isActive) {
+                loginSucessFunc()
+            } else {
+                setResponse('Access Denied')
+            }
+        }
+    }, [currentUser])
     const handleChange = (e) => {
         const { name, value } = e.target
         setData({ ...data, [name]: value })
@@ -27,7 +37,7 @@ const Login = () => {
             .then(res => {
                 if (res.data) {
                     setCurrentUser(res.data)
-                    setData(obj)    
+                    setData(obj)
                 }
             })
             .catch(err => setResponse(err.response.data))
@@ -41,39 +51,44 @@ const Login = () => {
         socket.emit('new-user')
         navigate(-1)
     }
-    useEffect(() => {
-        if (Object.keys(currentUser).length > 2) {
-            if (currentUser.isActive) {
-                loginSucessFunc()
-            } else {
-                setResponse('Access Denied')
-            }
-        }
-    }, [currentUser])
+    const userLoginFunc = () => {
+        setLoginClicked(true)
+    }
+    const adminLoginFunc = () => {
+        setLoginClicked(true)
+    }
+
     return (
         <div>
             {
                 !currentUserVal.hasOwnProperty('fName') ? (
-                    <Row>
-                        <Col md={7} className='login__bg'></Col>
-                        <Col md={5} className='d-flex flex-direction-column align-items-center justify-content-center bg'>
+                    <Row className='card bg my-1 d-flex flex-direction-column align-items-center justify-content-center '>
+                        {/* <Col md={7} className='login__bg'></Col> */}
+                        <Col md={5} className=''>
                             <div>
-                                <Form style={{ width: '80%', maxWidth: 500 }} onSubmit={handleSubmit}>
-                                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                                        <Form.Label>Email address</Form.Label>
-                                        <Form.Control type="text" placeholder="Email or Mobile" name='value' value={data.value} onChange={handleChange} />
-                                        <Form.Text className="text-muted">
-                                            We'll never share your email with anyone else.
-                                        </Form.Text>
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                                        <Form.Label>Password</Form.Label>
-                                        <Form.Control type="password" placeholder="Password" name='password' value={data.password} onChange={handleChange} />
-                                    </Form.Group>
-                                    <Button variant='primary' type='submit'>Login</Button>
-                                </Form>
+                                <Col className='d-flex justify-content-around my-2'>
+                                    <Button onClick={userLoginFunc}>User Login</Button>
+                                    <Button onClick={adminLoginFunc} variant='secondary'>Admin Login</Button>
+                                </Col>
+                                {
+                                    loginClicked && <Form style={{ width: '80%', maxWidth: 500 }} onSubmit={handleSubmit}>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                            <Form.Label>Email address</Form.Label>
+                                            <Form.Control type="text" placeholder="Email or Mobile" name='value' value={data.value} onChange={handleChange} />
+                                            <Form.Text className="text-muted">
+                                                We'll never share your email with anyone else.
+                                            </Form.Text>
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                                            <Form.Label>Password</Form.Label>
+                                            <Form.Control type="password" placeholder="Password" name='password' value={data.password} onChange={handleChange} />
+                                        </Form.Group>
+                                        <Button variant='primary' type='submit'>Login</Button>
+                                        <h5> Status: {response} </h5>
+                                    </Form>
+                                }
                                 <div className='py-4'>
-                                    <h5> Status: {response} </h5>
+                                    
                                     <p className='text-center fw-bolder'>
                                         Don't have an account ? <Link to='/signup'>Signup</Link>
                                     </p>

@@ -213,7 +213,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
             </Row>
             {/* Maping today tickets into a table */}
             <Row>
-                <Col className='card my-3' style={{ height: '400px' }}>
+                <Col className='card my-3' style={{ height: '500px' }}>
                     <span className='fs-3 fw-bold' >Today Tickets : </span>
                     <Col className='container-fluid m-auto text-center' style={{ overflow: 'hidden scroll' }}>
                         <Table className='striped ticketsTable'>
@@ -275,10 +275,11 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                             </div>
                             <div>
                                 <span className='fs-4 fw-bold'>Select Developer: </span>
-                                <select className='form-control fst-italic' defaultValue={selectedDev} onChange={(e) => setSelectedDev(JSON.parse(e.target.value))}>
+                                <select className='form-control fst-italic' value={selectedDev} onChange={(e) => setSelectedDev(JSON.parse(e.target.value))}>
                                     {
-                                        employeesdata.employees.map((val, idx) => {
-                                            return <option key={idx + Math.random()} value={JSON.stringify(val)}>{val.fName} {val.lName}</option>
+                                        [{fName:'Select Developer', lName:''}, ...employeesdata.employees].map((val, idx) => {
+                                            const name = `${val?.fName} ${val?.lName}` 
+                                            return <option key={idx + Math.random()} value={JSON.stringify({_id: val?._id, name})}> {name}</option>
                                         })
                                     }
                                 </select>
