@@ -36,7 +36,7 @@ const AdminPage = () => {
         { header: 'Remove User' }
     ]
     const statusIndicatorStyle = { position: 'absolute', top: '0', right: '0' }
-    const getAllUsers  =async ()=> {
+    const getAllUsers = async () => {
         axios.get('/api/getallusers')
             .then(data => {
                 setUsers(data.data)
@@ -81,7 +81,7 @@ const AdminPage = () => {
         }
     }
 
-    
+
     const sortFunc = (val, type) => {
         let sortData = JSON.parse(JSON.stringify(users))
         if (type == 'asc') {
@@ -134,7 +134,7 @@ const AdminPage = () => {
         }
     }
     const requestAcceptFunc = (id, type, updateField) => {
-        const updateKey =updateField || type ? 'isAdmin' : 'reqforAdmin'
+        const updateKey = updateField || type ? 'isAdmin' : 'reqforAdmin'
         let cnfrm = window.confirm(`Do you want to ${type ? "give" : "remove"} the Admin Access ? `)
         if (cnfrm) {
             axios.post('/api/adminupdateuser', { id, updateKey: updateKey, updateValue: type, update: 'single' })
@@ -220,13 +220,13 @@ const AdminPage = () => {
                         <Row className='d-flex flex-column'>
                             <Col>
                                 <span className='fw-bold fs-3'>Admin Access : </span>
-                                 <Button onClick={()=> requestAcceptFunc(updateUserObj._id,true )} > Allow </Button> 
-                                 <Button variant='warning' onClick={()=> requestAcceptFunc(updateUserObj._id,false, 'isAdmin' )} >Deny</Button>
+                                <Button onClick={() => requestAcceptFunc(updateUserObj._id, true)} > Allow </Button>
+                                <Button variant='warning' onClick={() => requestAcceptFunc(updateUserObj._id, false, 'isAdmin')} >Deny</Button>
                             </Col>
                             <Col>
                                 <span className='fw-bold fs-3'>Login Access : </span>
-                                  <Button onClick={()=> userLoginPermission(updateUserObj, true) } > Allow </Button> 
-                                  <Button variant='warning' onClick={()=> userLoginPermission(updateUserObj, false) }>Deny</Button>
+                                <Button onClick={() => userLoginPermission(updateUserObj, true)} > Allow </Button>
+                                <Button variant='warning' onClick={() => userLoginPermission(updateUserObj, false)}>Deny</Button>
                             </Col>
                         </Row>
                     </>
@@ -292,7 +292,8 @@ const AdminPage = () => {
                         }
                     </>
                 </Modal>
-                <Modal isOpen={showEmpModal} setModal={setShowEmpModal}>
+                {
+                    showEmpModal && <Modal isOpen={showEmpModal} setModal={setShowEmpModal}>
                     <div style={{ display: 'flex' }}>
                         <div>
                             <h3>Name : {showEmpData.fName + " " + showEmpData.lName}</h3>
@@ -307,13 +308,23 @@ const AdminPage = () => {
                             <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
                             <h3>Uploaded Issues :{showEmpData.uploadedIssues?.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
                             <h3>Technologies : {showEmpData.technologies?.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
-                            <div><Button onClick={()=> navigate('/empstats', {state: showEmpData})}>Go to Stats page</Button> </div>
+                            <div>
+                                <Button onClick={() => {
+                                    setShowEmpModal(!showEmpModal)
+                                    setTimeout(() => {
+                                        navigate('/empstats', { state: showEmpData })
+                                    }, 0)
+                                }}>
+                                    Go to Stats page
+                                </Button>
+                            </div>
                         </div>
                         <div style={{ width: '100px', height: '100px' }}>
                             <img src={showEmpData.binaryData} style={{ width: '100%', height: '100%' }} />
                         </div>
                     </div>
                 </Modal>
+                } 
                 {
                     users.length ? (<> <Table striped hover responsive>
                         <caption>All Users</caption>
@@ -329,7 +340,7 @@ const AdminPage = () => {
                                                         <option value='asc'> Up</option>
                                                         <option value='desc'>Down</option>
                                                     </select>
-                                                }
+                                                } 
                                             </th>
                                         )
                                     })

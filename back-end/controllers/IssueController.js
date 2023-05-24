@@ -49,3 +49,16 @@ module.exports.issueStatus = async (req, res) => {
     const result = await TaskModel.findByIdAndUpdate({ _id: id }, { "issueStatus": value }, { new: true })
     res.send(result)
 }
+
+module.exports.getTicketIDs =async (req,res)=> {
+    const {id}  = req.query
+    console.log('QUERY', req.query)
+    // res.status(200).json(tkt)
+    try {
+        const resp = await TaskModel.aggregate([{$match: {id: {$eq: id} }}])
+        res.status(200).json(resp)
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+    
+}

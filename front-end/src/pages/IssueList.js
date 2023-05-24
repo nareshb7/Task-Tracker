@@ -171,6 +171,7 @@ const GetTask = () => {
                             <th>Issue ( click to know more)</th>
                             <th>Issue status</th>
                             <th>Date</th>
+                            <th>Last Updated</th>
                             <th>Image</th>
                             <th>Edit / Delete</th>
                         </tr>

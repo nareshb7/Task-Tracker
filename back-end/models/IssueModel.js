@@ -60,8 +60,7 @@ const taskSchema = new mongoose.Schema({
     id : {
         type:String,
         require:true
-    }
-
-})
+    },
+}, {timestamps: true})
 
 module.exports.TaskModel =  mongoose.model('solutions', taskSchema)

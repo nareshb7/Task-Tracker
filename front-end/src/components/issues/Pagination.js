@@ -38,6 +38,7 @@ const Pagination = (props) => {
         {
             currentData.map((val, idx) => {
                 let id = currentPage * pageSize + idx + 1
+                const [lastSolution] = val.solutions.slice(-1)
                 return <tr key={idx}>
                     <td>{id}</td>
                     <td> {val.dName}</td>
@@ -48,6 +49,7 @@ const Pagination = (props) => {
                     <td style={{ cursor: 'pointer' }} title={'Click here to get full info.'} onClick={() => gotoDesc(val)}> {val.issueTitle}</td>
                     <td> {issueStatusFunc(val.issueStatus)} </td>
                     <td>{dateIndicator(val?.time) }</td>
+                    <td>{dateIndicator(lastSolution.updatedTime || val?.time)}</td>
                     <td><img src={val.binaryData[0] || val.binaryData} className='img' alt='img' />{val.binaryData.length > 1 && 'more....'} </td>
                     <td>
                         <Button variant='warning' onClick={() => editFunc(val._id, val)} disabled={currentUser._id !== val?.developerId}>Edit <i className='fas fa-edit'></i></Button>

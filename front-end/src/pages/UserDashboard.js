@@ -20,37 +20,28 @@ const UserDashboard = ({ currentUserVal }) => {
             const resolved = totalIssues.filter(issue => issue.issueStatus == 'Resolved').length
             const pending = totalIssues.filter(issue => issue.issueStatus == 'Pending').length
             const fixed = totalIssues.filter(issue => issue.issueStatus == 'Fixed').length
-            const todayTickets = await fetchGetCall('/api/gettodayticket', {id: currentUserVal._id})
-            setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets })
+            const totalTodayTickets = await fetchGetCall('/api/gettodayticket', {id: currentUserVal._id})
+            const todayTickets = totalTodayTickets.filter(tkt => {
+                const d1 = new Date(tkt.assignedDate).toDateString()
+                const d2 = new Date().toDateString()
+                if (d1 == d2) {
+                    return tkt
+                }
+            })
+            setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets:totalTodayTickets })
             console.log('Today', todayTickets)
         }
         getIssues()
     }, [])
-    const updateIssue = (tkt)=> {
-        console.log('Update::', tkt)
-        // {
-        //     dName: isLoggedin.fName + " " + isLoggedin.lName,
-        //     cName: '',
-        //     technology: '',
-        //     issue: '',
-        //     time: '',
-        //     binaryData: '',
-        //     issueTitle: '',
-        //     solutions: [],
-        //     solution: '',
-        //     companyName: '',
-        //     appType: '',
-        //     developerId: '',
-        //     images: "",
-        //     issueImages: [{ image: '' }],
-        //     issueStatus: '',
-        // }
-        const obj = {
-            cName: tkt.name,
-            technology: tkt.technology,
-            
+    const updateIssue =async (tkt)=> {
+        console.log('tkt',tkt)
+        const [res] = await fetchGetCall('/api/getticketid', {id: tkt._id})
+        if (res) {
+            navigate('/addIssue', {state : {data : {...res}, mode: 'UPDATE'}} )
+        } else {
+            navigate('/addIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
         }
-        navigate('/addIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
+
     }
     console.log('Current User Dashboard::', currentUserVal)
     return <Row>
@@ -79,34 +70,37 @@ const UserDashboard = ({ currentUserVal }) => {
                     <Col><span className='fs-5 fw-bold'>Today Tickets : </span><span className='fs-3 fw-bold'>{dashboardData.todayTickets.length}</span></Col>
                 </Row>
                 <Row>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Client </th>
-                            <th>Phone</th>
-                            <th>Technology</th>
-                            <th>AssignedBy</th>
-                            <th>Assigned Time</th>
-                            <th>Status</th>
-                            <th>Update</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            dashboardData.todayTickets.map((tkt, idx) => {
-                                return <tr key={idx + Math.random()} className={setTrBg(tkt.status)} >
-                                    <td>{tkt.consultantName}</td>
-                                    <td>{tkt.phone}</td>
-                                    <td>{tkt.technology}</td>
-                                    <td>{tkt.assignedBy.name}</td>
-                                    <td> {new Date(tkt.assignedDate).toLocaleString()}</td>
-                                    <td>{tkt.status}</td>
-                                    <td><Button disabled={tkt.status == 'Resolved'} onClick={()=> updateIssue(tkt)}>Update</Button></td>
-                                </tr>
-                            })
-                        }
-                    </tbody>
-                </Table>
+                    {
+                        dashboardData.todayTickets.length &&  <Table>
+                        <thead>
+                            <tr>
+                                <th>Client </th>
+                                <th>Phone</th>
+                                <th>Technology</th>
+                                <th>AssignedBy</th>
+                                <th>Assigned Time</th>
+                                <th>Status</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                dashboardData.todayTickets.map((tkt, idx) => {
+                                    return <tr key={idx + Math.random()} className={setTrBg(tkt.status)} >
+                                        <td>{tkt.consultantName}</td>
+                                        <td>{tkt.phone}</td>
+                                        <td>{tkt.technology}</td>
+                                        <td>{tkt.assignedBy.name}</td>
+                                        <td> {new Date(tkt.assignedDate).toLocaleString()}</td>
+                                        <td>{tkt.status}</td>
+                                        <td><Button onClick={()=> updateIssue(tkt)}>Update</Button></td>
+                                    </tr>
+                                })
+                            }
+                        </tbody>
+                    </Table>
+                    }
+               
                 </Row>
                 {/* {currentUserVal.todayTickets.map((tkt, idx) => {
                     return <Col md={12} className='card' key={idx +Math.random()}>

@@ -78,7 +78,7 @@ const AddData = () => {
         if (method === "UPDATE") {
             updateObj['images'] = ''
             updateObj['issueImages'] = []
-            updateObj['solution'] = updateObj.solutions[0].solution
+            updateObj['solution'] =''
         }
     }, [updateObj])
     useEffect(() => {
@@ -123,7 +123,9 @@ const AddData = () => {
         if (method === 'UPDATE') {
             let bd = await Promise.all(newData.issueImages.map((file) => convertToBase64(file.image)))
             newData.binaryData = [...newData.binaryData, ...bd]
-            newData.solutions[0] = { solution: newData.solution }
+            const fullName = currentUserVal.fName + " " + currentUserVal.lName
+            const formattedSolution = { solution: newData.solution, updatedTime: new Date(), uploadedBy: fullName, devId: currentUserVal._id }
+            newData.solutions = [...newData.solutions, formattedSolution]
             if (newData.binaryData.length) {
                 let response = await fetchCall('api/addSolution', { newData, id: updateObj._id, mode: "UPDATE" })
                 if (response._id) {

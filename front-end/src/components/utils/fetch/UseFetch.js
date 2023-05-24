@@ -8,7 +8,7 @@ export const fetchCall =async (url,data)=> {
 export const fetchPutCall = async (url,data)=> {
     return await axios.put(url, data)
     .then(res=> res.data)
-    .catch(err => err.message)
+        .catch(err => err.message)
 }
 export const fetchGetCall = async (url, params) => {
     return await axios.get(url, {params})
@@ -17,6 +17,6 @@ export const fetchGetCall = async (url, params) => {
 }
 export const fetchDeletecall = async (url, data) => {
     return await axios.delete(url, {data})
-    .then(res => res.data)
-    .catch(err => err.message)
+        .then(res => res.data)
+        .catch(err => err.message)
 }
