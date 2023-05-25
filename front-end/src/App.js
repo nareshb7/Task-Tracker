@@ -56,6 +56,7 @@ function App() {
     }
   })
   socket.off('notifications').on('notifications', (room, id, sender) => {
+    console.log('Notification', sender)
     if (room != currentRoom && currentUserVal._id == id) {
         currentUserVal.newMessages[room] = (currentUserVal.newMessages[room] || 0) + 1
         let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
