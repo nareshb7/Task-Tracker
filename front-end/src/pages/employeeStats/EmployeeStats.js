@@ -27,8 +27,8 @@ const EmployeeStats = () => {
       const pending = result.filter(tkt => tkt.issueStatus == 'Pending').length
       const resolved = result.filter(tkt => tkt.issueStatus == 'Resolved').length
       const fixed = result.filter(tkt => tkt.issueStatus == 'Fixed').length
-      const assigned = await fetchGetCall('/api/gettodayticket', { id: state._id })
-      setStatsdata({ totalIssues, pending, resolved, fixed, assigned })
+      const {data} = await fetchGetCall('/api/gettodayticket', { id: state._id })
+      setStatsdata({ totalIssues, pending, resolved, fixed,assigned: data })
     }
     console.log('result', result)
   }

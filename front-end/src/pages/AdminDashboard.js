@@ -3,6 +3,7 @@ import { Button, Col, Row, Table } from 'react-bootstrap'
 import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import Modal from '../components/modal/Modal'
 import UserDashboard from './UserDashboard'
+import AssignTicketModal from '../components/modal/AssignTicket'
 
 export const setTrBg = (type, date) => {
     let bg;
@@ -71,14 +72,14 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         socket.emit('new-user')
     }, [])
     const getTodayTickets = async () => {
-        const tickets = await fetchGetCall('/api/todaytickets')
-        if (tickets.length) {
+        const res = await fetchGetCall('/api/todaytickets')
+        if (res.success) {
             // Today Tickets 
-            console.log('Today::', tickets)
-            const total = tickets
-            const resolved = tickets.filter(tkt => tkt.status == "Resolved").length
-            const pending = tickets.filter(tkt => tkt.status == "Pending").length
-            const assigned = tickets.filter(tkt => tkt.status !== "").length
+            console.log('Today::', res.data)
+            const total = res.data
+            const resolved = res.data.filter(tkt => tkt.status == "Resolved").length
+            const pending = res.data.filter(tkt => tkt.status == "Pending").length
+            const assigned = res.data.filter(tkt => tkt.status !== "").length
             const percentage = (resolved / total.length * 100).toFixed(2)
             setTodayTickets({ total, resolved, pending, assigned, percentage })
         }
@@ -88,11 +89,11 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         const getTotalTickets = async () => {
             // Total Tickets 
             const res = await fetchGetCall('/api/getData', {})
-            if (res.length) {
+            if (res.success) {
                 const total = res
-                const resolved = res.filter(tkt => tkt.issueStatus == "Resolved").length
-                const pending = res.filter(tkt => tkt.issueStatus == "Pending").length
-                const fixed = res.filter(tkt => tkt.issueStatus == "Fixed").length
+                const resolved = res.data.filter(tkt => tkt.issueStatus == "Resolved").length
+                const pending = res.data.filter(tkt => tkt.issueStatus == "Pending").length
+                const fixed = res.data.filter(tkt => tkt.issueStatus == "Fixed").length
                 const percentage = (resolved / total.length * 100).toFixed(2)
                 setTicketsData({ total, resolved, pending, fixed, percentage })
             }
@@ -261,38 +262,16 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                     </Col>
                 </Col>
             </Row>
-            {
-                <Modal isOpen={modelOpen} setModal={setModelOpen}>
-                    <Row>
-                        <Col style={{ width: "300px" }} >
-                            <div>
-                                <span className='fs-4 fw-bold'>Consultant :</span>
-                                <span className='fs-4 fst-italic'> {selectedTicket.consultantName}</span>
-                            </div>
-                            <div>
-                                <span className='fs-4 fw-bold'> Technology:</span>
-                                <span className='fs-4 fst-italic'> {selectedTicket.technology}</span>
-                            </div>
-                            <div>
-                                <span className='fs-4 fw-bold'>Select Developer: </span>
-                                <select className='form-control fst-italic' value={selectedDev} onChange={(e) => setSelectedDev(JSON.parse(e.target.value))}>
-                                    {
-                                        [{fName:'Select Developer', lName:''}, ...employeesdata.employees].map((val, idx) => {
-                                            const name = `${val?.fName} ${val?.lName}` 
-                                            return <option key={idx + Math.random()} value={JSON.stringify({_id: val?._id, name})}> {name}</option>
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className='d-flex justify-content-around my-2'>
-                                <Button onClick={assignTicket}>Assign</Button>
-                                <Button onClick={cancelTicket} variant='warning'>Cancel</Button>
-                            </div>
-                        </Col>
-                    </Row>
-                </Modal>
-            }
-
+            <AssignTicketModal 
+                modelOpen={modelOpen} 
+                setModelOpen={setModelOpen} 
+                selectedDev={selectedDev}
+                selectedTicket={selectedTicket}
+                assignTicket={assignTicket} 
+                cancelTicket={cancelTicket}
+                employeesdata={employeesdata}
+                setSelectedDev={setSelectedDev}
+                />
         </Col> : <UserDashboard currentUserVal={currentUserVal}/>
         }
         

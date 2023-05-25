@@ -68,9 +68,9 @@ const AddData = () => {
     // })
     useEffect(() => {
         const getUsers = async () => {
-            const users = await fetchGetCall('/api/getallusers')
-            console.log('All Users', users)
-            if (users.length) setEmployeesList(users)
+            const res = await fetchGetCall('/api/getallusers')
+            console.log('All Users', res.data)
+            if (res.success) setEmployeesList(res.data)
         }
         getUsers()
     }, [])

@@ -20,26 +20,26 @@ const UserDashboard = ({ currentUserVal }) => {
             const resolved = totalIssues.filter(issue => issue.issueStatus == 'Resolved').length
             const pending = totalIssues.filter(issue => issue.issueStatus == 'Pending').length
             const fixed = totalIssues.filter(issue => issue.issueStatus == 'Fixed').length
-            const totalTodayTickets = await fetchGetCall('/api/gettodayticket', {id: currentUserVal._id})
-            const todayTickets = totalTodayTickets.filter(tkt => {
+            const {success,data} = await fetchGetCall('/api/gettodayticket', {id: currentUserVal._id})
+            const todayTickets = success && data.filter(tkt => {
                 const d1 = new Date(tkt.assignedDate).toDateString()
                 const d2 = new Date().toDateString()
                 if (d1 == d2) {
                     return tkt
                 }
             })
-            setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets:totalTodayTickets })
+            setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets:data })
             console.log('Today', todayTickets)
         }
         getIssues()
     }, [])
     const updateIssue =async (tkt)=> {
         console.log('tkt',tkt)
-        const [res] = await fetchGetCall('/api/getticketid', {id: tkt._id})
-        if (res) {
-            navigate('/addIssue', {state : {data : {...res}, mode: 'UPDATE'}} )
+        const {success,data} = await fetchGetCall('/api/getticketid', {id: tkt._id})
+        if (success) {
+            navigate('/addIssue', {state : {data : {...data}, mode: 'UPDATE'}} )
         } else {
-            navigate('/addIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
+            navigate('/a ddIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
         }
 
     }

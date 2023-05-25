@@ -68,8 +68,10 @@ function App() {
 useEffect(()=> {
     const getQuote = async ()=> {
       const d = new Date()
-      const quote =await fetchGetCall('/api/getquote', {date: d})
-      setQuote(quote)
+      const {success,data} =await fetchGetCall('/api/getquote', {date: d})
+      if(success) {
+        setQuote(data)
+      }
 }
 getQuote()
 

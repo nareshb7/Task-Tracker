@@ -6,7 +6,6 @@ import MessageBox from './MessageBox'
 import Modal from '../components/modal/Modal'
 import { UserContext } from '../App'
 import { AddNotification, ResetNotification } from '../redux/actions/Actions'
-import { fetchGetCall } from '../components/utils/fetch/UseFetch'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 
 const ChatBox = () => {

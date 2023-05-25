@@ -12,8 +12,12 @@ export const fetchPutCall = async (url,data)=> {
 }
 export const fetchGetCall = async (url, params) => {
     return await axios.get(url, {params})
-    .then(res=> res.data)
-    .catch(err => err.message)
+    .then(res=> {
+        return {data: res.data, success: true, error:false}
+    })
+    .catch(err => {
+        return {error: err, success: false, data: false}
+    })
 }
 export const fetchDeletecall = async (url, data) => {
     return await axios.delete(url, {data})

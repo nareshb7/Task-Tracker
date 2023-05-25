@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
-import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
+import { fetchCall } from '../components/utils/fetch/UseFetch'
 import {io} from 'socket.io-client'
 import { BE_URL } from '../components/utils/Constants'
 import { logoutFunc } from '../components/utils/LogoutFunc'
