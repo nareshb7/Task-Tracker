@@ -7,7 +7,7 @@ import Loader from '../components/utils/loader/Loader'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from '../chatBox/MessageBox'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -208,7 +208,9 @@ const AdminPage = () => {
         <>{
             currentUser && currentUser.isAdmin ? <div>
                 <h1>All Users : </h1>
+                
                 <div style={{ textAlign: 'end' }}>
+                <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
                     <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
                     <Button className='mx-2' onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </Button>
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />

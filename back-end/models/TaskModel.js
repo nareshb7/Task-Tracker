@@ -20,6 +20,22 @@ const mailChangeReq = mongoose.Schema({
         require:true
     }
 })
+const ContactUsSchema = mongoose.Schema({
+    name:{
+        type:String,
+        require:true
+    },
+    email: {
+        type: String,
+        require: true
+    },
+    desc: {
+        type: String,
+        require: true
+    }
+
+}, {timestamps:true})
 
 module.exports.deletedUsers = mongoose.model('deletedUserId', deletedUsers)
 module.exports.mailChangeReq = mongoose.model('mailChangeReqUser', mailChangeReq)
+module.exports.contactUsModel = mongoose.model('contactusMessages', ContactUsSchema)

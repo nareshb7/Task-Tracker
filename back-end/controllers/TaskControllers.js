@@ -2,8 +2,8 @@ const multer = require('multer')
 const nodemailer = require('nodemailer')
 const fs = require('fs')
 const express = require('express')
-const { mailChangeReq } = require('../models/TaskModel')
-const app = express()
+const { mailChangeReq, contactUsModel } = require('../models/TaskModel')
+
 const fetch = (...args) =>
 	import('node-fetch').then(({default: fetch}) => fetch(...args));
 
@@ -93,3 +93,16 @@ module.exports.getQuote = async (req,res)=> {
         return res.status(200).json(quotes[num])
     }
 }
+
+module.exports.contactusData = async (req,res) => {
+    const result = await contactUsModel.find({})
+    res.status(200).json(result)
+}
+module.exports.addContactUsData = async (req,res)=> {
+    console.log('REQ',req.body)
+    const {data} = req.body
+    await contactUsModel.create(data)
+    .then(data => res.status(200).json(data))
+    .catch(e => res.status(400).json(e.message))
+    // await contactUsModel.deleteMany({}) 
+} 

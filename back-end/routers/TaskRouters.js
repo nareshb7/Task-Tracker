@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = Router()
-const { mailVerification, mailChangeReq, getmailchangeID, getQuote} = require('../controllers/TaskControllers')
+const { mailVerification, mailChangeReq, getmailchangeID, getQuote, contactusData, addContactUsData} = require('../controllers/TaskControllers')
 const { setData, getData, addSolution, deleteSolution, updateSolution, uploadedIssues, getParticularSolution, issueStatus, getTicketIDs} = require('../controllers/IssueController')
 const {signUpData, logInUserData, getParticularUser, getAllUsers, deleteUser, updateUser, userLogout, assignTicket} = require('../controllers/UserControllers')
 const { messages, deleteMessage } = require('../controllers/MessageController')
@@ -32,6 +32,8 @@ router.post('/updateticket',updateTicket)
 router.get('/gettodayticket', getTodayTicket)
 router.get('/getticketid',getTicketIDs)
 // router.get('/usermessages',messages )
+router.get('/contactusmessage', contactusData)
+router.post('/addcontactus', addContactUsData)
 
 
 

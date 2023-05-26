@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Modal from '../../components/modal/Modal'
 import { Button, Card, Col, Container, Row } from 'react-bootstrap'
+import { fetchCall } from '../../components/utils/fetch/UseFetch'
 
 const ContactUs = () => {
     const [isOpen,setIsOpen] = useState(true)
@@ -13,8 +14,11 @@ const ContactUs = () => {
         const {name,value} = e.target
         setData({...data, [name]: value})
     }
-    const handleSubmit =()=> {
+    const handleSubmit =async ()=> {
         console.log('Submitted',data)
+        alert('Submitted')
+        const result = await fetchCall('/api/addcontactus', {data})
+        console.log('REs',result)
     }
   return (
     <Card className='my-1 p-3 m-auto' style={{backgroundColor: '#85d0dc', width:'500px'}}>

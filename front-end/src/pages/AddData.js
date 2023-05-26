@@ -18,6 +18,7 @@ const AddData = () => {
     const [updateObj, setUpdateObj] = useState(state?.data)
     const [method, setMethod] = useState(state?.mode || 'ADD')
     const { currentUserVal, socket } = useContext(UserContext)
+     
     const [isLoggedin, setIsLoggedIn] = useState([])
     const technologies = ['Select the technology', "React", "Angular", "JavaScript", "CSS", "Vue"]
     const AppTypesDataList = ['Banking', 'E-commerce', 'Oil', 'Stocks', 'Logistics', 'OTT']
@@ -65,7 +66,7 @@ const AddData = () => {
     //     const offline = employees.filter(user => user.status == "Offline").length
     //     const percentage = (active / total * 100).toFixed(2)
     //     setEmployeesdata({ total, active, offline, employees, percentage })
-    // })
+    // }) 
     useEffect(() => {
         const getUsers = async () => {
             const res = await fetchGetCall('/api/getallusers')

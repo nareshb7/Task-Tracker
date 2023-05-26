@@ -16,6 +16,7 @@ import { UserContext } from '../App'
 import Dashboard from './Dashboard'
 import EmployeeStats from './employeeStats/EmployeeStats'
 import ContactUs from './contactUs/ContactUs'
+import ContactUsAdmin from './contactUs/ContactUsAdmin'
 
 const RoutesComp = () => {
     const { currentUserVal } = useContext(UserContext)
@@ -32,6 +33,7 @@ const RoutesComp = () => {
                 <Route path='login' element={<Login />} /> 
                 <Route path='verifymail/:path' element={<MailVerification />} />
                 <Route path='contact' element={<ContactUs/>}/>
+                <Route path='contactData' element={<ContactUsAdmin/>}/>
                 {
                     !currentUserVal.fName && (
                         <Route path='signup' element={<Signup />} />
