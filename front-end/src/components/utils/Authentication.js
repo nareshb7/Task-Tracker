@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
-import {CookieComp} from './CookieComp'
+import {CookieComp, setCookie} from './CookieComp'
 
 const useAuth = () => {
     const [currentUser, setCurrentUser] = useState({})
@@ -9,7 +9,10 @@ const useAuth = () => {
         const userid = CookieComp() 
         if (userid) {
             axios.post('/api/getparticularuser',{id: userid} )
-        .then(data => setCurrentUser(data.data))
+        .then(data => {
+            setCurrentUser(data.data)
+            setCookie(userid,2)
+        })
         .catch(err => console.log(err, 'err'))
         }
         

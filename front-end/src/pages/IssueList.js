@@ -98,12 +98,13 @@ const GetTask = () => {
     const handleSearch = (e)=> {
         const {value} = e.target
         setSearchVal(value)
-        let mockData = value ? tableData : data
+        let mockData = value ? data : data
         const searchData = mockData.filter(val => {
             if(val.cName.toLowerCase().includes(value.toLowerCase()) || val.dName.toLowerCase().includes(value.toLowerCase()) || val.technology.toLowerCase().includes(value.toLowerCase()) ){
                 return val
             }
         })
+        console.log('Search',searchData,value)
         setTableData(searchData)
     }
     return (<div className='bgi' style={{color:'#eee'}}>

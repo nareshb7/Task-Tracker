@@ -21,7 +21,6 @@ function App() {
   const [currentUserVal, setCurrentUserVal] = useState({})
   const [totalMessages, setTotalMessages] = useState(0)
   const [currentRoom, setCurrentRoom] = useState('')
-  const [messageClose, setMessageClose] = useState(false)
   const [quote, setQuote] = useState({})
   const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom , quote}
   useEffect(() => {
