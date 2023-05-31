@@ -68,7 +68,7 @@ io.on('connection',async (socket)=> {
         socket.leave(previousRoom)
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
-        socket.emit('room-messages', roomMessages)
+        socket.emit('room-messages', roomMessages, room)
     })
     socket.on('message-room', async (room, content, sender, time, date, opponentId )=> {
         const newMessage =await Message.create({to: room, content,from : sender, time, date})

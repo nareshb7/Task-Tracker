@@ -109,7 +109,7 @@ const GetTask = () => {
     }
     return (<div className='bgi' style={{color:'#eee'}}>
     <div className='issueList-main'>
-        <h1 style={{color:'#000'}}>Get Task: </h1>
+        <h1 style={{color:'#000'}}>Uploaded Ticket's: </h1>
         <div>
             <input className='searchIpt' type='search' value={searchVal} onChange={handleSearch} placeholder='Search Here' />
         </div>

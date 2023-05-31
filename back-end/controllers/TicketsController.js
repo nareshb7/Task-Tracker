@@ -19,7 +19,7 @@ module.exports.updateTicket = async (req,res)=> {
         tkt['status'] = obj.status
         tkt['description'] = obj.description
         tkt['comments'] = obj.comments
-        tkt['helpedDev'] = obj.helpedDev && JSON.parse(obj.helpedDev)
+        tkt['helpedDev'] = obj.helpedDev
         if(obj.status == 'Resolved') {
             tkt['completedDate'] = new Date()
         }
@@ -38,6 +38,23 @@ module.exports.getTodayTicket = async (req,res)=> {
     const {id} = req.query
     const tkts = await MockTicket.find({"assignedTo.id": id})
     res.status(200).json(tkts)
+}
+
+module.exports.addNewTicket = async (req,res)=> {
+    const {data} = req.body
+    await MockTicket.create(data)
+    .then(data => {
+        res.status(200).json(data)
+    }).catch(e =>{
+        res.status(400).json(e.message)
+    })
+}
+module.exports.deleteTicket = async (req,res) => {
+    const {id} = req.body
+    
+    await MockTicket.findByIdAndDelete({_id:id})
+    .then(data => res.status(200).json(data))
+    .catch(e => res.status(400).json(e.message))
 }
 
 // mongoose.connection.db.collection('mocktickets').find({}).toArray(function(err, result) {

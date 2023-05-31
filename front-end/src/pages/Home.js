@@ -12,6 +12,7 @@ const Home = () => {
         <Row>
             <Col md={6} className='d-flex flex-direction-column align-items-center justify-content-center'>
                 <div>
+                    <marquee style={{background:'#ff0'}}>Working on Admin Stats Page</marquee>
                     <h1>Welcome,</h1>
                     <p>This is the Task-Tracker Application, It will track your daily issue status</p>
                     <Row>

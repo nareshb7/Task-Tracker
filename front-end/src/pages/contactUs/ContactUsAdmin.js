@@ -8,7 +8,6 @@ const ContactUsAdmin = () => {
         const {success,data} = await fetchGetCall('/api/contactusmessage')
         if(success) {
             setMessages(data)
-            console.log('DATA',data)
         }
     }
 

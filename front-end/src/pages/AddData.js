@@ -70,7 +70,6 @@ const AddData = () => {
     useEffect(() => {
         const getUsers = async () => {
             const res = await fetchGetCall('/api/getallusers')
-            console.log('All Users', res.data)
             if (res.success) setEmployeesList(res.data)
         }
         getUsers()
@@ -104,6 +103,7 @@ const AddData = () => {
         }
     }
     const handleSubmit = async (newData, { resetForm }) => {
+        newData.helpedDev = JSON.parse(newData.helpedDev)
         setStatus('Submitting...')
         if (method === 'ADD') {
             newData.time = new Date()
@@ -151,7 +151,7 @@ const AddData = () => {
 
     }
     const handleValidate = (val) => {
-        console.log('validate', val)
+        // console.log('validate', val)
     }
 
     const addImageField = (values, setValues, field) => {

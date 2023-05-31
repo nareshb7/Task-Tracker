@@ -8,17 +8,25 @@ import { fetchGetCall } from '../../components/utils/fetch/UseFetch'
 const EmployeeStats = () => {
   const { state, } = useLocation()
   const navigate = useNavigate()
-  console.log('Emp Stats', state)
   const [statsData, setStatsdata] = useState({
     totalIssues: [],
     pending: 0,
     resolved: 0,
     assigned: [],
-    fixed: 0
+    fixed: 0,
+    helpTaken:0
   })
-
+  const [helpedTickets,setHelpedTickets] = useState([])
+  const getHelpedSolutions = async ()=> {
+    const {data, success} = await fetchGetCall('/api/getData')
+    if (success) {
+      const helpd = data.filter(val => val?.helpedDev?.id == state._id)
+      setHelpedTickets(helpd)
+    }
+  }
   useEffect(() => {
     getUserIssues()
+    getHelpedSolutions()
   }, [])
   const getUserIssues = async () => {
     const result = await uploadedIssues(state)
@@ -28,9 +36,9 @@ const EmployeeStats = () => {
       const resolved = result.filter(tkt => tkt.issueStatus == 'Resolved').length
       const fixed = result.filter(tkt => tkt.issueStatus == 'Fixed').length
       const {data} = await fetchGetCall('/api/gettodayticket', { id: state._id })
-      setStatsdata({ totalIssues, pending, resolved, fixed,assigned: data })
+      const helpTaken = totalIssues.filter(val => val.helpedDev).length
+      setStatsdata({ totalIssues, pending, resolved, fixed,assigned: data , helpTaken})
     }
-    console.log('result', result)
   }
   return (
     <Container className='card shadow my-2' >
@@ -75,7 +83,7 @@ const EmployeeStats = () => {
             <Col><span>Last Name : </span><span>{state.lName}</span></Col>
             <Col><span>Email : </span><span>{state.email}</span></Col>
             <Col><span>Phone : </span><span>{state.mobile}</span></Col>
-            <Col><span>Position : </span><span>{state.designation}</span></Col>
+            <Col><span>Role : </span><span>{state.designation}</span></Col>
           </Row>
         </Col>
         <Col>
@@ -86,6 +94,8 @@ const EmployeeStats = () => {
             <Col><span>Pending: </span><span>{statsData.pending}</span></Col>
             <Col><span>Fixed: </span><span>{statsData.fixed}</span></Col>
             <Col><span>Today Ticets: </span><span>{statsData.assigned.length}</span> </Col>
+            <Col><span>Solved with another Dev: </span><span>{statsData.helpTaken}</span></Col>
+            <Col><span>Helped Tickets: </span><span>{helpedTickets.length} </span></Col>
           </Row>
         </Col>
       </Row>

@@ -4,6 +4,7 @@ import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import Modal from '../components/modal/Modal'
 import UserDashboard from './UserDashboard'
 import AssignTicketModal from '../components/modal/AssignTicket'
+import AddNewTicket from '../components/modal/AddNewTicket'
 
 export const setTrBg = (type, date) => {
     let bg;
@@ -36,6 +37,7 @@ export const setTrBg = (type, date) => {
 const AdminDashboard = ({ currentUserVal, socket }) => {
     const [isAdminDashboard,setIsAdminDashboard] = useState(true)
     const [modelOpen, setModelOpen] = useState(false)
+    const [openNewTicketModal, setOpenNewTicketModal] = useState(false)
     const [selectedDev, setSelectedDev] = useState('')
     const [selectedTicket, setSelectedTicket] = useState({})
     const [todayTickets, setTodayTickets] = useState({
@@ -90,7 +92,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
             // Total Tickets 
             const res = await fetchGetCall('/api/getData', {})
             if (res.success) {
-                const total = res
+                const total = res.data
                 const resolved = res.data.filter(tkt => tkt.issueStatus == "Resolved").length
                 const pending = res.data.filter(tkt => tkt.issueStatus == "Pending").length
                 const fixed = res.data.filter(tkt => tkt.issueStatus == "Fixed").length
@@ -148,6 +150,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
             isAdminDashboard ? <Col>
             <p>Admin Dashboard</p>
             {/* Employess Data */}
+                <Col onClick={()=> setOpenNewTicketModal(true)}><Button>Add New Ticket</Button></Col>
             <Row className='d-flex m-2 gap-3 fw-300'>
                 <Col className='card bg-primary'>
                     <span className='fs-4 px-1'>Total Employees: </span>
@@ -218,7 +221,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                     <span className='fs-3 fw-bold' >Today Tickets : </span>
                     <Col className='container-fluid m-auto text-center' style={{ overflow: 'hidden scroll' }}>
                         <Table className='striped ticketsTable'>
-                            <thead>
+                            <thead style={{position:'sticky'}}>
                                 <tr>
                                     <th>Sl.NO</th>
                                     <th>Consultant</th>
@@ -262,6 +265,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                     </Col>
                 </Col>
             </Row>
+            <AddNewTicket isOpen={openNewTicketModal} setIsOpen={setOpenNewTicketModal} />
             <AssignTicketModal 
                 modelOpen={modelOpen} 
                 setModelOpen={setModelOpen} 

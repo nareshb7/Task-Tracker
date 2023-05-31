@@ -106,7 +106,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                         onKeyPress={(e) => e.key == 'Enter' && sendMessage()}
                         placeholder='Hey.....'
                     />
-                    <button disabled={!opponent.fName} onClick={sendMessage}>{'->'}</button>
+                    <button disabled={!opponent.fName} onClick={sendMessage}><i className='fas fa-arrow-right'></i></button>
                 </div>
             </div> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><h3>ResourceOne IT</h3></div>
         }

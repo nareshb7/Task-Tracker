@@ -6,10 +6,6 @@ const ticketSchema = mongoose.Schema({
         type:String,
         require: true
     },
-    location: {
-        type:String,
-        require: true
-    },
     receivedDate: {
         type: Date,
         require: true

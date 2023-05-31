@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import Modal from '../../components/modal/Modal'
 import { Button, Card, Col, Container, Row } from 'react-bootstrap'
 import { fetchCall } from '../../components/utils/fetch/UseFetch'
+import { emailpattern } from '../../components/utils/Constants'
 
 const ContactUs = () => {
-    const [isOpen,setIsOpen] = useState(true)
     const [data,setData] = useState({
         name:'',
         email:'',
@@ -15,10 +15,13 @@ const ContactUs = () => {
         setData({...data, [name]: value})
     }
     const handleSubmit =async ()=> {
-        console.log('Submitted',data)
-        alert('Submitted')
-        const result = await fetchCall('/api/addcontactus', {data})
-        console.log('REs',result)
+        const {name,email, desc} = data
+        if(name.length > 2 && email.match(emailpattern) && desc.length > 2) {
+            alert('Submitted')
+            const result = await fetchCall('/api/addcontactus', {data})
+        } else {
+            alert("Fields are missing valid data.. Check the fields")
+        }
     }
   return (
     <Card className='my-1 p-3 m-auto' style={{backgroundColor: '#85d0dc', width:'500px'}}>
