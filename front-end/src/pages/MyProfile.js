@@ -157,7 +157,16 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
                 </div>
               }
               <div style={{ height: '30px' }}>{reqMailError}</div>
-              <div><Button onClick={showMyIssues}>My Issues</Button> </div>
+              <div>
+                <Button onClick={showMyIssues}>My Issues</Button>
+                <Button className='mx-2' onClick={() => {
+                                    setTimeout(() => {
+                                        navigate('/empstats', { state: currentUserVal })
+                                    }, 0)
+                                }}>
+                                    Go to Stats page
+                                </Button>
+               </div>
             </Col>
           </Row> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }

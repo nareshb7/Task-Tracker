@@ -9,9 +9,9 @@ const Home = () => {
     
     
     return (
-        <Row>
-            <Col md={6} className='d-flex flex-direction-column align-items-center justify-content-center'>
-                <div>
+        <Row style={{minHeight:'90vh', backgroundColor:'#95e8f3'}} className='p-2'>
+            <Col md={5}  className='card m-auto m-2 shadow p-3 bg-body rounded' >
+                <div >
                     <marquee style={{background:'#ff0'}}>Working on Admin Stats Page</marquee>
                     <h1>Welcome,</h1>
                     <p>This is the Task-Tracker Application, It will track your daily issue status</p>
@@ -39,8 +39,8 @@ const Home = () => {
                     
                 </div>
             </Col>
-            <Col md={6} className='home__bg'>
-            </Col>
+            {/* <Col md={6} className='home__bg'> */}
+            {/* </Col> */}
         </Row>
     )
 }
