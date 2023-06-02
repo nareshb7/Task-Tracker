@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
 import { fetchCall } from '../components/utils/fetch/UseFetch'
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client'
 import { BE_URL } from '../components/utils/Constants'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
@@ -23,7 +23,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
     updateKey: 'email',
     updateValue: ''
   })
-  
+
   useEffect(() => {
     setCurrentUser(currentUserVal)
   }, [currentUserVal])
@@ -43,14 +43,14 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
         } else {
           console.log('aResp Error :', aResp)
         }
-        location.state ={}
+        location.state = {}
       }
       updateMail()
     }
 
   }, [location.state])
 
-  const logout =async  (id) => {
+  const logout = async (id) => {
     setCurrentUser({})
     setCurrentUserVal({})
     await logoutFunc(currentUserVal)
@@ -125,7 +125,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
   return (
     <div>
       {
-        Object.keys(currentUser).length > 2 ?
+        Object.keys(currentUser).length > 2 ? <>
           <Row md={12}>
             <Col md={5} className='card m-3'>
               <h2>Name : {currentUser.fName} {currentUser.lName}  <span style={styles.span}>{currentUser.isAdmin && '( Admin )'}</span></h2>
@@ -139,7 +139,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
             <Col md={4} className='card m-3'>
               {/* <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <Button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</Button></p> */}
               <div>
-                <Button onClick={()=> logout(currentUser._id)} style={{ backgroundColor:'#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</Button>
+                <Button onClick={() => logout(currentUser._id)} style={{ backgroundColor: '#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</Button>
                 <Button onClick={() => updateData(currentUser)}>Update Details</Button>
               </div>
               <div>
@@ -160,20 +160,34 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
               <div>
                 <Button onClick={showMyIssues}>My Issues</Button>
                 <Button className='mx-2' onClick={() => {
-                                    setTimeout(() => {
-                                        navigate('/empstats', { state: currentUserVal })
-                                    }, 0)
-                                }}>
-                                    Go to Stats page
-                                </Button>
-               </div>
+                  setTimeout(() => {
+                    navigate('/empstats', { state: currentUserVal })
+                  }, 0)
+                }}
+                > Go to Stats page</Button>
+              </div>
             </Col>
-          </Row> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
+          </Row>
+          <Row>
+            <Col className='fw-bold fs-4 text-start'>Entertainment Zone:</Col>
+          </Row>
+          <Row className='my-2'>
+            <Col>
+              <marquee style={{ backgroundColor: '#ff0' }}>
+                <a href='https://guessthenumbergame1.netlify.app/' target='_blank'>
+                  <Button>Guess the number game </Button>
+                </a>
+                <Link to='/game/1'><Button> RPS Game </Button></Link>
+                <Link to='/game/2'><Button>Multiplications </Button></Link>
+              </marquee>
+            </Col>
+          </Row>
+        </> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
       {
-        showIssues && issuesList &&  <div>
+        showIssues && issuesList && <div>
           <UserIssues issuesList={issuesList} />
-        </div> 
+        </div>
       }
     </div>
   )

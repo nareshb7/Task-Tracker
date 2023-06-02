@@ -39,6 +39,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
     const [modelOpen, setModelOpen] = useState(false)
     const [openNewTicketModal, setOpenNewTicketModal] = useState(false)
     const [selectedDev, setSelectedDev] = useState('')
+    const [addNewType, setNewType] = useState('')
     const [selectedTicket, setSelectedTicket] = useState({})
     const [todayTickets, setTodayTickets] = useState({
         total: [],
@@ -137,6 +138,10 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         if (!data) return "---"
         return new Date(data).toLocaleDateString()
     }
+    const addNewTickets = (type)=> {
+        setNewType(type)
+        setOpenNewTicketModal(true)
+    }
     
 
     return <Row>
@@ -150,7 +155,10 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
             isAdminDashboard ? <Col>
             <p>Admin Dashboard</p>
             {/* Employess Data */}
-                <Col onClick={()=> setOpenNewTicketModal(true)}><Button>Add New Ticket</Button></Col>
+            <Row>
+                <Col onClick={()=> addNewTickets('TICKET')}><Button>Add New Ticket</Button></Col>
+                <Col onClick={()=> addNewTickets('CLIENT')}><Button>Add New Client</Button></Col>
+            </Row>
             <Row className='d-flex m-2 gap-3 fw-300'>
                 <Col className='card bg-primary'>
                     <span className='fs-4 px-1'>Total Employees: </span>
@@ -226,8 +234,8 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                     <th>Sl.NO</th>
                                     <th>Consultant</th>
                                     <th>Phone</th>
-                                    <th>Assigned to</th>
                                     <th>Status</th>
+                                    <th>Assigned to</th>
                                     <th>Helped Dev</th>
                                     <th>Location</th>
                                     <th>Received Date</th>
@@ -246,8 +254,8 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                             <td>{idx + 1}.</td>
                                             <td>{ticket.consultantName}</td>
                                             <td>{ticket.phone}</td>
-                                            <td>{ticket.assignedTo ? ticket.assignedTo.name : "Null"}</td>
                                             <td>{ticket.status ? ticket.status : "Not assigned"}</td>
+                                            <td>{ticket.assignedTo ? ticket.assignedTo.name : "Null"}</td>
                                             <td>{ticket.helpedDev?.name}</td>
                                             <td>{ticket.location}</td>
                                             <td>{dateFormatter(ticket.receivedDate)}</td>
@@ -255,8 +263,8 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                             <td>{dateFormatter(ticket.targetDate)}</td>
                                             <td>{dateFormatter(ticket.completedDate)}</td>
                                             <td>{ticket.technology}</td>
-                                            <td>{ticket.description}</td>
-                                            <td>{ticket.comments}</td>
+                                            <td>{ticket.descriptions?.slice(0,10)}...</td>
+                                            <td>{ticket.comments?.slice(0,20)}</td>
                                         </tr>
                                     ))
                                 }
@@ -265,7 +273,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                     </Col>
                 </Col>
             </Row>
-            <AddNewTicket isOpen={openNewTicketModal} setIsOpen={setOpenNewTicketModal} />
+            <AddNewTicket isOpen={openNewTicketModal} setIsOpen={setOpenNewTicketModal} addNewType={addNewType} />
             <AssignTicketModal 
                 modelOpen={modelOpen} 
                 setModelOpen={setModelOpen} 
@@ -275,6 +283,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                 cancelTicket={cancelTicket}
                 employeesdata={employeesdata}
                 setSelectedDev={setSelectedDev}
+                getTodayTickets = {getTodayTickets}
                 />
         </Col> : <UserDashboard currentUserVal={currentUserVal}/>
         }

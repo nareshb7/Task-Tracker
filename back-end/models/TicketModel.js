@@ -44,6 +44,10 @@ const mockTicketSchema = mongoose.Schema({
         type:String,
         require:true
     },
+    consultantId: {
+        type: String,
+        require: true
+    },
     technology: {
         type:String,
         require: true
@@ -95,6 +99,36 @@ const mockTicketSchema = mongoose.Schema({
         require: true
     }
 })
+const clientSchema = mongoose.Schema({
+    consultantName: {
+        type: String,
+        require: true
+    },
+    location: {
+        type: String,
+        require: true
+    },
+    phone: {
+        type: Number,
+        require: true,
+        unique:true,
+        dropDups:true
+    },
+    companyName: {
+        type: String,
+        require: true
+    },
+    appType: {
+        type: String,
+        require: true
+    },
+    technology: {
+        type:String,
+        require: true,
+        default: 'React'
+    }
+}, {timestamps: true})
 
 module.exports.Ticket = mongoose.model('ticket', ticketSchema)
 module.exports.MockTicket = mongoose.model('mockticket', mockTicketSchema)
+module.exports.clientModel = mongoose.model('Client', clientSchema)

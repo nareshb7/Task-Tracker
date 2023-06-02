@@ -57,7 +57,10 @@ const signinSchema = mongoose.Schema({
         type:Object,
         default: {}
     },
-    designation : String,
+    designation : {
+        type:String,
+        default: 'UI Developer'
+    },
     lastActiveOn : {
         type: Date,
         require: true,

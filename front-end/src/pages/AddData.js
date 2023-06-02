@@ -141,8 +141,8 @@ const AddData = () => {
         if (newData.id) {
             const obj = {
                 status: newData.issueStatus,
-                description: newData.issue,
-                comments: newData.solution,
+                description: newData.solution,
+                comments: newData.issueTitle,
                 helpedDev: newData.helpedDev
             }
             const tktUpdate = await fetchCall('/api/updateticket', { id: newData.id, from: 'ADDISSUE', obj })

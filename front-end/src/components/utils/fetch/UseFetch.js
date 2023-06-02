@@ -2,7 +2,7 @@ import axios from "axios"
 export const fetchCall =async (url,data)=> {
     return await axios.post(url, data)
         .then(res => res.data)
-        .catch(err => err)
+        .catch(err => err.response.data)
 }
 
 export const fetchPutCall = async (url,data)=> {

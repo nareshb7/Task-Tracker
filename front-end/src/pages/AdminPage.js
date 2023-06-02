@@ -8,6 +8,7 @@ import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from '../chatBox/MessageBox'
 import { Link, useNavigate } from 'react-router-dom'
+import { fetchCall } from '../components/utils/fetch/UseFetch'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -30,6 +31,7 @@ const AdminPage = () => {
         { header: 'Name', filter: 'fName' },
         { header: 'Email', filter: 'email' },
         { header: 'Mobile', filter: 'mobile' },
+        { header: 'Role', filter: 'designation' },
         { header: 'Profile Image' },
         { header: 'Active User', filter: 'isActive' },
         { header: 'Uploaded Issues' },
@@ -204,6 +206,18 @@ const AdminPage = () => {
         }
         setMailChangeModal(true)
     }
+    const handleRoleChange =async (e)=> {
+        console.log('VAL', e.target.value, updateUserObj)
+        const msz = `You are updating ${updateUserObj.fName}'s role from ${updateUserObj.designation} to ${e.target.value}`
+        const cnfrm = window.confirm(msz)
+        if (cnfrm && e.target.value) {
+            const obj = {id: updateUserObj._id, updateKey: 'designation', updateValue: e.target.value, update: 'single' }
+            const res = await fetchCall('/api/adminupdateuser', {...obj})
+            console.log('UPDATE', res)
+            getAllUsers()
+            setOpenUpdateModal(false)
+        }
+    }
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
@@ -229,6 +243,16 @@ const AdminPage = () => {
                                 <span className='fw-bold fs-3'>Login Access : </span>
                                 <Button onClick={() => userLoginPermission(updateUserObj, true)} > Allow </Button>
                                 <Button variant='warning' onClick={() => userLoginPermission(updateUserObj, false)}>Deny</Button>
+                            </Col>
+                            <Col>
+                                <span className='fw-bold fs-3 '>Update Role:</span>
+                                <select className='form-control' onChange={handleRoleChange}>
+                                    <option>Select Role</option>
+                                    <option value='UI Developer'>UI Developer</option>
+                                    <option value='ReactJS Developer'>ReactJS Developer</option>
+                                    <option value='Angular Developer'>Angular Developer</option>
+                                    <option value='UI/UX Developer'>UI/UX Designer</option>
+                                </select>
                             </Col>
                         </Row>
                     </>
@@ -360,6 +384,7 @@ const AdminPage = () => {
                                                     <td>{user.fName} {user.lName}</td>
                                                     <td>{user.email}</td>
                                                     <td>{user.mobile}</td>
+                                                    <td>{user.designation}</td>
                                                     <td style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>
                                                         {user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
                                                         <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />

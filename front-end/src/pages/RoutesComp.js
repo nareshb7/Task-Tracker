@@ -17,6 +17,8 @@ import Dashboard from './Dashboard'
 import EmployeeStats from './employeeStats/EmployeeStats'
 import ContactUs from './contactUs/ContactUs'
 import ContactUsAdmin from './contactUs/ContactUsAdmin'
+import RockPaperScissor from '../components/games/rockPaperScissor'
+import MultiplicationGame from '../components/games/multiplication'
 
 const RoutesComp = () => {
     const { currentUserVal } = useContext(UserContext)
@@ -45,6 +47,8 @@ const RoutesComp = () => {
                         <Route path='updateuser' element={<UserUpdate />} />
                         <Route path='/dashboard' element={<Dashboard />} />
                         <Route path='/empstats' element={<EmployeeStats/>}/>
+                        <Route path='/game/1' element={<RockPaperScissor/>} />
+                        <Route path='game/2' element={<MultiplicationGame/>} />
                     </>
                 }
                 {/* <Route path='profile' element={<MyProfile/> } /> */}

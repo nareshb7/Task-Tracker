@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const {MockTicket} = require('../models/TicketModel')
+const {MockTicket, clientModel} = require('../models/TicketModel')
 const { collection } = require('../models/MessageModel')
 
 
@@ -55,6 +55,19 @@ module.exports.deleteTicket = async (req,res) => {
     await MockTicket.findByIdAndDelete({_id:id})
     .then(data => res.status(200).json(data))
     .catch(e => res.status(400).json(e.message))
+}
+
+module.exports.addNewClient = async (req,res) => {
+    const {data} = req.body
+    await clientModel.create(data)
+    .then(d => res.status(200).json(d))
+    .catch(e => res.status(400).send(e.message))
+}
+module.exports.clientList =async (req,res)=> {
+    await clientModel.find({})
+    .then(d => res.status(200).json(d))
+    .catch(e => res.status(400).json(e.message))
+    // await clientModel.deleteMany({})
 }
 
 // mongoose.connection.db.collection('mocktickets').find({}).toArray(function(err, result) {

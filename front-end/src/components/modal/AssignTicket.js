@@ -3,12 +3,16 @@ import Modal from './Modal'
 import { Button, Col, Row } from 'react-bootstrap'
 import { fetchDeletecall } from '../utils/fetch/UseFetch'
 
-const AssignTicketModal = ({ modelOpen, setModelOpen, selectedTicket, selectedDev, employeesdata, assignTicket, cancelTicket, setSelectedDev }) => {
+const AssignTicketModal = ({ getTodayTickets, modelOpen, setModelOpen, selectedTicket, selectedDev, employeesdata, assignTicket, cancelTicket, setSelectedDev }) => {
     const deleteTicket =async ()=> {
-        console.log('selectedTicketDEle', selectedTicket)
-        const result = await fetchDeletecall('/api/deleteticket',{id: selectedTicket._id} )
-        if(result._id) {
-            setModelOpen(false)
+        const cnfrm = window.confirm(`Do u want to delete ${selectedTicket.consultantName} ticket??`)
+        if (cnfrm) {
+            const result = await fetchDeletecall('/api/deleteticket',{id: selectedTicket._id} )
+            if(result._id) {
+                setModelOpen(false)
+                getTodayTickets()
+                alert('Deleted Successfully')
+            }
         }
     }
     return (
@@ -25,7 +29,7 @@ const AssignTicketModal = ({ modelOpen, setModelOpen, selectedTicket, selectedDe
                     </div>
                     <div>
                         <span className='fs-4 fw-bold'>Select Developer: </span>
-                        <select className='form-control fst-italic' value={selectedDev} onChange={(e) => setSelectedDev(JSON.parse(e.target.value))}>
+                        <select className='form-control fst-italic' value={JSON.stringify(selectedDev)} onChange={(e) => setSelectedDev(JSON.parse(e.target.value))}>
                             {
                                 [{ fName: 'Select Developer', lName: '' }, ...employeesdata.employees].map((val, idx) => {
                                     const name = `${val?.fName} ${val?.lName}`
