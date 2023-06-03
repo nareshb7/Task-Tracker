@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
-import { fetchCall } from '../components/utils/fetch/UseFetch'
-import { io } from 'socket.io-client'
-import { BE_URL } from '../components/utils/Constants'
+import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
-import { Button, Col, Row } from 'react-bootstrap'
+import { Button, Card, Col, Row } from 'react-bootstrap'
 
-const SOCKET_URL = BE_URL
-const socket = io(SOCKET_URL)
-
-const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) => {
+const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, newsData }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [currentUser, setCurrentUser] = useState({})
@@ -68,18 +63,6 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
       color: '#888'
     }
   }
-  // const reqAdminAccess = async () => {
-  //   let cnfrm = window.confirm(`Are you eligible for Admin Access ?`)
-  //   if (cnfrm) {
-  //     const apiPayload = { id: currentUser._id, updateKey: 'reqforAdmin', updateValue: true, update: 'single' }
-  //     let resp = await fetchCall('/api/adminupdateuser', apiPayload)
-  //     if (resp._id) {
-  //       setCurrentUserVal(resp)
-  //     } else {
-  //       console.log('AdminAccess Error : ', resp)
-  //     }
-  //   }
-  // }
   const updateData = (data) => {
     navigate('/updateuser', { state: data })
   }
@@ -168,11 +151,9 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
               </div>
             </Col>
           </Row>
-          <Row>
+          <Row className='my-2 d-flex flex-column' >
             <Col className='fw-bold fs-4 text-start'>Entertainment Zone:</Col>
-          </Row>
-          <Row className='my-2'>
-            <Col>
+            <Col >
               <marquee style={{ backgroundColor: '#ff0' }}>
                 <a href='https://guessthenumbergame1.netlify.app/' target='_blank'>
                   <Button>Guess the number game </Button>
@@ -181,6 +162,20 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
                 <Link to='/game/2'><Button>Multiplications </Button></Link>
               </marquee>
             </Col>
+          </Row>
+          <Row className='my-2 d-flex flex-column'>
+            <Col className='fw-bold fs-4 text-start'>Latest News:</Col>
+            <Row className=' flex-row gap-3 m-auto' style={{ overflowY: 'scroll', height: '400px' }}>
+              {
+                newsData.map((article) => (
+                  <Card as={'a'} href={article.link} target='_blank' style={{ width: '300px' }} key={article._id}>
+                    <Card.Img className='rounded my-1' src={article.media} style={{ width: '250px', height: '250px'}} alt={article.rights} />
+                    <Card.Title>{article.title}</Card.Title>
+                    <Card.Text>{article.excerpt}</Card.Text>
+                  </Card>
+                ))
+              }
+            </Row>
           </Row>
         </> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
       }
@@ -194,3 +189,4 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket }) =
 }
 
 export default MyProfile
+// c46bb0cfad8d4deb8da8650ea2d2fb5d

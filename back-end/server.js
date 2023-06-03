@@ -79,7 +79,6 @@ io.on('connection',async (socket)=> {
         socket.broadcast.emit('notifications', room, opponentId, sender)
     })
     socket.on('AssignTicket', (val, id, sender)=> {
-        console.log('vall', val)
         socket.broadcast.emit('ticketAssigned', val, id, sender)
     })
 })

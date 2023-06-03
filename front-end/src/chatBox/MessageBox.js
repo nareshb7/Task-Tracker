@@ -80,7 +80,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                     <ScrollToBottom className='message-container' >
                         {
                             messages.map((dayMsz) => (
-                                <div key={dayMsz._id} className='m-auto text-center'> <span className='p-1 text-center fw-bolder' style={{borderRadius:'8px', border:'1px solid #ccc', color:'#85807b' }}>{dateIndicator(dayMsz._id)}</span>
+                                <div key={dayMsz._id} className='m-auto'> <span className='p-1 text-center fw-bolder' style={{borderRadius:'8px', border:'1px solid #ccc', color:'#85807b' }}>{dateIndicator(dayMsz._id)}</span>
                                     {
                                         dayMsz.messageByDate.map((msz) => {
                                             return <div key={msz._id} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>

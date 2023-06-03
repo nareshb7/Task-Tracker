@@ -8,7 +8,7 @@ import { Col, Row, Form, Button } from 'react-bootstrap'
 import './style/Login.css'
 
 const Login = () => {
-    const { currentUserVal, setCurrentUserVal, socket } = useContext(UserContext)
+    const { currentUserVal, setCurrentUserVal, socket , newsData } = useContext(UserContext)
     const obj = {
         value: '',
         password: ''
@@ -97,7 +97,7 @@ const Login = () => {
                             </div>
                         </Col>
                     </Row>
-                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse} socket={socket} />
+                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse} socket={socket} newsData={newsData}/>
             }
         </div>
     )

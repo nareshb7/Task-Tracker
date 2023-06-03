@@ -91,7 +91,7 @@ const UserDashboard = ({ currentUserVal }) => {
                                         <td>{tkt.consultantName}</td>
                                         <td>{tkt.phone}</td>
                                         <td>{tkt.technology}</td>
-                                        <td>{tkt.assignedBy.name}</td>
+                                        <td>{tkt.assignedBy?.name}</td>
                                         <td> {new Date(tkt.assignedDate).toLocaleString()}</td>
                                         <td>{tkt.status}</td>
                                         <td><Button onClick={()=> updateIssue(tkt)}>Update</Button></td>

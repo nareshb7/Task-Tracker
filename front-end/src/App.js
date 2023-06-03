@@ -14,15 +14,17 @@ import { fetchCall, fetchGetCall } from './components/utils/fetch/UseFetch';
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
-const socket = io(SOCKET_URL)
+const socket = io.connect(SOCKET_URL);
 
 function App() {
+  
   const userDetails = useAuth()
   const [currentUserVal, setCurrentUserVal] = useState({})
   const [totalMessages, setTotalMessages] = useState(0)
   const [currentRoom, setCurrentRoom] = useState('')
   const [quote, setQuote] = useState({})
-  const value = { currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom , quote}
+  const [newsData,setNewsData] = useState([])
+  const value = { newsData, currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom , quote}
   useEffect(() => {
     socket.emit('new-user')
     const handleTabClose = async (event) => {
@@ -43,6 +45,15 @@ function App() {
       window.removeEventListener('beforeunload', handleTabClose);
     };
   }, [currentUserVal]);
+  useEffect(() => {
+    
+    // const socket = io(SOCKET_URL)
+
+    return () => {
+      socket.disconnect();
+    };
+
+}, []);
   window.addEventListener('beforeunload', async function (e) {
     e.preventDefault();
     currentUserVal._id && await logoutFunc(currentUserVal)
@@ -71,6 +82,14 @@ useEffect(()=> {
         setQuote(data)
       }
 }
+const getNews =async ()=> {
+  const d = new Date()
+  const {success,data} = await fetchGetCall('/api/getnews', {date: d})
+  if (success) {
+    setNewsData(data)
+  }
+}
+getNews()
 getQuote()
 
 },[])
