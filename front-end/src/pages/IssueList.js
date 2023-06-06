@@ -75,7 +75,7 @@ const GetTask = () => {
     }
     useEffect(() => {
         axios.get('/api/getData')
-            .then(data => setData(data.data.reverse()))
+            .then(data => setData(data.data))
             .catch(err => console.log(err, 'err'))
     }, [])
 

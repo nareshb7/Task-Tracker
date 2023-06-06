@@ -7,7 +7,7 @@ module.exports.setData = async (req, res) => {
 }
 module.exports.getData = async (req, res) => {
     await TaskModel.find({})
-        .then(data => res.json(data))
+        .then(data => res.json(data.reverse()))
         .catch(err => res.send(err))
     // await TaskModel.deleteMany()
 }

@@ -8,7 +8,7 @@ import { Col, Row, Form, Button } from 'react-bootstrap'
 import './style/Login.css'
 
 const Login = () => {
-    const { currentUserVal, setCurrentUserVal, socket , newsData } = useContext(UserContext)
+    const { setNotificationRooms, currentUserVal, setCurrentUserVal, socket , newsData } = useContext(UserContext)
     const obj = {
         value: '',
         password: ''
@@ -48,6 +48,8 @@ const Login = () => {
         setResponse('Login Sucessfully')
         console.log('LoggedIn User', currentUser)
         setCookie(currentUser._id, 2)
+        const roomsCount = Object.keys(currentUser.newMessages).length
+        setNotificationRooms(roomsCount)
         socket.emit('new-user')
         navigate(-1)
     }

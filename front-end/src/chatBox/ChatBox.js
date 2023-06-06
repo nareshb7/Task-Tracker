@@ -9,7 +9,7 @@ import { AddNotification, ResetNotification } from '../redux/actions/Actions'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 
 const ChatBox = () => {
-    const { currentUserVal, socket, setTotalMessages, setCurrentUserVal,  currentRoom, setCurrentRoom } = useContext(UserContext)
+    const { setNotificationRooms, currentUserVal, socket, setTotalMessages, setCurrentUserVal,  currentRoom, setCurrentRoom } = useContext(UserContext)
     const stateData = useSelector(state => state.user)
     const dispatch = useDispatch()
     const [users, setUsers] = useState([])
@@ -46,6 +46,8 @@ const ChatBox = () => {
         setOpenMszList(true)
         let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
         setTotalMessages(totalMessage)
+        const roomsCount = Object.keys(currentUserVal?.newMessages).length
+      setNotificationRooms(roomsCount)
     }
     const imgPopup = (src, fName) => {
         setImgSrc({ src, fName })

@@ -80,17 +80,17 @@ useEffect(()=> {
   return (
     <div class="wrapper">
         <div>
-            <button class="rpsButton" value="Rock">Rock</button>
-            <button class="rpsButton" value="Paper">Paper</button>
-            <button class="rpsButton" value="Scissor">Scissor</button>
+            <button className="rpsButton" value="Rock">Rock</button>
+            <button className="rpsButton" value="Paper">Paper</button>
+            <button className="rpsButton" value="Scissor">Scissor</button>
         </div>
-        <div class='result'>
+        <div className='result'>
             <h3 id="score"></h3>
             <h3 id="hands"></h3>
             <h3 id="result"></h3>
         </div>
         <div>
-            <button id="resetBtn">Reset</button>
+            <button className='rpsButton' id="resetBtn">Reset</button>
         </div>
     </div>
   )

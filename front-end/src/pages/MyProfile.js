@@ -5,6 +5,7 @@ import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
 import { Button, Card, Col, Row } from 'react-bootstrap'
+import mockNewsData from '../components/utils/mockdata/newsMockData.json'
 
 const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, newsData }) => {
   const navigate = useNavigate()
@@ -167,7 +168,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
             <Col className='fw-bold fs-4 text-start'>Latest News:</Col>
             <Row className=' flex-row gap-3 m-auto' style={{ overflowY: 'scroll', height: '400px' }}>
               {
-                newsData.map((article) => (
+                mockNewsData.map((article) => (
                   <Card as={'a'} href={article.link} target='_blank' style={{ width: '300px' }} key={article._id}>
                     <Card.Img className='rounded my-1' src={article.media} style={{ width: '250px', height: '250px'}} alt={article.rights} />
                     <Card.Title>{article.title}</Card.Title>

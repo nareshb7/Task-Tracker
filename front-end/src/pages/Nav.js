@@ -14,7 +14,7 @@ import Time from '../components/utils/Time'
 import './style/Navigation.css'
 
 const Navigation = () => {
-    const { currentUserVal, setCurrentUserVal, socket, totalMessages } = useContext(UserContext)
+    const { currentUserVal, setCurrentUserVal, socket, notificationRooms } = useContext(UserContext)
 
     const navigate = useNavigate()
     const logout = async (id) => {
@@ -59,7 +59,7 @@ const Navigation = () => {
                         </LinkContainer>
                         <LinkContainer to='/chat'>
                             <Nav.Link >Chat
-                                {currentUserVal._id && totalMessages != 0 && <span className='notification-icon'>{totalMessages}</span>}
+                                {currentUserVal._id && notificationRooms != 0 && <span className='notification-icon'>{notificationRooms}</span>}
                             </Nav.Link>
                         </LinkContainer>
                         {

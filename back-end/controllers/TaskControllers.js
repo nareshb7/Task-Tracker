@@ -113,7 +113,7 @@ const getLatestNews =async ()=> {
         url: 'https://api.newscatcherapi.com/v2/search',
         params: {q: 'India Tech', lang: 'en', sort_by: 'relevancy', page: '1'},
         headers: {
-          'x-api-key': 'uzGl39be9NfvTx9Vc_QYI41RvnIU3hsssJwI0ymnBV4'
+          'x-api-key': 'zGl39be9NfvTx9Vc_QYI41RvnIU3hsssJwI0ymnBV4'
         }
       };
       console.log('GETLATESTNEWS')
@@ -137,11 +137,11 @@ let newsData = new Promise(async (resolve,reject)=> {
 module.exports.getNews = async (req,res)=> {
     const {date} = req.query
     const userDate = new Date(date).toLocaleDateString()
-    if (userDate == d){
-        newsData.then(d=> res.status(200).json(d)).catch(e=> res.status(400).json(e))
-    } else {
-        // newsData = getLatestNews()
-        newsData.then(d=> res.status(200).json(d)).catch(e=> res.status(400).json(e))
-    }
+    // if (userDate == d){
+    //     newsData.then(d=> res.status(200).json(d)).catch(e=> res.status(400).json(e))
+    // } else {
+    //     // newsData = getLatestNews()
+    //     newsData.then(d=> res.status(200).json(d)).catch(e=> res.status(400).json(e))
+    // }
     
 }

@@ -17,14 +17,27 @@ const SOCKET_URL = BE_URL
 const socket = io.connect(SOCKET_URL);
 
 function App() {
-  
+
   const userDetails = useAuth()
   const [currentUserVal, setCurrentUserVal] = useState({})
   const [totalMessages, setTotalMessages] = useState(0)
   const [currentRoom, setCurrentRoom] = useState('')
   const [quote, setQuote] = useState({})
-  const [newsData,setNewsData] = useState([])
-  const value = { newsData, currentUserVal, setCurrentUserVal, socket, totalMessages, setTotalMessages, currentRoom, setCurrentRoom , quote}
+  const [newsData, setNewsData] = useState([])
+  const [notificationRooms, setNotificationRooms] = useState(0)
+  const value = {
+    notificationRooms,
+    setNotificationRooms,
+    newsData,
+    currentUserVal,
+    setCurrentUserVal,
+    socket,
+    totalMessages,
+    setTotalMessages,
+    currentRoom,
+    setCurrentRoom,
+    quote
+  }
   useEffect(() => {
     socket.emit('new-user')
     const handleTabClose = async (event) => {
@@ -46,59 +59,64 @@ function App() {
     };
   }, [currentUserVal]);
   useEffect(() => {
-    
+
     // const socket = io(SOCKET_URL)
 
     return () => {
       socket.disconnect();
     };
 
-}, []);
+  }, []);
   window.addEventListener('beforeunload', async function (e) {
     e.preventDefault();
     currentUserVal._id && await logoutFunc(currentUserVal)
     socket.emit('new-user')
     e.returnValue = '';
   });
-  socket.off("ticketAssigned").on("ticketAssigned", (val, id,sender)=> {
+  socket.off("ticketAssigned").on("ticketAssigned", (val, id, sender) => {
     if (currentUserVal._id == id) {
       alert(`${sender.fName} assigned you ticket`)
     }
   })
   socket.off('notifications').on('notifications', (room, id, sender) => {
     if (room != currentRoom && currentUserVal._id == id) {
-        currentUserVal.newMessages[room] = (currentUserVal.newMessages[room] || 0) + 1
-        let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
-        setTotalMessages(totalMessage)
-        setCurrentUserVal(currentUserVal)
-        alert('You got a message from ' + sender.fName)
+      currentUserVal.newMessages[room] = (currentUserVal.newMessages[room] || 0) + 1
+      let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
+      const roomsCount = Object.keys(currentUserVal.newMessages).length
+      setNotificationRooms(roomsCount)
+      setTotalMessages(totalMessage)
+      setCurrentUserVal(currentUserVal)
+      alert('You got a message from ' + sender.fName)
     }
-})
-useEffect(()=> {
-    const getQuote = async ()=> {
+  })
+  useEffect(() => {
+    const getQuote = async () => {
       const d = new Date()
-      const {success,data} =await fetchGetCall('/api/getquote', {date: d})
-      if(success) {
+      const { success, data } = await fetchGetCall('/api/getquote', { date: d })
+      if (success) {
         setQuote(data)
       }
-}
-const getNews =async ()=> {
-  const d = new Date()
-  const {success,data} = await fetchGetCall('/api/getnews', {date: d})
-  if (success) {
-    setNewsData(data)
-  }
-}
-getNews()
-getQuote()
+    }
+    const getNews = async () => {
+      const d = new Date()
+      const { success, data } = await fetchGetCall('/api/getnews', { date: d })
+      if (success) {
+        setNewsData(data)
+      }
+    }
+    getNews()
+    getQuote()
 
-},[])
+  }, [])
   useEffect(() => {
     socket.emit('new-user')
     setCurrentUserVal(userDetails)
     if (userDetails?.newMessages) {
-      let totalMessage = Object.values(userDetails?.newMessages).length && Object.values(userDetails?.newMessages)?.reduce((a,b)=> a+b)
+      let totalMessage = Object.values(userDetails?.newMessages).length && Object.values(userDetails?.newMessages)?.reduce((a, b) => a + b)
+      const roomsCount = Object.keys(userDetails?.newMessages).length
+      setNotificationRooms(roomsCount)
       setTotalMessages(totalMessage)
+
     }
   }, [userDetails])
   return (

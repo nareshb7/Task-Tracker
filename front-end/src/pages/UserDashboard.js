@@ -40,7 +40,7 @@ const UserDashboard = ({ currentUserVal }) => {
             console.log('darta', data[0])
             navigate('/addIssue', {state : {data : data[0], mode: 'UPDATE'}} )
         } else {
-            navigate('/a ddIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
+            navigate('/addIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
         }
 
     }
