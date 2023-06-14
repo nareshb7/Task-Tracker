@@ -12,10 +12,10 @@ const UserDashboard = ({ currentUserVal }) => {
         resolved: 0,
         pending: 0,
         fixed: 0,
-        todayTickets:[]
+        todayTickets: []
     })
-    const getTodayTicketsFunc =async ()=> {
-        const resp = await fetchGetCall('/api/gettodayticket', {id: currentUserVal._id})
+    const getTodayTicketsFunc = async () => {
+        const resp = await fetchGetCall('/api/gettodayticket', { id: currentUserVal._id })
         return resp
     }
     useEffect(() => {
@@ -24,7 +24,7 @@ const UserDashboard = ({ currentUserVal }) => {
             const resolved = totalIssues.filter(issue => issue.issueStatus == 'Resolved').length
             const pending = totalIssues.filter(issue => issue.issueStatus == 'Pending').length
             const fixed = totalIssues.filter(issue => issue.issueStatus == 'Fixed').length
-            const {success,data} = await getTodayTicketsFunc()
+            const { success, data } = await getTodayTicketsFunc()
             const todayTickets = success && data.filter(tkt => {
                 const d1 = new Date(tkt.assignedDate).toDateString()
                 const d2 = new Date().toDateString()
@@ -32,38 +32,35 @@ const UserDashboard = ({ currentUserVal }) => {
                     return tkt
                 }
             })
-            setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets:data })
-            console.log('Today', todayTickets)
+            setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets: data })
         }
         getIssues()
     }, [])
-    const updateIssue =async (tkt)=> {
-        console.log('tkt',tkt)
-        const {success,data} = await fetchGetCall('/api/getticketid', {id: tkt._id})
+    const updateIssue = async (tkt) => {
+        const { success, data } = await fetchGetCall('/api/getticketid', { id: tkt._id })
         if (success && data?.length) {
             console.log('darta', data)
-            navigate('/addIssue', {state : {data : data[0], mode: 'UPDATE'}} )
+            navigate('/addIssue', { state: { data: data[0], mode: 'UPDATE' } })
         } else {
-            navigate('/addIssue', {state : {technology: tkt.technology, cName: tkt.consultantName, id: tkt._id}} )
+            navigate('/addIssue', { state: { technology: tkt.technology, cName: tkt.consultantName, id: tkt._id } })
         }
 
     }
-    const selectWorkingTicket =async (tkt)=> {
-        console.log('TKT',tkt)
+    const selectWorkingTicket = async (tkt) => {
+        console.log('TKT', tkt)
         const cnfrm = window.confirm(`Do u want to work on ${tkt.consultantName}'s ticket??`)
         if (cnfrm) {
-        const selectedDev = {name: currentUserVal.fName + ' '+ currentUserVal.lName, id : currentUserVal._id}
-        const response = await fetchCall('/api/updateticket', {obj:{status:'In Progress'}, id: tkt._id, from: 'UD', selectedDev})
-        console.log('RESPONSE', response)
-        if (!response?._id) {
-            alert('You already working on one ticket please complete that first')
-            return
+            const selectedDev = { name: currentUserVal.fName + ' ' + currentUserVal.lName, id: currentUserVal._id }
+            const response = await fetchCall('/api/updateticket', { obj: { status: 'In Progress' }, id: tkt._id, from: 'UD', selectedDev })
+            if (!response?._id) {
+                alert('You already working on one ticket please update that')
+                return
+            }
+            const { success, data } = await getTodayTicketsFunc()
+            if (success) {
+                setDashboardData({ ...dashboardData, todayTickets: data })
+            }
         }
-        const {success,data} = await getTodayTicketsFunc()
-        if(success) {
-            setDashboardData({...dashboardData, todayTickets: data})
-        }
-    }
     }
     console.log('Current User Dashboard::', currentUserVal)
     return <Row>
@@ -93,36 +90,36 @@ const UserDashboard = ({ currentUserVal }) => {
                 </Row>
                 <Row>
                     {
-                        dashboardData.todayTickets.length &&  <Table>
-                        <thead>
-                            <tr>
-                                <th>Client </th>
-                                <th>Phone</th>
-                                <th>Technology</th>
-                                <th>AssignedBy</th>
-                                <th>Assigned Time</th>
-                                <th>Status</th>
-                                <th>Update</th>
-                                <th>Working On</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                dashboardData.todayTickets.map((tkt, idx) => {
-                                    return <tr key={idx + Math.random()} className={setTrBg(tkt.status)} >
-                                        <td>{tkt.consultantName}</td>
-                                        <td>{tkt.phone}</td>
-                                        <td>{tkt.technology}</td>
-                                        <td>{tkt.assignedBy?.name}</td>
-                                        <td> {new Date(tkt.assignedDate).toLocaleString()}</td>
-                                        <td>{tkt.status}</td>
-                                        <td><Button onClick={()=> updateIssue(tkt)}>Update</Button></td>
-                                        <td><Button onClick={()=> selectWorkingTicket(tkt)}>{tkt.status == 'In Progress'? 'Selected': 'Select'}</Button> </td>
-                                    </tr>
-                                })
-                            }
-                        </tbody>
-                    </Table>
+                        dashboardData.todayTickets.length && <Table>
+                            <thead>
+                                <tr>
+                                    <th>Client </th>
+                                    <th>Phone</th>
+                                    <th>Technology</th>
+                                    <th>AssignedBy</th>
+                                    <th>Assigned Time</th>
+                                    <th>Status</th>
+                                    <th>Update</th>
+                                    <th>Working On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    dashboardData.todayTickets.map((tkt, idx) => {
+                                        return <tr key={idx + Math.random()} className={setTrBg(tkt.status)} >
+                                            <td>{tkt.consultantName}</td>
+                                            <td>{tkt.phone}</td>
+                                            <td>{tkt.technology}</td>
+                                            <td>{tkt.assignedBy?.name}</td>
+                                            <td> {new Date(tkt.assignedDate).toLocaleString()}</td>
+                                            <td>{tkt.status}</td>
+                                            <td><Button onClick={() => updateIssue(tkt)}>Update</Button></td>
+                                            <td><Button onClick={() => selectWorkingTicket(tkt)} disabled={tkt.status == 'In Progress'}>{tkt.status == 'In Progress' ? 'Selected' : 'Select'}</Button> </td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                        </Table>
                     }
                 </Row>
             </Row>
