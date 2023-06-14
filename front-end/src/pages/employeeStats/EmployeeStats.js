@@ -17,6 +17,7 @@ const EmployeeStats = () => {
     helpTaken:0
   })
   const [helpedTickets,setHelpedTickets] = useState([])
+  const [experience, setExperience] = useState('')
   const getHelpedSolutions = async ()=> {
     const {data, success} = await fetchGetCall('/api/getData')
     if (success) {
@@ -24,10 +25,7 @@ const EmployeeStats = () => {
       setHelpedTickets(helpd)
     }
   }
-  useEffect(() => {
-    getUserIssues()
-    getHelpedSolutions()
-  }, [])
+  
   const getUserIssues = async () => {
     const result = await uploadedIssues(state)
     if (result.length) {
@@ -40,6 +38,23 @@ const EmployeeStats = () => {
       setStatsdata({ totalIssues, pending, resolved, fixed,assigned: data , helpTaken})
     }
   }
+  const getDays = (dt)=> {
+    const oneDay = 24 * 60* 60 * 1000
+    const today = new Date().getTime()
+    const joinedDay = new Date(dt).getTime()
+    const totalDays = (today - joinedDay) / oneDay
+    const years = Math.floor(totalDays/ 365.24)
+    const remainDays = Math.floor(totalDays - (years * 365.24))
+    const month = Math.floor(remainDays / 30.43)
+    const days = Math.floor(remainDays % 30.43)
+    const result = `${years} years ${month} months ${days} days`
+    setExperience(result)
+  }
+  useEffect(() => {
+    getUserIssues()
+    getHelpedSolutions()
+    getDays(state.joinedDate)
+  }, [])
   return (
     <Container className='card shadow my-2' >
       <Row className='header my-2'>
@@ -49,6 +64,7 @@ const EmployeeStats = () => {
             <img src={state.binaryData} className='img br-50' />
           </div>
           <span className='fw-bold fs-3'>{state.fName} {state.lName}</span>
+          <span> ( {state?.userId ? state.userId : ''} )</span>
         </Col>
       </Row>
       <Row>
@@ -72,6 +88,8 @@ const EmployeeStats = () => {
           <Row>
             <span style={{ color: '#888' }} className='my-2'>Joined On</span>
             <span>{new Date(state.joinedDate).toLocaleString()}</span>
+            <span style={{ color: '#888' }} className='my-2'>Working from</span>
+            <span>{experience}</span>
           </Row>
         </Col>
       </Row>

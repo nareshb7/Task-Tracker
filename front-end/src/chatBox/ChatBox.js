@@ -72,7 +72,7 @@ const ChatBox = () => {
                                     </div>
                                     <div onClick={() => selectedUser(user, currentUserVal)} className='author-details'>
                                         <h3 className='chatBox-header'>{user.fName} {user.lName}</h3>
-                                        <h4 className='chatBox-technology'>{user.designation ? user.designation : 'React JS'}</h4>
+                                        <h5 className='chatBox-technology'>{user.designation ? user.designation : 'React JS'}</h5>
                                     </div>
                                     <div> {
                                         currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)] &&

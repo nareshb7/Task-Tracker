@@ -142,7 +142,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
               }
               <div style={{ height: '30px' }}>{reqMailError}</div>
               <div>
-                <Button onClick={showMyIssues}>My Issues</Button>
+                <Button onClick={showMyIssues}>My Tickets</Button>
                 <Button className='mx-2' onClick={() => {
                   setTimeout(() => {
                     navigate('/empstats', { state: currentUserVal })
@@ -151,6 +151,13 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
                 > Go to Stats page</Button>
               </div>
             </Col>
+          </Row>
+          <Row>
+          {
+        showIssues && issuesList && <div>
+          <UserIssues issuesList={issuesList} />
+        </div>
+      }
           </Row>
           <Row className='my-2 d-flex flex-column' >
             <Col className='fw-bold fs-4 text-start'>Entertainment Zone:</Col>
@@ -179,11 +186,6 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
             </Row>
           </Row>
         </> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
-      }
-      {
-        showIssues && issuesList && <div>
-          <UserIssues issuesList={issuesList} />
-        </div>
       }
     </div>
   )

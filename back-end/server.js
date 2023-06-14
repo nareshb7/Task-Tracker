@@ -72,15 +72,15 @@ io.on('connection',async (socket)=> {
     })
     socket.on('message-room', async (room, content, sender, time, date, opponentId )=> {
         const newMessage =await Message.create({to: room, content,from : sender, time, date})
+        const userData = await signUpModel.findById({_id: opponentId})
+        userData.newMessages[room] = (userData.newMessages[room] || 0 ) + 1
+        await userData.markModified('newMessages');
+        await userData.save()
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         io.to(room).emit('room-messages', roomMessages)
         console.log('Message: ',room, sender.fName,content )
         socket.broadcast.emit('notifications', room, opponentId, sender)
-        const userData = await signUpModel.findById({_id: opponentId})
-        userData.newMessages[room] = (userData.newMessages[room] || 0 ) + 1
-        await userData.markModified('newMessages');
-        await userData.save()
     })
     socket.on('AssignTicket', (val, id, sender)=> {
         socket.broadcast.emit('ticketAssigned', val, id, sender)

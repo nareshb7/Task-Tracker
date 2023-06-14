@@ -63,7 +63,7 @@ const GetTask = () => {
         navigate('/addIssue', {state: {data, mode:'UPDATE'}})
     }
     const deleteFunc = (id) => {
-        let cnfrm = window.confirm('Do you want to delete this issue??')
+        let cnfrm = window.confirm('Do you want to delete this ticket??')
         if (cnfrm) {
             axios.post('/api/deletesolution', { id })
                 .then(res => {
@@ -169,8 +169,8 @@ const GetTask = () => {
                                     }
                                 </select>
                             </th>
-                            <th>Issue ( click to know more)</th>
-                            <th>Issue status</th>
+                            <th>Requirement ( click to know more)</th>
+                            <th>Ticket status</th>
                             <th>Date</th>
                             <th>Last Updated</th>
                             <th>Image</th>

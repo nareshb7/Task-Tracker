@@ -103,7 +103,7 @@ const AddData = () => {
         }
     }
     const handleSubmit = async (newData, { resetForm }) => {
-        newData.helpedDev = JSON.parse(newData.helpedDev)
+        console.log('FORM', newData)
         setStatus('Submitting...')
         if (method === 'ADD') {
             newData.time = new Date()
@@ -376,7 +376,7 @@ const AddData = () => {
                                     </Row>
                                     <Row >
                                         <Col className='text-center'>
-                                            <Button variant='primary' type='submit'>Add Data</Button>
+                                            <Button variant='primary' type='submit'>{method == 'ADD'? 'Add' : 'Update'} Data</Button>
                                         </Col>
                                     </Row>
                                 </Form>

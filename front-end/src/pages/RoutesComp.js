@@ -19,6 +19,7 @@ import ContactUs from './contactUs/ContactUs'
 import ContactUsAdmin from './contactUs/ContactUsAdmin'
 import RockPaperScissor from '../components/games/rockPaperScissor'
 import MultiplicationGame from '../components/games/multiplication'
+import NoRouteFound from '../components/utils/NoRouteFound'
 
 const RoutesComp = () => {
     const { currentUserVal } = useContext(UserContext)
@@ -52,6 +53,7 @@ const RoutesComp = () => {
                     </>
                 }
                 {/* <Route path='profile' element={<MyProfile/> } /> */}
+                <Route path='*' element={<NoRouteFound/>}/>
             </Routes>
         </div>
     )

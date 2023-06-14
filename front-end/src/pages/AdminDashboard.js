@@ -24,6 +24,10 @@ export const setTrBg = (type, date) => {
             bg = 'warning'
             break;
         }
+        case "In Progress": {
+            bg = 'info'
+            break;
+        }
         default: {
             bg = ''
         }
@@ -156,8 +160,8 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
             <p>Admin Dashboard</p>
             {/* Employess Data */}
             <Row>
-                <Col onClick={()=> addNewTickets('TICKET')}><Button>Add New Ticket</Button></Col>
-                <Col onClick={()=> addNewTickets('CLIENT')}><Button>Add New Client</Button></Col>
+                <Col><Button onClick={()=> addNewTickets('TICKET')}>Add New Ticket</Button></Col>
+                <Col><Button onClick={()=> addNewTickets('CLIENT')}>Add New Client</Button></Col>
             </Row>
             <Row className='d-flex m-2 gap-3 fw-300'>
                 <Col className='card bg-primary'>

@@ -15,6 +15,16 @@ module.exports.todayTickts = async (req,res)=> {
 module.exports.updateTicket = async (req,res)=> {
     const {selectedTicket, selectedDev, from , obj, id} = req.body
     let tkt = await MockTicket.findById({_id: id})
+    if (from ==='UD') {
+        const progressTicket = await MockTicket.aggregate([{$match : {"assignedTo.id": selectedDev.id, status: "In Progress"}}])
+        console.log('Progress', progressTicket)
+        if (progressTicket.length) {
+            return res.status(400).json('You already working on one ticket')
+        }
+        tkt['status'] = obj.status
+        await tkt.save()
+        return res.status(200).json(tkt)
+    }
     if (from== 'ADDISSUE') {
         tkt['status'] = obj.status
         tkt['description'] = obj.description

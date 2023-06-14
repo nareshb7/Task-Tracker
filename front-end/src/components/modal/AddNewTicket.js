@@ -46,6 +46,7 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
     }
     const [modelType, setModelType] = useState('TICKET')
     const [clientsList, setClientsList] = useState([])
+    const [apiError, setApiError] = useState('')
     const getClients = async () => {
         const { data, success } = await fetchGetCall('/api/getclientslist')
         if (success) {
@@ -75,7 +76,9 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
                 setIsOpen(false)
                 alert('Client Added')
             } else {
-                alert(JSON.stringify(res, null, 4))
+                console.log('RES',res)
+                const err = res.includes('E11000') ? 'Try new Phone number' : res
+                setApiError(err)
             }
         }
     }
@@ -135,6 +138,8 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
                                     }
                                     {
                                         Object.keys(errors).length ? <Col className='text-danger'>Field Required at:  {Object.keys(errors).join(', ')}</Col>: ''
+                                    }{
+                                        apiError != '' && <Col className='text-danger'> {apiError}</Col>
                                     }
                                 </Row>
                             </Form>

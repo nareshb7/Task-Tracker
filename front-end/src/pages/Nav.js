@@ -49,10 +49,10 @@ const Navigation = () => {
                             <Nav.Link >Home</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/addIssue'>
-                            <Nav.Link >Add Issue</Nav.Link>
+                            <Nav.Link >Add Ticket</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/getIssue'>
-                            <Nav.Link >IssueList</Nav.Link>
+                            <Nav.Link >Tickets</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/adminpage'>
                             <Nav.Link >Admin Page</Nav.Link>

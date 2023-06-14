@@ -23,14 +23,13 @@ const UserIssues = ({issuesList}) => {
     return (
         <div>{
             issuesList.length ? <Table border='1' striped hover >
-            <caption>Uploaded Issues</caption>
             <thead>
                 <tr>
                     <th>Developer Name</th>
                     <th>Client Name</th>
                     <th>Technology</th>
-                    <th>Issue</th>
-                    <th>Issue Status</th>
+                    <th>Requirement</th>
+                    <th>Ticket Status</th>
                     <th>Updated Time</th>
                 </tr>
             </thead>
