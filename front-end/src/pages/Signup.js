@@ -6,6 +6,7 @@ import { UserContext } from '../App'
 import { setCookie } from '../components/utils/CookieComp'
 import './style/Signup.css'
 import { Col, Row } from 'react-bootstrap'
+import { addActivity } from './activityPage/ActivityPage'
 
 const Signup = () => {
     const navigate = useNavigate()
@@ -31,6 +32,7 @@ const Signup = () => {
                 setCookie(res.data._id, 2)
                 socket.emit('new-user')
                 navigate('/login')
+                addActivity(res.data, 'Signup page', `Just now created account`)
             })
             .catch(err => {
                 let val = ''

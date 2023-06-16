@@ -1,20 +1,9 @@
 import React from 'react'
 import Modal from './Modal'
 import { Button, Col, Row } from 'react-bootstrap'
-import { fetchDeletecall } from '../utils/fetch/UseFetch'
 
-const AssignTicketModal = ({ getTodayTickets, modelOpen, setModelOpen, selectedTicket, selectedDev, employeesdata, assignTicket, cancelTicket, setSelectedDev }) => {
-    const deleteTicket =async ()=> {
-        const cnfrm = window.confirm(`Do u want to delete ${selectedTicket.consultantName} ticket??`)
-        if (cnfrm) {
-            const result = await fetchDeletecall('/api/deleteticket',{id: selectedTicket._id} )
-            if(result._id) {
-                setModelOpen(false)
-                getTodayTickets()
-                alert('Deleted Successfully')
-            }
-        }
-    }
+const AssignTicketModal = ({ getTodayTickets, modelOpen, setModelOpen, selectedTicket, selectedDev, employeesdata, assignTicket, cancelTicket, setSelectedDev, deleteTicket }) => {
+    
     return (
         <Modal isOpen={modelOpen} setModal={setModelOpen}>
             <Row>

@@ -3,10 +3,13 @@ import { Button, Col, Row } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import './style/Home.css'
 import { UserContext } from '../App'
+import { addActivity } from './activityPage/ActivityPage'
 
 const Home = () => {
     const {currentUserVal, quote} = useContext(UserContext)
-    
+    useEffect(()=> {
+        addActivity(currentUserVal, 'Home page', `Visited Home page`)
+    },[])
     
     return (
         <Row style={{minHeight:'90vh', backgroundColor:'#95e8f3'}} className='p-2'>

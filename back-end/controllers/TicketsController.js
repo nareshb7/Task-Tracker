@@ -52,6 +52,7 @@ module.exports.getTodayTicket = async (req,res)=> {
 
 module.exports.addNewTicket = async (req,res)=> {
     const {data} = req.body
+    data.receivedDate = new Date()
     await MockTicket.create(data)
     .then(data => {
         res.status(200).json(data)

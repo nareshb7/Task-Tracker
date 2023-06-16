@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { uploadedIssues } from '../../components/issues/UserIssues'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import './employeeStats.css'
 import { fetchGetCall } from '../../components/utils/fetch/UseFetch'
+import ActivityPage, { addActivity } from '../activityPage/ActivityPage'
+import { getFullName } from '../../components/utils/GetFullName'
+import { UserContext } from '../../App'
 
 const EmployeeStats = () => {
   const { state, } = useLocation()
+  const {currentUserVal} = useContext(UserContext)
   const navigate = useNavigate()
   const [statsData, setStatsdata] = useState({
     totalIssues: [],
@@ -54,6 +58,7 @@ const EmployeeStats = () => {
     getUserIssues()
     getHelpedSolutions()
     getDays(state.joinedDate)
+    addActivity(currentUserVal, 'Stats page', `Visited Stats Page of ${getFullName(state)}`)
   }, [])
   return (
     <Container className='card shadow my-2' >
@@ -117,6 +122,7 @@ const EmployeeStats = () => {
           </Row>
         </Col>
       </Row>
+      <ActivityPage id={state._id} name={getFullName(state)}/>
     </Container>
   )
 }

@@ -5,8 +5,8 @@ import './ChatBox.css'
 import MessageBox from './MessageBox'
 import Modal from '../components/modal/Modal'
 import { UserContext } from '../App'
-import { AddNotification, ResetNotification } from '../redux/actions/Actions'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
+import { addActivity } from '../pages/activityPage/ActivityPage'
 
 const ChatBox = () => {
     const { setNotificationRooms, currentUserVal, socket, setTotalMessages, setCurrentUserVal,  currentRoom, setCurrentRoom } = useContext(UserContext)
@@ -30,6 +30,7 @@ const ChatBox = () => {
     }
     useEffect(() => {
         socket.emit('new-user')
+        addActivity(currentUserVal, 'Chat page', `Visited Chat Page`)
         return ()=> {
             socket.emit('join-room', 'sample', currentRoom)
             setCurrentRoom('sample')

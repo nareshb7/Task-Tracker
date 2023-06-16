@@ -6,6 +6,7 @@ import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
 import { Button, Card, Col, Row } from 'react-bootstrap'
 import mockNewsData from '../components/utils/mockdata/newsMockData.json'
+import { addActivity } from './activityPage/ActivityPage'
 
 const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, newsData }) => {
   const navigate = useNavigate()
@@ -22,6 +23,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
 
   useEffect(() => {
     setCurrentUser(currentUserVal)
+    addActivity(currentUserVal, 'Profile page', `Visited profile page`)
   }, [currentUserVal])
 
   useEffect(() => {
@@ -49,6 +51,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
   const logout = async (id) => {
     setCurrentUser({})
     setCurrentUserVal({})
+    addActivity(currentUserVal, 'Logout page', `Logged Out`)
     await logoutFunc(currentUserVal)
     setCookie("63dab3b51d791ebc7821db51", 2)
     setResponse('Please Login')

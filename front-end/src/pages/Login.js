@@ -1,49 +1,42 @@
 import React, { useState, useEffect, useContext } from 'react'
-import axios from 'axios'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { setCookie } from '../components/utils/CookieComp'
 import { UserContext } from '../App'
 import MyProfile from './MyProfile'
 import { Col, Row, Form, Button } from 'react-bootstrap'
 import './style/Login.css'
+import { fetchCall } from '../components/utils/fetch/UseFetch'
+import { addActivity } from './activityPage/ActivityPage'
 
 const Login = () => {
+    const navigate = useNavigate()
     const { setNotificationRooms, currentUserVal, setCurrentUserVal, socket , newsData } = useContext(UserContext)
     const obj = {
         value: '',
         password: ''
     }
     const [loginClicked, setLoginClicked] = useState(false)
-    const navigate = useNavigate()
     const [data, setData] = useState(obj)
-    const [currentUser, setCurrentUser] = useState({})
     const [response, setResponse] = useState('')
-    useEffect(() => {
-        if (Object.keys(currentUser).length > 2) {
-            if (currentUser.isActive) {
-                loginSucessFunc()
-            } else {
-                setResponse('Access Denied')
-            }
-        }
-    }, [currentUser])
+    const [isAdminLogin,setIsAdminLogin] = useState(false)
+    
     const handleChange = (e) => {
         const { name, value } = e.target
         setData({ ...data, [name]: value })
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        axios.post('/api/loginData', data)
-            .then(res => {
-                if (res.data) {
-                    setCurrentUser(res.data)
-                    setData(obj)
-                }
-            })
-            .catch(err => setResponse(err.response.data))
-        setResponse('Loading......')
+        setResponse('Loading...')
+        data.isAdmin = isAdminLogin
+        const response =await fetchCall('/api/loginData', data)
+        if (response._id) {
+            setData(obj)
+            loginSucessFunc(response)
+        } else {
+            setResponse(response)
+        }
     }
-    const loginSucessFunc = async () => {
+    const loginSucessFunc = async (currentUser) => {
         setCurrentUserVal(currentUser)
         setResponse('Login Sucessfully')
         console.log('LoggedIn User', currentUser)
@@ -51,15 +44,17 @@ const Login = () => {
         const roomsCount = Object.keys(currentUser.newMessages).length
         setNotificationRooms(roomsCount)
         socket.emit('new-user')
-        navigate(-1)
+        addActivity(currentUser, 'Login page', `Just Logged in`)
+        isAdminLogin ? navigate('/adminpage') : navigate(-1)
     }
     const userLoginFunc = () => {
         setLoginClicked(true)
+        setIsAdminLogin(false)
     }
     const adminLoginFunc = () => {
         setLoginClicked(true)
+        setIsAdminLogin(true)
     }
-
     return (
         <div>
             {
@@ -85,7 +80,7 @@ const Login = () => {
                                             <Form.Label>Password</Form.Label>
                                             <Form.Control type="password" placeholder="Password" name='password' value={data.password} onChange={handleChange} />
                                         </Form.Group>
-                                        <Button variant='primary' type='submit'>Login</Button>
+                                        <Button variant='primary' type='submit'>{isAdminLogin ? 'Admin Login': 'User Login'}</Button>
                                         <h5> Status: {response} </h5>
                                     </Form>
                                 }

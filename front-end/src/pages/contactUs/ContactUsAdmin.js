@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Col, Container, Row, Table } from 'react-bootstrap'
 import { fetchGetCall } from '../../components/utils/fetch/UseFetch'
+import { UserContext } from '../../App'
+import { addActivity } from '../activityPage/ActivityPage'
 
 const ContactUsAdmin = () => {
     const [messages, setMessages] = useState([])
+    const {currentUserVal} = useContext(UserContext)
     const getData =async ()=> {
         const {success,data} = await fetchGetCall('/api/contactusmessage')
         if(success) {
@@ -12,6 +15,7 @@ const ContactUsAdmin = () => {
     }
 
     useEffect(()=> {
+        addActivity(currentUserVal, 'Contact Us page', `Visited Contact us Page`)
         getData()
     },[])
   return (

@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { UserContext } from '../App'
 import Loader from '../components/utils/loader/Loader'
-import useRandomNum from '../components/utils/RandomNum'
 import Pagination from '../components/issues/Pagination'
 import './style/IssueList.css'
+import { addActivity } from './activityPage/ActivityPage'
+import { fetchGetCall } from '../components/utils/fetch/UseFetch'
 
 const GetTask = () => {
     const stateIssues = useSelector(state => state.issues)
@@ -69,14 +70,33 @@ const GetTask = () => {
                 .then(res => {
                     const newData = data.filter(val => val._id !== res.data._id)
                     setData(newData)
+                    addActivity(currentUserVal, 'Tickets page', `Ticket Deleted ${id}`)
                 })
                 .catch(err => console.log(err, 'Error Occured during delete'))
         }
     }
+    const handleSearch = (e)=> {
+        const {value} = e.target
+        setSearchVal(value)
+        let mockData = value ? data : data
+        const searchData = mockData.filter(val => {
+            if(val.cName.toLowerCase().includes(value.toLowerCase()) || val.dName.toLowerCase().includes(value.toLowerCase()) || val.technology.toLowerCase().includes(value.toLowerCase()) ){
+                return val
+            }
+        })
+        console.log('Search',searchData,value)
+        setTableData(searchData)
+        addActivity(currentUserVal, 'Tickets page', `Performed search operation`)
+    }
+    const getTickets =async ()=> {
+        const {success, data} = await fetchGetCall('/api/getData')
+        if (success) {
+            setData(data)
+        }
+    }
     useEffect(() => {
-        axios.get('/api/getData')
-            .then(data => setData(data.data))
-            .catch(err => console.log(err, 'err'))
+        addActivity(currentUserVal, 'Tickets page', `Visited tickets page`)
+        getTickets()
     }, [])
 
     useEffect(() => {
@@ -95,18 +115,7 @@ const GetTask = () => {
             setLoading(false)
         }
     }, [currentUserVal])
-    const handleSearch = (e)=> {
-        const {value} = e.target
-        setSearchVal(value)
-        let mockData = value ? data : data
-        const searchData = mockData.filter(val => {
-            if(val.cName.toLowerCase().includes(value.toLowerCase()) || val.dName.toLowerCase().includes(value.toLowerCase()) || val.technology.toLowerCase().includes(value.toLowerCase()) ){
-                return val
-            }
-        })
-        console.log('Search',searchData,value)
-        setTableData(searchData)
-    }
+    
     return (<div className='bgi' style={{color:'#eee'}}>
     <div className='issueList-main'>
         <h1 style={{color:'#000'}}>Uploaded Ticket's: </h1>

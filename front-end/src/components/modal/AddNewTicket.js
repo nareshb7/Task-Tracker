@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Modal from './Modal'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
+import { addActivity } from '../../pages/activityPage/ActivityPage'
+import { UserContext } from '../../App'
 
 const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
+    const {currentUserVal} = useContext(UserContext)
     const ticketObj = {
         consultantName: '',
         consultantId:'',
@@ -63,11 +66,13 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
 
     const addNewTicket = async (data, { resetForm }) => {
         if (modelType == 'TICKET') {
+            data.consultantName = JSON.parse(data.consultantName).consultantName
             const res = await fetchCall('/api/addnewticket', { data })
             if (res._id) {
                 setIsOpen(false)
                 alert('Ticket added')
             }
+            addActivity(currentUserVal, 'Dashboard Page', `New Ticket Added for ${data.consultantName}`)
         }
         if (modelType == 'CLIENT') {
             const res = await fetchCall('/api/addnewclient', { data })
@@ -75,6 +80,7 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
                 console.log('CLIENT RES', res)
                 setIsOpen(false)
                 alert('Client Added')
+                addActivity(currentUserVal, 'Dashboard Page', `New Client Added for ${data.consultantName}`)
             } else {
                 console.log('RES',res)
                 const err = res.includes('E11000') ? 'Try new Phone number' : res

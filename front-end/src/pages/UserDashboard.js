@@ -4,6 +4,7 @@ import { uploadedIssues } from '../components/issues/UserIssues'
 import { useNavigate } from 'react-router-dom'
 import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import { setTrBg } from './AdminDashboard'
+import { addActivity } from './activityPage/ActivityPage'
 
 const UserDashboard = ({ currentUserVal }) => {
     const navigate = useNavigate()
@@ -34,20 +35,19 @@ const UserDashboard = ({ currentUserVal }) => {
             })
             setDashboardData({ totalIssues, resolved, pending, fixed, todayTickets: data })
         }
+        addActivity(currentUserVal, 'Dashboard page', `Visited Dashboard page`)
         getIssues()
     }, [])
     const updateIssue = async (tkt) => {
         const { success, data } = await fetchGetCall('/api/getticketid', { id: tkt._id })
         if (success && data?.length) {
-            console.log('darta', data)
             navigate('/addIssue', { state: { data: data[0], mode: 'UPDATE' } })
         } else {
             navigate('/addIssue', { state: { technology: tkt.technology, cName: tkt.consultantName, id: tkt._id } })
         }
-
+        addActivity(currentUserVal, 'Dashboard page', `clicked on update issue for ${tkt.consultantName}`)
     }
     const selectWorkingTicket = async (tkt) => {
-        console.log('TKT', tkt)
         const cnfrm = window.confirm(`Do u want to work on ${tkt.consultantName}'s ticket??`)
         if (cnfrm) {
             const selectedDev = { name: currentUserVal.fName + ' ' + currentUserVal.lName, id: currentUserVal._id }
@@ -55,6 +55,8 @@ const UserDashboard = ({ currentUserVal }) => {
             if (!response?._id) {
                 alert('You already working on one ticket please update that')
                 return
+            } else {
+                addActivity(currentUserVal, 'Dashboard page', `Ticket status Updated`)
             }
             const { success, data } = await getTodayTicketsFunc()
             if (success) {

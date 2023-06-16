@@ -20,6 +20,7 @@ import ContactUsAdmin from './contactUs/ContactUsAdmin'
 import RockPaperScissor from '../components/games/rockPaperScissor'
 import MultiplicationGame from '../components/games/multiplication'
 import NoRouteFound from '../components/utils/NoRouteFound'
+import ActivityPage from './activityPage/ActivityPage'
 
 const RoutesComp = () => {
     const { currentUserVal } = useContext(UserContext)
@@ -37,6 +38,7 @@ const RoutesComp = () => {
                 <Route path='verifymail/:path' element={<MailVerification />} />
                 <Route path='contact' element={<ContactUs/>}/>
                 <Route path='contactData' element={<ContactUsAdmin/>}/>
+                <Route path='activity' element={<ActivityPage/>}/>
                 {
                     !currentUserVal.fName && (
                         <Route path='signup' element={<Signup />} />

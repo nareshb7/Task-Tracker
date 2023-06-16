@@ -8,10 +8,10 @@ import { UserContext } from '../App'
 // import { fetchCall } from '../utils/fetch/UseFetch'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
-import { useSelector } from 'react-redux'
 import '../chatBox/ChatBox.css'
 import Time from '../components/utils/Time'
 import './style/Navigation.css'
+import { addActivity } from './activityPage/ActivityPage'
 
 const Navigation = () => {
     const { currentUserVal, setCurrentUserVal, socket, notificationRooms } = useContext(UserContext)
@@ -26,7 +26,8 @@ const Navigation = () => {
     }
 
     const handleStatus = async (e) => {
-        if (e.target.checked) {
+        const val = e.target.checked
+        if (val) {
             await logoutFunc(currentUserVal, 'Online')
             setCurrentUserVal({ ...currentUserVal, status: 'Online' })
         } else {
@@ -34,6 +35,7 @@ const Navigation = () => {
             setCurrentUserVal({ ...currentUserVal, status: 'Offline' })
         }
         socket.emit('new-user')
+        addActivity(currentUserVal, 'Nav page', `Changed Login Status to ${val ? 'Online': 'Offline'}`)
     }
 
     return (

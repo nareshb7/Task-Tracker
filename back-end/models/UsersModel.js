@@ -39,7 +39,8 @@ const signinSchema = mongoose.Schema({
         require: true
     }, joinedDate : {
         type:Date,
-        require: true
+        require: true,
+        default: new Date()
     },
     reqforMailChange: {
         type: Boolean,

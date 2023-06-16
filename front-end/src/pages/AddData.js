@@ -8,6 +8,7 @@ import { addIssue } from '../redux/actions/issues/Actions'
 import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
 import { Row, Form as FormStyle, Col, Button } from 'react-bootstrap'
 import './style/AddIssue.css'
+import { addActivity } from './activityPage/ActivityPage'
 
 const AddData = () => {
     const dispatch = useDispatch()
@@ -58,20 +59,12 @@ const AddData = () => {
             .test('FILE-SIZE', 'File is too large (max : 300 KB) ', (value) => value.image?.size < 300000)),
         issueStatus: Yup.string().required('Select the issue status')
     }
-
-    // socket.off('new-user').on('new-user', (employees) => {
-    //     // Employees data
-    //     const total = employees.length
-    //     const active = employees.filter(user => user.status == "Online").length
-    //     const offline = employees.filter(user => user.status == "Offline").length
-    //     const percentage = (active / total * 100).toFixed(2)
-    //     setEmployeesdata({ total, active, offline, employees, percentage })
-    // }) 
     useEffect(() => {
         const getUsers = async () => {
             const res = await fetchGetCall('/api/getallusers')
             if (res.success) setEmployeesList(res.data)
         }
+        addActivity(currentUserVal, 'Add Ticket page', `Visited Add Ticket Page`)
         getUsers()
     }, [])
     useEffect(() => {
@@ -119,6 +112,7 @@ const AddData = () => {
             if (response.includes('Sucessfully')) {
                 resetForm({ values: '' })
                 navigate('/getIssue')
+                addActivity(currentUserVal, 'Add Ticket page', `New Ticket added ${newData.cName}`)
             }
         }
         if (method === 'UPDATE') {
@@ -133,6 +127,7 @@ const AddData = () => {
                     setStatus('Data Updated Sucessfully')
                     resetForm({ values: '' })
                     navigate('/getIssue')
+                    addActivity(currentUserVal, 'Add Ticket page', `Ticket updated ${newData.cName}`)
                 }
             } else {
                 setStatus('Add atleast one Image')

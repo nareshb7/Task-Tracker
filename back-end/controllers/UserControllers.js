@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const { signUpModel } = require('../models/UsersModel')
 const { deletedUsers } = require('../models/TaskModel')
 const { updateTicket } = require('./TicketsController')
+const { ActivityModel } = require('../models/ActivityModel')
 
 
 const UserStorage = multer.diskStorage({
@@ -31,7 +32,7 @@ module.exports.signUpData = async (req, res) => {
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req, res) => {
-    const { value, password } = req.body
+    const { value, password , isAdmin} = req.body
     let key = "email"
     if (value.match(/[\d]{10}/)) {
         key = "mobile"
@@ -42,10 +43,17 @@ module.exports.logInUserData = async (req, res) => {
         await result.save()
         const isValid = await bcrypt.compare(password, result.password) || result.password == password
         if (isValid) {
-            res.status(200).json(result)
-        } else res.status(401).json('Invalid Password')
+            if (!result.isActive) {
+                return res.status(401).json('Access Denied')
+            }
+            if (!isAdmin && result.isAdmin) {
+                return res.status(401).json('You are an Admin, please use Admin Login')
+            } else if(isAdmin && !result.isAdmin) {
+                return res.status(401).json('You are not an Admin, please use User Login')
+            } else return res.status(200).json(result)
+        } else return res.status(401).json('Invalid Password')
     } else {
-        res.status(404).json('User Not found')
+        return res.status(404).json('User Not found')
     }
 }
 
@@ -103,16 +111,17 @@ module.exports.userLogout = async (req, res) => {
     res.send(result)
 }
 
-// module.exports.assignTicket = async (req,res)=> {
-//     console.log('Assigned', req.body)
-//     try {
-//         const {id, ticket} = req.body
-//         ticket['assignedDate'] = new Date()
-//         const devData = await signUpModel.findById({ _id: id })
-//         devData.todayTickets = [...devData.todayTickets, ticket]
-//         await devData.save()
-//         res.status(200).json('Assigned')
-//     } catch (e) {
-//         res.status(400).json(e.message)
-//     }
-// }
+let content = ''
+module.exports.addNewActivity = async (req,res)=> {
+    const {payLoad} = req.body
+    if (content == payLoad.content) return res.status(201).json('Content is Same')
+    content = payLoad.content
+    await ActivityModel.create({...payLoad})
+    .then(resp => res.status(200).json(resp))
+}
+module.exports.getActivity = async (req,res) => {
+    const {id} = req.query
+    console.log('ACTIVITY', id)
+    const result = await ActivityModel.find({id: id})
+    res.status(200).json(result.reverse())
+}
