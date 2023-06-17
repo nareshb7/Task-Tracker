@@ -6,7 +6,7 @@ import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
 import Loader from '../components/utils/loader/Loader'
 import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
-import { lastSeenTimeFormat } from '../chatBox/MessageBox'
+import { lastSeenTimeFormat } from './chatBox/MessageBox'
 import { Link, useNavigate } from 'react-router-dom'
 import { fetchCall } from '../components/utils/fetch/UseFetch'
 
@@ -381,7 +381,10 @@ const AdminPage = () => {
                                             return (
                                                 <tr key={idx}>
                                                     <td>{idx + 1}</td>
-                                                    <td>{user.fName} {user.lName}</td>
+                                                    <td>
+                                                        <span>{user.fName} {user.lName}</span><br/>
+                                                        <span style={{color:'#888'}} >( {user.userId} )</span>
+                                                    </td>
                                                     <td>{user.email}</td>
                                                     <td>{user.mobile}</td>
                                                     <td>{user.designation}</td>

@@ -89,7 +89,6 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
     }
     if (updateKey == 'mobile') {
       if (mobilePattern.test(updateValue) && updateValue != currentUser.mobile) {
-
         length = length + 1
         setReqMailError('')
       } else {
@@ -118,6 +117,7 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
               <h2>Name : {currentUser.fName} {currentUser.lName}  <span style={styles.span}>{currentUser.isAdmin && '( Admin )'}</span></h2>
               <h2>Email : {currentUser.email}</h2>
               <h2>Mobile : {currentUser.mobile}</h2>
+              <h2>User ID : {currentUser.userId}</h2>
               {/* <h2>Password :{currentUser.password.slice(0, 2)}{''.padEnd(currentUser.password.length - 4, '*')}{currentUser.password.slice(-2)}</h2> */}
             </Col>
             <Col md={2} className='m-3'>
@@ -166,11 +166,11 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
             <Col className='fw-bold fs-4 text-start'>Entertainment Zone:</Col>
             <Col >
               <marquee style={{ backgroundColor: '#ff0' }}>
-                <a href='https://guessthenumbergame1.netlify.app/' target='_blank'>
+                <a href='https://guessthenumbergame1.netlify.app/' className='mx-2' target='_blank'>
                   <Button>Guess the number game </Button>
                 </a>
-                <Link to='/game/1'><Button> RPS Game </Button></Link>
-                <Link to='/game/2'><Button>Multiplications </Button></Link>
+                <Link to='/game/1' className='mx-2'><Button> RPS Game </Button></Link>
+                <Link to='/game/2' className='mx-2'><Button>Multiplications </Button></Link>
               </marquee>
             </Col>
           </Row>

@@ -3,10 +3,10 @@ import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import './ChatBox.css'
 import MessageBox from './MessageBox'
-import Modal from '../components/modal/Modal'
-import { UserContext } from '../App'
-import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
-import { addActivity } from '../pages/activityPage/ActivityPage'
+import Modal from '../../components/modal/Modal'
+import { UserContext } from '../../App'
+import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
+import { addActivity } from '../activityPage/ActivityPage'
 
 const ChatBox = () => {
     const { setNotificationRooms, currentUserVal, socket, setTotalMessages, setCurrentUserVal,  currentRoom, setCurrentRoom } = useContext(UserContext)

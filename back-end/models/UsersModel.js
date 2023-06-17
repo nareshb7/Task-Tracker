@@ -2,43 +2,43 @@ const mongoose = require('mongoose')
 
 const signinSchema = mongoose.Schema({
     fName: {
-        type:String,
-        require:true
+        type: String,
+        require: true
     },
     lName: {
-        type:String,
-        require:true
+        type: String,
+        require: true
     },
-    email:{
-        type:String,
-        require:true,
-        unique: true,
-        dropDups:true
-    }, 
-    mobile:{
-        type:Number,
+    email: {
+        type: String,
         require: true,
-        unique:true,
-        dropDups:true
+        unique: true,
+        dropDups: true
     },
-    password:{
-        type:String,
-        require:true
+    mobile: {
+        type: Number,
+        require: true,
+        unique: true,
+        dropDups: true
     },
-    binaryData : {
+    password: {
+        type: String,
+        require: true
+    },
+    binaryData: {
         type: String,
         require: true
     }, isActive: {
         type: Boolean,
         require: true
     }, isAdmin: {
-        type:Boolean, 
-        require: true
-    }, reqforAdmin : {
         type: Boolean,
         require: true
-    }, joinedDate : {
-        type:Date,
+    }, reqforAdmin: {
+        type: Boolean,
+        require: true
+    }, joinedDate: {
+        type: Date,
         require: true,
         default: new Date()
     },
@@ -50,40 +50,45 @@ const signinSchema = mongoose.Schema({
         type: String,
         require: true
     },
-    status : {
-        type:String,
+    status: {
+        type: String,
         default: 'Online'
     },
-    newMessages : {
-        type:Object,
+    newMessages: {
+        type: Object,
         default: {}
     },
-    designation : {
-        type:String,
+    designation: {
+        type: String,
         default: 'UI Developer'
     },
-    lastActiveOn : {
+    lastActiveOn: {
         type: Date,
         require: true,
         default: new Date()
     },
     todayTickets: {
         type: Array,
-        default:[],
+        default: [],
     },
-    userId : {
-        type:String,
+    userId: {
+        type: String,
         require: true,
-        unique:true,
-        dropDups:true
+        unique: true,
+        dropDups: true,
+    },
+    empId: {
+        type: String,
+        require: true,
+        unique: true,
     },
     userLevel: {
-        type:Number,
+        type: Number,
         require: true
     },
     dob: {
-        type:Date,
+        type: Date,
         require: true
     }
-}, {minimize: false, timestamps: true})
+}, { minimize: false, timestamps: true })
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)

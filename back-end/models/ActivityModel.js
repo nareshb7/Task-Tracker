@@ -16,6 +16,10 @@ const activitySchema = new mongoose.Schema({
     name: {
         type:String,
         require: true
+    },
+    date: {
+        type: String,
+        require: true
     }
 }, {timestamps: true})
 module.exports.ActivityModel = mongoose.model('User Activity', activitySchema)

@@ -8,7 +8,7 @@ import { UserContext } from '../App'
 // import { fetchCall } from '../utils/fetch/UseFetch'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
-import '../chatBox/ChatBox.css'
+import '../pages/chatBox/ChatBox.css'
 import Time from '../components/utils/Time'
 import './style/Navigation.css'
 import { addActivity } from './activityPage/ActivityPage'
@@ -18,11 +18,12 @@ const Navigation = () => {
 
     const navigate = useNavigate()
     const logout = async (id) => {
+        addActivity(currentUserVal, 'Nav page', `Logged out`)
         await logoutFunc(currentUserVal)
         setCookie("63dab3b51d791ebc7821db51", 2)
         setCurrentUserVal({})
-        navigate('/login')
         socket.emit('new-user')
+        navigate('/login')
     }
 
     const handleStatus = async (e) => {

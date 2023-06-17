@@ -9,7 +9,7 @@ import './style/Dashboard.css'
 const Dashboard = () => {
     const { currentUserVal, socket } = useContext(UserContext)
     const [render, setRender] = useState(false)
-    return <Container fluid bg="dark">
+    return <div>
         <Col>
             <MaintanancePage />
             <Row>
@@ -26,6 +26,6 @@ const Dashboard = () => {
                     <UserDashboard currentUserVal={currentUserVal} />
             }
         </Col>
-    </Container>
+    </div>
 }
 export default Dashboard

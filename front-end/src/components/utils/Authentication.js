@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import {CookieComp, setCookie} from './CookieComp'
+import { addActivity } from '../../pages/activityPage/ActivityPage'
 
 const useAuth = () => {
     const [currentUser, setCurrentUser] = useState({})
@@ -12,10 +13,10 @@ const useAuth = () => {
         .then(data => {
             setCurrentUser(data.data)
             setCookie(userid,2)
+            addActivity(data.data, 'App page', `Reopened Application`)
         })
         .catch(err => console.log(err, 'err'))
         }
-        
     }, [])
     return currentUser
 }

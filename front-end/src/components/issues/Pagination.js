@@ -3,7 +3,7 @@ import { GreenDot, RedDot } from '../utils/Dots/Dots'
 import { issueStatusFunc } from './Description'
 import './Pagination.css'
 import { Button } from 'react-bootstrap'
-import { dateIndicator } from '../../chatBox/MessageBox'
+import { dateIndicator } from '../../pages/chatBox/MessageBox'
 
 const Pagination = (props) => {
     const { data, gotoDesc, editFunc, deleteFunc, currentUser }= props

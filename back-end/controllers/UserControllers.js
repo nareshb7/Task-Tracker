@@ -23,11 +23,34 @@ const signinStorage = multer({
     }
 }).single('profileImage')
 
+const generateEmpID =async ()=> {
+    const d = new Date()
+    const count = await signUpModel.count()
+    const m = d.getMonth().length == 2 ? d.getMonth() +1 : `0${d.getMonth() +1}`
+    const empId = `${d.getFullYear()}${m}${count+1}`
+    return empId
+}
+const generateNewId = (data)=> {
+ return data.fName.slice(0,3).toLowerCase() + Math.random().toString(16).slice(2, 7)
+}
+const generateUserID =async (data)=> {
+    const ids = await signUpModel.aggregate([
+        {$group : {_id: 'userIds',  userIds: {$push: '$userId'}}}
+    ])
+    const id = generateNewId(data)
+    if (ids[0].userIds.includes(id)) {
+        generateUserID(data)
+    } else {
+        return id
+    }
+}
+
 module.exports.signUpData = async (req, res) => {
     const { data } = req.body
     data.password = await bcrypt.hash(data.password, 10)
     data['userLevel'] = 1
-    data['userId'] = data.fName.slice(0,3).toLowerCase() + (Math.random() *1000).toFixed(0)+ data.lName.slice(0,3).toLowerCase()
+    data['empId'] =await generateEmpID()
+    data['userId'] =await generateUserID(data)
     await signUpModel.create(data).then(data => res.status(200).send(data)).catch(err => res.status(401).send(err))
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
@@ -119,9 +142,17 @@ module.exports.addNewActivity = async (req,res)=> {
     await ActivityModel.create({...payLoad})
     .then(resp => res.status(200).json(resp))
 }
+const getActivityByDate =async (id)=> {
+    const result =await ActivityModel.aggregate([
+        {$sort: {createdAt : -1}},
+        {$match: {id}},
+        {$group: {_id: '$date', activityByDate: {$push: '$$ROOT'}}},
+    ])
+    return result
+}
 module.exports.getActivity = async (req,res) => {
     const {id} = req.query
     console.log('ACTIVITY', id)
-    const result = await ActivityModel.find({id: id})
-    res.status(200).json(result.reverse())
+    const result = await getActivityByDate(id)
+    res.status(200).json(result)
 }

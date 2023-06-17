@@ -69,7 +69,7 @@ const EmployeeStats = () => {
             <img src={state.binaryData} className='img br-50' />
           </div>
           <span className='fw-bold fs-3'>{state.fName} {state.lName}</span>
-          <span> ( {state?.userId ? state.userId : ''} )</span>
+          <span className='fw-bold' style={{color : '#666'}}> ( {state.userId} )</span>
         </Col>
       </Row>
       <Row>
@@ -102,6 +102,7 @@ const EmployeeStats = () => {
         <Col>
           <Row className='d-flex flex-column'>
             <span style={{ color: '#888' }} className='my-2'>Employeee Details</span>
+            <Col><span>Emp ID: </span><span>{state.empId}</span></Col>
             <Col><span >First Name : <span>{state.fName}</span></span></Col>
             <Col><span>Last Name : </span><span>{state.lName}</span></Col>
             <Col><span>Email : </span><span>{state.email}</span></Col>

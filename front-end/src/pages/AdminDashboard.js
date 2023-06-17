@@ -195,7 +195,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                     </Col>
                 </Row>
                 {/* Total Tickets data */}
-                <Row className='d-flex m-2 gap-3 fw-300'>
+                <Row className='d-flex my-2 gap-3 fw-300'>
                     <Col className='card bg-primary'>
                         <span className='fs-3 px-1'>Total Tickets :</span>
                         <span className='fs-1 text-start'>{ticketsData.total.length}</span>
@@ -218,7 +218,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                     </Col>
                 </Row>
                 {/* Today Tickets data */}
-                <Row className='d-flex m-2 gap-3 fw-bold'>
+                <Row className='d-flex my-2 gap-3 fw-bold'>
                     <Col className='card bg-primary'>
                         <span className='fs-3 px-1'>Today Tickets: </span>
                         <span className='fs-1 text-start'>{todayTickets.total.length}</span>

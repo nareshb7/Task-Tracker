@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import ScrollToBottom from 'react-scroll-to-bottom'
-import { fetchDeletecall } from '../components/utils/fetch/UseFetch'
+import { fetchDeletecall } from '../../components/utils/fetch/UseFetch'
 
 export const lastSeenTimeFormat = (time)=> {
     const val = new Date(time).toLocaleString()
     return val
 }
-const getFormattedDate = (date) => {
+export const getFormattedDate = (date) => {
     // const date = new Date()
     const year = date.getFullYear()
     let month = (1 + date.getMonth()).toString()
