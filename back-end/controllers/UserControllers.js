@@ -144,9 +144,10 @@ module.exports.addNewActivity = async (req,res)=> {
 }
 const getActivityByDate =async (id)=> {
     const result =await ActivityModel.aggregate([
-        {$sort: {createdAt : -1}},
         {$match: {id}},
+        {$sort: {createdAt : -1}},
         {$group: {_id: '$date', activityByDate: {$push: '$$ROOT'}}},
+        { $sort: {_id: -1}}
     ])
     return result
 }

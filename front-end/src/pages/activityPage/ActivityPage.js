@@ -7,7 +7,7 @@ import { getFormattedDate } from '../chatBox/MessageBox'
 import { UserContext } from '../../App'
 
 export const addActivity = async (user, label, content) => {
-    const date = getFormattedDate(new Date())
+    const date = getFormattedDate(new Date(),'yyyy/mm/dd')
     const payLoad = {
         label,
         content,
@@ -38,11 +38,11 @@ const ActivityPage = ({ id, name }) => {
                 <Row className='fw-bold fs-4 justify-content-center my-2' >{name}'s Activity</Row>
                 {
                     activityData.length ?
-                        <Row style={{ position: 'relative' }}>{
+                        <Row style={{ position: 'relative',height: '300px', overflowY: 'scroll' }}>{
                             activityData.map((activity, idx) => (
-                                <Row key={idx} style={{ position: 'relative' }}>
+                                <Row key={idx}>
                                     <Col className='text-center fw-bold bg-secondary' style={{ position: 'sticky' }}>{activity._id}</Col>
-                                    <Row style={{ height: '300px', overflowY: 'scroll' }}>
+                                    <Row>
                                         {
                                             activity.activityByDate.map((_, idx) => (
                                                 <Row key={idx} className='flex-column card my-2'>

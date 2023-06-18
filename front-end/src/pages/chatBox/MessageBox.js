@@ -6,14 +6,24 @@ export const lastSeenTimeFormat = (time)=> {
     const val = new Date(time).toLocaleString()
     return val
 }
-export const getFormattedDate = (date) => {
+export const getFormattedDate = (date, format) => {
     // const date = new Date()
     const year = date.getFullYear()
     let month = (1 + date.getMonth()).toString()
     month = month.length > 1 ? month : "0" + month
     let day = date.getDate().toString()
     day = day.length > 1 ? day : "0" + day
-    return `${month}/${day}/${year}`
+    switch(format) {
+        case 'dd/mm/yyyy': {
+            return `${day}/${month}/${year}`
+        }
+        case 'yyyy/mm/dd': {
+            return `${year}/${month}/${day}`
+        }
+        default: {
+            return `${month}/${day}/${year}`
+        }
+    }
 }
 export const dateIndicator =(date) => {
 
