@@ -51,9 +51,9 @@ const Navigation = () => {
                         <LinkContainer to='/'>
                             <Nav.Link >Home</Nav.Link>
                         </LinkContainer>
-                        <LinkContainer to='/addIssue'>
+                        {/* <LinkContainer to='/addIssue'>
                             <Nav.Link >Add Ticket</Nav.Link>
-                        </LinkContainer>
+                        </LinkContainer> */}
                         <LinkContainer to='/getIssue'>
                             <Nav.Link >Tickets</Nav.Link>
                         </LinkContainer>

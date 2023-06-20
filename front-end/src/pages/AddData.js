@@ -111,8 +111,8 @@ const AddData = () => {
             setStatus(response)
             if (response.includes('Sucessfully')) {
                 resetForm({ values: '' })
-                navigate('/getIssue')
                 addActivity(currentUserVal, 'Add Ticket page', `New Ticket added ${newData.cName}`)
+                navigate('/getIssue')
             }
         }
         if (method === 'UPDATE') {
@@ -126,8 +126,8 @@ const AddData = () => {
                 if (response._id) {
                     setStatus('Data Updated Sucessfully')
                     resetForm({ values: '' })
-                    navigate('/getIssue')
                     addActivity(currentUserVal, 'Add Ticket page', `Ticket updated ${newData.cName}`)
+                    navigate('/getIssue')
                 }
             } else {
                 setStatus('Add atleast one Image')

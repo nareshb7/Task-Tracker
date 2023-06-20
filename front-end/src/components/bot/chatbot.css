@@ -1,0 +1,25 @@
+.bot-header {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(152, 152, 235);
+}
+.box-header h3 , .bot-header p {
+    margin: 0;
+    padding: 0;
+}
+
+.bot-body {
+    height: 342px;
+    padding: 10px 5px;
+    overflow-y: scroll;
+}
+.left {
+    text-align: left;
+}
+.right {
+    text-align: right;
+}
+.bot-icon:hover {
+    color:#eee;
+    font-size: 40px !important;
+}

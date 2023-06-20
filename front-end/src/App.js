@@ -7,10 +7,9 @@ import { store } from './redux/store/Store';
 import Footer from './pages/Footer';
 import { BE_URL } from './components/utils/Constants';
 import { logoutFunc } from './components/utils/LogoutFunc';
-import { setCookie } from './components/utils/CookieComp';
 import Navigation from './pages/Nav';
-import { Toast } from 'react-bootstrap';
-import { fetchCall, fetchGetCall } from './components/utils/fetch/UseFetch';
+import { fetchGetCall } from './components/utils/fetch/UseFetch';
+import ChatBot from './components/bot/ChatBot';
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
@@ -125,6 +124,7 @@ function App() {
         <Navigation />
         <RoutesComp />
         <Footer />
+        <ChatBot />
       </UserContext.Provider>
     </Provider>
   );
