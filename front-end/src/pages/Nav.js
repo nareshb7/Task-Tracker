@@ -41,7 +41,7 @@ const Navigation = () => {
 
     return (
         <Navbar bg="dark" variant='dark' expand="lg">
-            <Container>
+            <Container fluid>
                 <LinkContainer to='/'>
                     <Navbar.Brand >Task- Tracker</Navbar.Brand>
                 </LinkContainer>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import { fetchDeletecall } from '../../components/utils/fetch/UseFetch'
 
-export const lastSeenTimeFormat = (time)=> {
+export const lastSeenTimeFormat = (time) => {
     const val = new Date(time).toLocaleString()
     return val
 }
@@ -13,7 +13,7 @@ export const getFormattedDate = (date, format) => {
     month = month.length > 1 ? month : "0" + month
     let day = date.getDate().toString()
     day = day.length > 1 ? day : "0" + day
-    switch(format) {
+    switch (format) {
         case 'dd/mm/yyyy': {
             return `${day}/${month}/${year}`
         }
@@ -25,11 +25,11 @@ export const getFormattedDate = (date, format) => {
         }
     }
 }
-export const dateIndicator =(date) => {
+export const dateIndicator = (date) => {
 
     const dt = new Date()
     const today = getFormattedDate(dt)
-    const y = new Date(dt.setDate(dt.getDate()-1))
+    const y = new Date(dt.setDate(dt.getDate() - 1))
     const yesterday = getFormattedDate(y)
     const d = getFormattedDate(new Date(date))
     if (today == d) return 'Today'
@@ -42,10 +42,10 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
     const [messages, setMessages] = useState([])
     const messageEndRef = useRef(null)
 
-    
+
     const todayDate = getFormattedDate(new Date())
 
-    socket.off('room-messages').on('room-messages', (roomMessages)=> {
+    socket.off('room-messages').on('room-messages', (roomMessages) => {
         setMessages(roomMessages)
     })
     const scrollToBottom = () => {
@@ -62,19 +62,19 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         setMessage('')
         return
     }
-    const deleteMessage =async (id, author)=> {
-        if(author) {
+    const deleteMessage = async (id, author) => {
+        if (author) {
             const res = window.confirm('Do u want to delete this message??')
             if (res) {
-                const res = await fetchDeletecall('api/deletemessage', {id, roomId})
+                const res = await fetchDeletecall('api/deletemessage', { id, roomId })
                 setMessages(res)
             }
         } else {
             alert("U can't delete others message")
         }
-        
+
     }
-    
+
     return (<>
         {
             opponent._id ? <div className='message-Box'>
@@ -86,28 +86,25 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                         <span className='last-seen'>{opponent.status === 'Online' ? 'Online' : lastSeenTimeFormat(opponent.lastActiveOn)}</span>
                     </span>
                 </div>
-                <div className='message-body' id='message-body'>
-                    <ScrollToBottom className='message-container' >
-                        {
-                            messages.map((dayMsz) => (
-                                <div key={dayMsz._id} className='m-auto text-center'> <span className='p-1 fw-bolder' style={{borderRadius:'8px', border:'1px solid #ccc', color:'#85807b' }}>{dateIndicator(dayMsz._id)}</span>
-                                    {
-                                        dayMsz.messageByDate.map((msz) => {
-                                            return <div key={msz._id} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>
-                                                <div><span onClick={()=> deleteMessage(msz._id,msz.from.id == user._id )} className='message-text' >{msz.content}</span></div>
-                                                <div>
-                                                    <span className='message-time'>{msz.time}</span>
-                                                    <span className='message-author'>{msz.from.id == user._id ? 'You' : opponent.fName}</span>
-                                                </div>
+                <ScrollToBottom className='message-container message-body' >
+                    {
+                        messages.map((dayMsz) => (
+                            <div key={dayMsz._id} className='m-auto text-center'> <span className='p-1 fw-bolder' style={{ borderRadius: '8px', border: '1px solid #ccc', color: '#85807b' }}>{dateIndicator(dayMsz._id)}</span>
+                                {
+                                    dayMsz.messageByDate.map((msz) => {
+                                        return <div key={msz._id} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>
+                                            <div><span onClick={() => deleteMessage(msz._id, msz.from.id == user._id)} className='message-text' >{msz.content}</span></div>
+                                            <div>
+                                                <span className='message-time'>{msz.time}</span>
+                                                <span className='message-author'>{msz.from.id == user._id ? 'You' : opponent.fName}</span>
                                             </div>
-                                        })
-                                    }
-                                </div>
-                            ))
-                        }
-
-                    </ScrollToBottom>
-                </div>
+                                        </div>
+                                    })
+                                }
+                            </div>
+                        ))
+                    }
+                </ScrollToBottom>
                 <div className='message-input'>
                     <input
                         type='text'

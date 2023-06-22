@@ -1,0 +1,10 @@
+[
+    {"key": "hello,hlo,hlw","value": "hii"},
+    {"key": "hii,hi","value": "hello "},
+    {"key": "how are you, hw r u,hw r uh,","value": "I'm good,Thanks for asking, what about you??"},
+    {"key": "i m good,i m fine,fine","value": "That's nice, what do you want to know from me?"},
+    {"key": "help","value":"{keys}"},
+    {"key": "issue on react,react issue",  "node": "Ohh, Ok no issue, our technical lead will reach out to you shortly!!", "value": "<button>Click</button>"},
+    {"key": "issue on angular,angular issue", "node": "Ohh, Ok no issue, our technical lead will reach out to you shortly!!"},
+    {"key": "contact admin", "node": "<input type='text' placeholder='Type message...'/><button>send</button>"}
+]

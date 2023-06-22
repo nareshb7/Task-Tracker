@@ -15,7 +15,7 @@ const Home = () => {
         <Row style={{minHeight:'90vh', backgroundColor:'#95e8f3'}} className='p-2'>
             <Col md={5}  className='card m-auto m-2 shadow p-3 bg-body rounded' >
                 <div >
-                    <marquee style={{background:'#ff0'}}>Working on My Profile Page</marquee>
+                    <marquee style={{background:'#ff0'}}>Working on Chat-bot</marquee>
                     <h1>Welcome,</h1>
                     <p>This is the Task-Tracker Application, It will track your daily issue status</p>
                     <Row>

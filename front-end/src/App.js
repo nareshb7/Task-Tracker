@@ -120,12 +120,16 @@ function App() {
   }, [userDetails])
   return (
     <Provider store={store} >
+      <div className='scrollbar-container '>
+
       <UserContext.Provider value={value}>
         <Navigation />
         <RoutesComp />
         <Footer />
         <ChatBot />
       </UserContext.Provider>
+      </div>
+
     </Provider>
   );
 }
