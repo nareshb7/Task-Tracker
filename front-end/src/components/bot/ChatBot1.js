@@ -26,15 +26,17 @@ const ChatBot1 = ({ setShowBot, showBot }) => {
         borderRadius: '10px 10px 0 10px',
         boxShadow: '2px 3px 10px 3px'
     }
-    
+    const mszFormatter = (value, cls='left')=> {
+        return {class: cls, value: value}
+    }
     const addMessage =async () => {
-        setMessages((e) => [...e, message])
+        setMessages((e) => [...e, mszFormatter(message, 'right')])
         setMszLoading(true)
         const replyMessage =await responseMessage(currentUserVal, message)
         setMessage('')
         setTimeout(() => {
-            if (replyMessage) setMessages((e) => [...e, replyMessage])
-            else setMessages((e) => [...e, 'Oops!,Maybe I m not able to understand ur question., Try new One!'])
+            if (replyMessage) setMessages((e) => [...e, mszFormatter(replyMessage)])
+            else setMessages((e) => [...e, mszFormatter('Oops!,Maybe I m not able to understand ur question., Try new One!')])
             setMszLoading(false)
         }, 500);
     }
@@ -46,7 +48,7 @@ const ChatBot1 = ({ setShowBot, showBot }) => {
     }, [messages])
     useEffect(() => {
         const msz = `Hii ${currentUserVal?.fName ? getFullName(currentUserVal) : 'User'}, This is Hoyna, How may i help you?`
-        currentUserVal?.fName ? setMessages([msz]) : setMessages([msz, 'May I know ur name?'])
+        currentUserVal?.fName ? setMessages([mszFormatter(msz)]) : setMessages([mszFormatter(msz),mszFormatter('May I know ur name?')])
     }, [currentUserVal])
     return (
         <div id='chat-bot' style={botStyle}>
@@ -58,8 +60,7 @@ const ChatBot1 = ({ setShowBot, showBot }) => {
             <div className='bot-body scrollbar-container'>
                 {
                     messages.map((msz, idx) => {
-                        const side = idx % 2 == 0 ? 'left' : 'right'
-                        return <div key={idx} className={side} dangerouslySetInnerHTML={{__html: msz}}></div>
+                        return <div key={idx} className={msz.class} dangerouslySetInnerHTML={{__html: msz.value}}></div>
                     })
                 }
                 { mszLoading && <DotTyping /> }
