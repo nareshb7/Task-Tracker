@@ -2,6 +2,16 @@
     margin: 0;
     padding: 0;
 }
+.chat-bot-main {
+    position: fixed;
+    right: 70px;
+    bottom: 95px;
+    height: 450px;
+    width: 350px;
+    background-color: #fff;
+    border-radius: 10px 10px 0 10px;
+    box-shadow: 2px 3px 10px 3px
+}
 
 .bot-header {
     display: flex;

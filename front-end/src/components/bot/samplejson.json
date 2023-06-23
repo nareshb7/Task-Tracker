@@ -1,0 +1,218 @@
+[
+    {
+      "key": "initialResponse",
+      "response": "",
+      "value": [
+        {
+          "type": "div",
+          "key": null,
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "1.Tickets"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "2.Technical Issue"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "3.Contact Admin"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "4.Profile Update"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "5.Feedback/ Suggestions"
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        }
+      ]
+    },
+    {
+      "key": "tickets",
+      "response": "You selected Tickets",
+      "value": [
+        {
+          "type": "div",
+          "key": null,
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "1. Today Tickets"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "2. Total Tickets"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "3. Know Ticket Progress"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": "4. Update Status"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": null,
+                "ref": null,
+                "props": {
+                  "className": "btn btn-primary my-1",
+                  "children": " Back"
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": "br",
+                "key": null,
+                "ref": null,
+                "props": {},
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        }
+      ]
+    }
+  ]
