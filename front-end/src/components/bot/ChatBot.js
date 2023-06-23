@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import './chatbot.css'
 import ChatBot1 from './ChatBot1'
 import data from './messages.json'
+import Chatbot2 from './Chatbot2'
 
 const ChatBot = () => {
     const navigate = useNavigate()
@@ -19,10 +20,10 @@ const ChatBot = () => {
                 <i style={{ cursor: 'pointer' }} className={`fas fa-${showBot ? 'xmark' : 'comment'} fs-1 bot-icon`} onClick={() => setShowBot(!showBot)}></i>
             </div>
             {
-                showBot && <ChatBot1 setShowBot={setShowBot} showBot={showBot} />
+                showBot && <Chatbot2 setShowBot={setShowBot} showBot={showBot} />
             }
         </div>
     )
 }
-
+//<ChatBot1 setShowBot={setShowBot} showBot={showBot} />
 export default ChatBot
