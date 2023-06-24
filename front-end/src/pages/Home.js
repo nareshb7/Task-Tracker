@@ -14,9 +14,9 @@ const Home = () => {
 
     return (
         <div className='main2 '>
-            <div className='fs-2 fw-bolder'>Welcome To,</div>
+            <div className='fs-1 fw-bolder'>Welcome To,</div>
             <div className='logo1'>Resource one it solutions</div>
-            <div style={{ alignSelf: 'end'}} className='fs-4 fst-italic'>Chat Box</div>
+            <div style={{ alignSelf: 'end'}} className='fs-3 fst-italic'>Chat Box</div>
         </div>
     )
 }
