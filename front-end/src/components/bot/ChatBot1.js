@@ -10,12 +10,10 @@ import { useNavigate } from 'react-router-dom'
 
 const ChatBot1 = ({ setShowBot, showBot }) => {
     const { currentUserVal } = useContext(UserContext)
-    const navigate = useNavigate()
     const messageEndRef = useRef(null)
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const [mszLoading, setMszLoading] = useState(false)
-    const [keys, setKeys] = useState(data.map(dt => dt.key))
     const botStyle = {
         position: 'fixed',
         right: '70px',

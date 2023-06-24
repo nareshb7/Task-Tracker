@@ -71,7 +71,7 @@ const Login = () => {
                                     loginClicked && <Form style={{ width: '80%', maxWidth: 500 }} onSubmit={handleSubmit}>
                                         <Form.Group className="mb-3" controlId="formBasicEmail">
                                             <Form.Label>Email address</Form.Label>
-                                            <Form.Control type="text" placeholder="Email or Mobile" name='value' value={data.value} onChange={handleChange} />
+                                            <Form.Control type="text" placeholder="Email or UserId" name='value' value={data.value} onChange={handleChange} />
                                             <Form.Text className="text-muted">
                                                 We'll never share your email with anyone else.
                                             </Form.Text>
@@ -85,11 +85,10 @@ const Login = () => {
                                     </Form>
                                 }
                                 <div className='py-4'>
-                                    
                                     <p className='text-center fw-bolder'>
-                                        Don't have an account ? <Link to='/signup'>Signup</Link>
+                                        Don't have an account ? <Link to='/signup'>Raise a request</Link>
                                     </p>
-                                    <p className='text-center fw-bolder'>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></p>
+                                    {/* <p className='text-center fw-bolder'>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></p> */}
                                 </div>
                             </div>
                         </Col>

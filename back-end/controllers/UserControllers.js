@@ -56,7 +56,7 @@ module.exports.signUpData = async (req, res) => {
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 module.exports.logInUserData = async (req, res) => {
     const { value, password , isAdmin} = req.body
-    let key = "email"
+    let key = "userId"
     if (value.match(/[\d]{10}/)) {
         key = "mobile"
     }

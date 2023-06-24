@@ -25,7 +25,7 @@ import ActivityPage from './activityPage/ActivityPage'
 const RoutesComp = () => {
     const { currentUserVal } = useContext(UserContext)
     return (
-        <div className='container-fluid'>
+        <div className=''>
             <Routes>
                 <Route path='/' element={<Navigate to='home' />} />
                 <Route path='home' element={<Home />} />

@@ -4,20 +4,33 @@ import { LinkContainer } from 'react-router-bootstrap'
 import './style/Home.css'
 import { UserContext } from '../App'
 import { addActivity } from './activityPage/ActivityPage'
+import './home.css'
 
 const Home = () => {
-    const {currentUserVal, quote} = useContext(UserContext)
-    useEffect(()=> {
+    const { currentUserVal, quote } = useContext(UserContext)
+    useEffect(() => {
         addActivity(currentUserVal, 'Home page', `Visited Home page`)
-    },[])
-    
+    }, [])
+
     return (
-        <Row style={{minHeight:'90vh', backgroundColor:'#95e8f3'}} className='p-2'>
+        <div className='main2 '>
+            <div className='fs-2 fw-bolder'>Welcome To,</div>
+            <div className='logo1'>Resource one it solutions</div>
+            <div style={{ alignSelf: 'end'}} className='fs-4 fst-italic'>Chat Box</div>
+        </div>
+    )
+}
+export default Home
+
+/*
+ <Row style={{minHeight:'90vh', backgroundColor:'#95e8f3'}} className='p-2'>
             <Col md={5}  className='card m-auto m-2 shadow p-3 bg-body rounded' >
                 <div >
                     <marquee style={{background:'#ff0'}}>Working on Chat-bot</marquee>
+                    <div style={{textAlign:'center'}}>
                     <h1>Welcome,</h1>
                     <p>This is the Task-Tracker Application, It will track your daily issue status</p>
+                    </div>
                     <Row>
                         <Col className='card m-1 ' style={{background:'#999'}}>
                             <span className='fw-bold'>Quote of the Day: </span>
@@ -42,9 +55,5 @@ const Home = () => {
                     
                 </div>
             </Col>
-            {/* <Col md={6} className='home__bg'> */}
-            {/* </Col> */}
-        </Row>
-    )
-}
-export default Home
+            </Row>
+*/

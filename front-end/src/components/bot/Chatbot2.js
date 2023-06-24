@@ -138,9 +138,9 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
         const reply = messagesData.find(msz => msz.key == response)
         if (reply) {
             setMessage('')
-            setTimeout(()=> {
+            setTimeout(() => {
                 setMszLoading(false)
-            },500)
+            }, 500)
             setLastSystemMsz(reply)
             setMessages((e) => [...e, mszFormatter(reply.response), mszFormatter(reply.value, 'right')])
         } else {
@@ -181,12 +181,14 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
                 <div ref={messageEndRef}></div>
             </div>
             <div className='bot-footer d-flex gap-1 p-1' >
-                <input list='keys' value={message} onChange={(e) => setMessage(e.target.value)} onKeyPress={(e) => e.key == 'Enter' && addMessage()} type='text' className='form-control' placeholder='Ask me...' />
-                {/* <datalist id='keys'>
-                    {
-                        keys.map((val, idx)=> <option value={val} key={idx} />)
-                    }
-                </datalist> */}
+                <input
+                    value={message}
+                    type='text'
+                    className='form-control'
+                    placeholder='Ask me...'
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={(e) => e.key == 'Enter' && addMessage()}
+                />
                 <Button onClick={addMessage}><i className='fas fa-arrow-right'></i></Button>
             </div>
         </div>

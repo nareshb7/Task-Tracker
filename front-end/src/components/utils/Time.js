@@ -5,7 +5,7 @@ const Time = ()=> {
     setInterval(()=> {
         const d = new Date().toLocaleTimeString()
         setD(d)
-    })
+    },1000)
     return (
         <div><b>{d} </b></div>
     )

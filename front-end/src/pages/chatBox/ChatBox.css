@@ -133,11 +133,11 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-#message-body .message-time, #message-body .message-author {
-    font-size: 8px;
+.message-body .message-time, .message-body .message-author {
+    font-size: 9px;
     padding: 0;
     background-color:#efe8e0;
-    color: #2e2a2a;
+    color: #777;
     margin-inline: 3px;
 }
 .opponent-header {

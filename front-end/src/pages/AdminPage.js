@@ -9,6 +9,7 @@ import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from './chatBox/MessageBox'
 import { Link, useNavigate } from 'react-router-dom'
 import { fetchCall } from '../components/utils/fetch/UseFetch'
+import TimeZones from '../components/features/TimeZones'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -26,6 +27,7 @@ const AdminPage = () => {
     const [showEmpData, setShowEmpData] = useState({})
     const [mailChangeReqIDs, setMailChangeReqIDs] = useState([])
     const [mailChangeModal, setMailChangeModal] = useState(false)
+    const [showTicketsModal, setShowTicketsModal] = useState(false)
     const tHead = [
         { header: 'Sl. No' },
         { header: 'Name', filter: 'fName' },
@@ -153,6 +155,7 @@ const AdminPage = () => {
     const uploadedIssuesList = async (developerId) => {
         const result = await uploadedIssues(developerId)
         setIssuesList(result)
+        setShowTicketsModal(true)
     }
 
     const mailChangeAcceptFunc = (id, type) => {
@@ -221,8 +224,10 @@ const AdminPage = () => {
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
-                <h1>All Users : </h1>
-                
+                <div className='d-flex justify-content-between'>
+                <h1>Users : </h1>
+                <TimeZones />
+                </div>
                 <div style={{ textAlign: 'end' }}>
                 <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
                     <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
@@ -411,7 +416,8 @@ const AdminPage = () => {
                         </tbody>
                     </Table>
                         <hr style={{ border: '3px dashed #888' }} />
-                        <div style={{ marginBlock: '20px' }}>
+                        <Modal isOpen={showTicketsModal} setModal={setShowTicketsModal}>
+                        <div style={{ marginBlock: '20px', height:'300px', overflowY:'scroll' }}>
                             {
                                 issuesList.length > 0 ? (
                                     <UserIssues issuesList={issuesList} />
@@ -419,7 +425,9 @@ const AdminPage = () => {
                                     <h3>No Solutions Added</h3>
                                 )
                             }
-                        </div></>) : <h3>Data Loading.....</h3>
+                        </div>
+                        </Modal>
+                        </>) : <h3>Data Loading.....</h3>
                 }
             </div> : <div style={{ textAlign: 'center' }}>
                 <div>

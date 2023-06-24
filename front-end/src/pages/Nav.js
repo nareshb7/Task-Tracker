@@ -36,7 +36,7 @@ const Navigation = () => {
             setCurrentUserVal({ ...currentUserVal, status: 'Offline' })
         }
         socket.emit('new-user')
-        addActivity(currentUserVal, 'Nav page', `Changed Login Status to ${val ? 'Online': 'Offline'}`)
+        addActivity(currentUserVal, 'Nav page', `Changed Login Status to ${val ? 'Online' : 'Offline'}`)
     }
 
     return (
@@ -51,25 +51,24 @@ const Navigation = () => {
                         <LinkContainer to='/'>
                             <Nav.Link >Home</Nav.Link>
                         </LinkContainer>
-                        {/* <LinkContainer to='/addIssue'>
-                            <Nav.Link >Add Ticket</Nav.Link>
-                        </LinkContainer> */}
-                        <LinkContainer to='/getIssue'>
-                            <Nav.Link >Tickets</Nav.Link>
-                        </LinkContainer>
-                        <LinkContainer to='/adminpage'>
-                            <Nav.Link >Admin Page</Nav.Link>
-                        </LinkContainer>
-                        <LinkContainer to='/chat'>
-                            <Nav.Link >Chat
-                                {currentUserVal._id && notificationRooms != 0 && <span className='notification-icon'>{notificationRooms}</span>}
-                            </Nav.Link>
-                        </LinkContainer>
+
                         {
-                            currentUserVal.fName &&
-                            <LinkContainer to='/dashboard'>
-                                <Nav.Link>Dashboard</Nav.Link>
-                            </LinkContainer>
+                            currentUserVal.fName && <>
+                                <LinkContainer to='/getIssue'>
+                                    <Nav.Link >Tickets</Nav.Link>
+                                </LinkContainer>
+                                <LinkContainer to='/adminpage'>
+                                    <Nav.Link >Admin Page</Nav.Link>
+                                </LinkContainer>
+                                <LinkContainer to='/chat'>
+                                    <Nav.Link >Chat
+                                        {currentUserVal._id && notificationRooms != 0 && <span className='notification-icon'>{notificationRooms}</span>}
+                                    </Nav.Link>
+                                </LinkContainer>
+                                <LinkContainer to='/dashboard'>
+                                    <Nav.Link>Dashboard</Nav.Link>
+                                </LinkContainer>
+                            </>
                         }
 
                         {

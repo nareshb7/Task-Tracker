@@ -6,12 +6,10 @@ import data from './messages.json'
 import Chatbot2 from './Chatbot2'
 
 const ChatBot = () => {
-    const navigate = useNavigate()
     const [showBot, setShowBot] = useState(false)
     useEffect(() => {
         setTimeout(() => {
             setShowBot(true)
-            console.log('Questions', data.map(val => val.key))
         }, 3000)
     }, [])
     return (
