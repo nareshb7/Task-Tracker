@@ -7,11 +7,11 @@ import Chatbot2 from './Chatbot2'
 
 const ChatBot = () => {
     const [showBot, setShowBot] = useState(false)
-    useEffect(() => {
-        setTimeout(() => {
-            setShowBot(true)
-        }, 3000)
-    }, [])
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setShowBot(true)
+    //     }, 3000)
+    // }, [])
     return (
         <div>
             <div className='rounded' style={{ position: 'fixed', right: '40px', bottom: '50px' }}>
