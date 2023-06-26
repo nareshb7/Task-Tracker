@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
-import { UserContext } from '../App'
-import Modal from '../components/modal/Modal'
-import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
-import Loader from '../components/utils/loader/Loader'
-import { GreenDot, RedDot } from '../components/utils/Dots/Dots'
+import { UserContext } from '../../App'
+import Modal from '../../components/modal/Modal'
+import UserIssues, { uploadedIssues } from '../../components/issues/UserIssues'
+import Loader from '../../components/utils/loader/Loader'
+import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
-import { lastSeenTimeFormat } from './chatBox/MessageBox'
+import { lastSeenTimeFormat } from '../chatBox/MessageBox'
 import { Link, useNavigate } from 'react-router-dom'
-import { fetchCall } from '../components/utils/fetch/UseFetch'
-import TimeZones from '../components/features/TimeZones'
+import { fetchCall } from '../../components/utils/fetch/UseFetch'
+import TimeZones from '../../components/features/TimeZones'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)

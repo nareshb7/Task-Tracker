@@ -54,11 +54,12 @@ module.exports.signUpData = async (req, res) => {
     await signUpModel.create(data).then(data => res.status(200).send(data)).catch(err => res.status(401).send(err))
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
+const emailpattern = /^[a-z][a-z.0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
 module.exports.logInUserData = async (req, res) => {
     const { value, password , isAdmin} = req.body
     let key = "userId"
-    if (value.match(/[\d]{10}/)) {
-        key = "mobile"
+    if (value.match(emailpattern)) {
+        key = "email"
     }
     const result = await signUpModel.findOne({ [key]: value })
     if (result) {

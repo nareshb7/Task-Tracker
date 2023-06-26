@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
-import MaintanancePage from './MaintanancePage'
+import MaintanancePage from '../MaintanancePage'
 import AdminDashboard from './AdminDashboard'
-import { UserContext } from '../App'
+import { UserContext } from '../../App'
 import UserDashboard from './UserDashboard'
-import './style/Dashboard.css'
+import './Dashboard.css'
 
 const Dashboard = () => {
     const { currentUserVal, socket } = useContext(UserContext)

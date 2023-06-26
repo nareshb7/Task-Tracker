@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import ScrollToBottom from 'react-scroll-to-bottom'
-import { fetchDeletecall } from '../../components/utils/fetch/UseFetch'
+import { fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 
 export const lastSeenTimeFormat = (time) => {
     const val = new Date(time).toLocaleString()
@@ -74,6 +74,15 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         }
 
     }
+    const getClientsList =async ()=> {
+        const { data, success } = await fetchGetCall('/api/getclientslist')
+        if (success) {
+            console.log('CLIENT', data)
+        }
+    }
+    useEffect(()=>{
+        getClientsList()
+    },[])
 
     return (<>
         {

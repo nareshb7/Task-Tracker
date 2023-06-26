@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row, Table } from 'react-bootstrap'
-import { uploadedIssues } from '../components/issues/UserIssues'
+import { uploadedIssues } from '../../components/issues/UserIssues'
 import { useNavigate } from 'react-router-dom'
-import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
+import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import { setTrBg } from './AdminDashboard'
-import { addActivity } from './activityPage/ActivityPage'
+import { addActivity } from '../activityPage/ActivityPage'
 
 const UserDashboard = ({ currentUserVal }) => {
     const navigate = useNavigate()

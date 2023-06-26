@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row, Table } from 'react-bootstrap'
-import { fetchCall, fetchDeletecall, fetchGetCall } from '../components/utils/fetch/UseFetch'
-import Modal from '../components/modal/Modal'
+import { fetchCall, fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import UserDashboard from './UserDashboard'
-import AssignTicketModal from '../components/modal/AssignTicket'
-import AddNewTicket from '../components/modal/AddNewTicket'
-import { addActivity } from './activityPage/ActivityPage'
+import AssignTicketModal from '../../components/modal/AssignTicket'
+import AddNewTicket from '../../components/modal/AddNewTicket'
+import { addActivity } from '../activityPage/ActivityPage'
 
 export const setTrBg = (type, date) => {
     let bg;
