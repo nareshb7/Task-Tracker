@@ -13,7 +13,7 @@ import ChatBot from './components/bot/ChatBot';
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
-const socket = io.connect(SOCKET_URL);
+const socket = io(SOCKET_URL);
 
 function App() {
 
@@ -57,15 +57,6 @@ function App() {
       window.removeEventListener('beforeunload', handleTabClose);
     };
   }, [currentUserVal]);
-  useEffect(() => {
-
-    // const socket = io(SOCKET_URL)
-
-    return () => {
-      socket.disconnect();
-    };
-
-  }, []);
   window.addEventListener('beforeunload', async function (e) {
     e.preventDefault();
     currentUserVal._id && await logoutFunc(currentUserVal)

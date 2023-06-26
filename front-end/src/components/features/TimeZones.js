@@ -26,5 +26,32 @@ const TimeZones = () => {
         </div>
     )
 }
+const getTimeZone = (tz) => {
+    switch (tz) {
+        case 'CA' : {
+            return 'Chicago'
+        }
+        case 'LA' : {
+            return 'Los_Angeles'
+        }
+        case 'NY' : {
+            return 'New_York'
+        }
+        default : return  'New_York'
+    }
+}
+export const ParticularTimeZone = ({timeZone})=> {
+    const tz = getTimeZone(timeZone)
+    const [timeByZone, setTimeByZone] = useState(new Date().toLocaleTimeString('en-US', { timeZone: `America/${tz}`  }))
+    useEffect(()=> {
+        setInterval(()=> {
+            const d = new Date()
+            const tm = d.toLocaleTimeString('en-US', { timeZone: `America/${tz}`})
+            setTimeByZone(tm)
+        },1000)
+    },[])
+
+    return <>{timeByZone}</>
+}
 
 export default TimeZones

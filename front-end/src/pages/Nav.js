@@ -40,7 +40,7 @@ const Navigation = () => {
     }
 
     return (
-        <Navbar bg="dark" variant='dark' expand="lg">
+        <Navbar bg="dark" variant='dark' expand="lg" className='p-0'>
             <Container fluid>
                 <LinkContainer to='/'>
                     <Navbar.Brand className='nav-logo'>

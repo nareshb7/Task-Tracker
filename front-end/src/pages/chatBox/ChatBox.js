@@ -84,7 +84,7 @@ const ChatBox = () => {
                             })
                         }
                     </div>
-                    <MessageBox socket={socket} user={currentUserVal} setOpponent={setOpponent} roomId={currentRoom} opponent={opponent} setOpenMszList={setOpenMszList} imgPopup={imgPopup} /> :
+                    <MessageBox socket={socket} user={currentUserVal} setOpponent={setOpponent} roomId={currentRoom} opponent={opponent} setOpenMszList={setOpenMszList} imgPopup={imgPopup} />
                     <Modal isOpen={imgmodal} setModal={setImgmodal} >
                         <div>
                             <h3>{imgSrc.fName}</h3>

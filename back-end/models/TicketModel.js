@@ -126,6 +126,10 @@ const clientSchema = mongoose.Schema({
         type:String,
         require: true,
         default: 'React'
+    },
+    email: {
+        type:String,
+        require: true
     }
 }, {timestamps: true})
 

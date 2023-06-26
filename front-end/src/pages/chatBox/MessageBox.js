@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import { fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 
@@ -41,7 +42,9 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const messageEndRef = useRef(null)
-
+    const [showAddData, setShowAddData] = useState(false)
+    const [clientsData,setClientsData] = useState([])
+    const [searchClientsData,setSearchClientsData] = useState([])
 
     const todayDate = getFormattedDate(new Date())
 
@@ -52,7 +55,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         messageEndRef.current?.scrollIntoView({ behaviour: 'smooth' })
     }
 
-    const sendMessage = () => {
+    const sendMessage = (message) => {
         if (!message) return;
         const today = new Date()
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes()
@@ -78,7 +81,33 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         const { data, success } = await fetchGetCall('/api/getclientslist')
         if (success) {
             console.log('CLIENT', data)
+            setClientsData(data)
+            setSearchClientsData(data)
         }
+    }
+    const openClientsList = ()=>{
+
+    }
+    const handleDrag = (e, val)=> {
+        console.log('DRAG',e, val)
+        e.dataTransfer.setData('DragItem', JSON.stringify(val))
+    }
+    const handleOnDrop = (e)=> {
+        const dragItem = e.dataTransfer.getData('DragItem')
+        console.log('DRAGITEM', dragItem)
+        setMessage(dragItem)
+        sendMessage(dragItem)
+    }
+    const handleDragOver = (e)=> {
+        e.preventDefault()
+    }
+    const handleSearch = (e)=> {
+        console.log(e.target.value, 'search val')
+        if (e.target.value) {
+            const regexPattern  = new RegExp(e.target.value, 'gi')
+            const data = clientsData.filter(val => val.consultantName.match(regexPattern))
+            setSearchClientsData(data)
+        } else setSearchClientsData(clientsData)
     }
     useEffect(()=>{
         getClientsList()
@@ -86,13 +115,17 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
 
     return (<>
         {
-            opponent._id ? <div className='message-Box'>
+            opponent._id ? <div style={{display:'flex', width:'70%'}}>
+            <div className='message-Box'>
                 <div className='messageBox-header'>
                     <span className='icon' onClick={() => setOpponent('')}> <i className='fas fa-arrow-left'></i> </span>
                     <img src={opponent.binaryData} className='img' onClick={() => imgPopup(opponent.binaryData)} />
                     <span className='opponent-header'>
                         <span className='opponent-name' > {opponent.fName} {opponent.lName}</span>
                         <span className='last-seen'>{opponent.status === 'Online' ? 'Online' : lastSeenTimeFormat(opponent.lastActiveOn)}</span>
+                    </span>
+                    <span style={{alignSelf:'end'}}>
+                        <i className='fas fa-ellipsis-v'> </i>
                     </span>
                 </div>
                 <ScrollToBottom className='message-container message-body' >
@@ -114,16 +147,46 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                         ))
                     }
                 </ScrollToBottom>
+                {
+                    false && <div className='w-25'>
+                    <ListGroup>
+                        <ListGroupItem >Contacts</ListGroupItem>
+                        <ListGroupItem onClick={openClientsList}>Client Data</ListGroupItem>
+                        <ListGroupItem>Files</ListGroupItem>
+                    </ListGroup>
+                </div>
+                }
                 <div className='message-input'>
+                    <div className='plusIcon' onClick={()=> setShowAddData(!showAddData)}><i className='fas fa-plus'></i></div>
                     <input
                         type='text'
+                        onDrop={handleOnDrop}
+                        onDragOver={handleDragOver}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={(e) => e.key == 'Enter' && sendMessage()}
+                        onKeyPress={(e) => e.key == 'Enter' && sendMessage(message)}
                         placeholder='Hey.....'
                     />
-                    <button disabled={!opponent.fName} onClick={sendMessage}><i className='fas fa-arrow-right'></i></button>
+                    <button disabled={!opponent.fName} onClick={()=>sendMessage(message)}><i className='fas fa-arrow-right'></i></button>
                 </div>
+                
+            </div>
+            {
+                showAddData && <div>
+                    <div>
+                        <input type={'search'} placeholder='search client name...' className='form-control my-1' onChange={handleSearch}/>
+                    </div>
+                {
+                    searchClientsData.map((val, idx)=>{
+                        return <Card key={idx} draggable className='my-1' onDragStart={(e)=> handleDrag(e, {name:val.consultantName, contact: val.phone})}>
+                            <h4>{val.consultantName}</h4>
+                            <h6>{val.phone}</h6>
+                        </Card>
+                    })
+                }
+            </div>
+            }
+            
             </div> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><h3>ResourceOne IT</h3></div>
         }
     </>

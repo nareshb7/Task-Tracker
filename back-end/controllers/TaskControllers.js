@@ -52,6 +52,19 @@ module.exports.mailVerification = async (req, res) => {
     })
 }
 
+module.exports.clientUpdateSend = async (req,res) => {
+    const {subject, email, description} = req.body
+    console.log('MAIL UPDATE', subject, email, description)
+    options.to = email
+    options.subject = subject
+    options.html = description
+    transporter.sendMail(options, (err, info) => {
+        if (err) {
+            res.send(err)
+        }
+        res.send('Mail sent')
+    })
+}
 
 module.exports.mailChangeReq = async (req,res)=> {
     const {user} = req.body

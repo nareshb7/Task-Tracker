@@ -6,6 +6,7 @@ import * as Yup from 'yup'
 import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
 import { addActivity } from '../../pages/activityPage/ActivityPage'
 import { UserContext } from '../../App'
+import { emailpattern } from '../utils/Constants'
 
 const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
     const {currentUserVal} = useContext(UserContext)
@@ -30,7 +31,8 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
         companyName: '',
         phone: '',
         technology: '',
-        appType: ''
+        appType: '',
+        email:''
     }
     const ticketSchema = {
         consultantName: Yup.string().required('String required'),
@@ -46,6 +48,7 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
         location: Yup.string().required('String required'),
         companyName: Yup.string().required('String required'),
         appType: Yup.string().required('String required'),
+        email : Yup.string().matches(emailpattern, 'Enter valid email').required('Email Required')
     }
     const [modelType, setModelType] = useState('TICKET')
     const [clientsList, setClientsList] = useState([])
@@ -123,6 +126,7 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
                                             </Field> :
                                             <Field className="form-control my-1" name='consultantName' placeholder='Consultant name...' />
                                     }
+                                    <Field className="form-control my-1" name='email' placeholder='Email...' />
                                     <Field className="form-control my-1" name='phone' placeholder='Phone...' />
                                     <Field className="form-control my-1" name='location' placeholder='Consultant location...' />
                                     <Field className="form-control my-1" name='technology' placeholder='Technology...' />

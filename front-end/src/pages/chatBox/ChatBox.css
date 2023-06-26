@@ -43,7 +43,7 @@
 
 
 .message-Box {
-    width: 70%;
+    width: 100%;
     background-color: #efe8e0;
     height: 100%;
     position: relative;
@@ -58,6 +58,12 @@
     height: 40px;
     display: flex;
     justify-content: space-evenly;
+}
+.message-input .plusIcon {
+    padding: 8px 15px;
+    background-color: #999;
+    border-radius: 50%;
+    cursor: pointer;
 }
 .message-input input {
     border-radius: 18px;

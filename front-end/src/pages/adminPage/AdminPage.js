@@ -8,8 +8,9 @@ import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from '../chatBox/MessageBox'
 import { Link, useNavigate } from 'react-router-dom'
-import { fetchCall } from '../../components/utils/fetch/UseFetch'
-import TimeZones from '../../components/features/TimeZones'
+import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
+import TimeZones, { ParticularTimeZone, particularTimeZone, TimeZone } from '../../components/features/TimeZones'
+import { getFullName } from '../../components/utils/GetFullName'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -28,6 +29,8 @@ const AdminPage = () => {
     const [mailChangeReqIDs, setMailChangeReqIDs] = useState([])
     const [mailChangeModal, setMailChangeModal] = useState(false)
     const [showTicketsModal, setShowTicketsModal] = useState(false)
+    const [clientsData, setClientsData] = useState([])
+    const [showClientsData, setShowClientsData] = useState(false)
     const tHead = [
         { header: 'Sl. No' },
         { header: 'Name', filter: 'fName' },
@@ -49,8 +52,15 @@ const AdminPage = () => {
             })
             .catch(err => console.log(err, 'err'))
     }
+    const getClients = async () => {
+        const { data, success } = await fetchGetCall('/api/getclientslist')
+        if (success) {
+            setClientsData(data)
+        }
+    }
     useEffect(() => {
         getAllUsers()
+        getClients()
         axios.get('/api/getmailreqIDs')
             .then(data => {
                 setMailChangeReqIDs(data.data)
@@ -228,6 +238,7 @@ const AdminPage = () => {
                 <h1>Users : </h1>
                 <TimeZones />
                 </div>
+                <Button onClick={()=> setShowClientsData(!showClientsData)}>Show {showClientsData ? 'Users': 'Clients' }</Button>
                 <div style={{ textAlign: 'end' }}>
                 <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
                     <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
@@ -272,14 +283,9 @@ const AdminPage = () => {
                                         return (
                                             <li key={idx} className='li-style'>
                                                 <div>
-                                                    {
-                                                        user.fName && <h3>{user.fName + " " + user.lName} - {user.email} </h3>
-                                                    }
-                                                    {
-                                                        user.updateData && <h3><span>Update Data: </span> <span>{user.updateData.updateKey}</span> - <span>{user.updateData.updateValue}</span></h3>
-                                                    }
+                                                    {user.fName && <h3>{getFullName(user)} - {user.email} </h3>}
+                                                    {user.updateData && <h3><span>Update Data: </span> <span>{user.updateData.updateKey}</span> - <span>{user.updateData.updateValue}</span></h3>}
                                                 </div>
-
                                                 <div>
                                                     <Button onClick={() => mailChangeAcceptFunc(user._id, true)}>Approve</Button>
                                                     <Button onClick={() => mailChangeAcceptFunc(user._id, false)}>Deny</Button>
@@ -357,8 +363,38 @@ const AdminPage = () => {
                 </Modal>
                 } 
                 {
-                    users.length ? (<> <Table striped hover responsive>
-                        <caption>All Users</caption>
+                    showClientsData ? <>
+                        <Table striped hover responsive>
+                            <thead>
+                                <tr>
+                                    <th>Sl. No</th>
+                                    <th>Consultant Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Location</th>
+                                    <th>Technology</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    clientsData.map((client, idx )=> {
+                                        return <tr key={client._id}>
+                                            <td>{idx +1}</td>
+                                            <td>{client.consultantName}</td>
+                                            <td>{client.email}</td>
+                                            <td>{client.phone}</td>
+                                            <td>{client.location}</td>
+                                            <td>{client.technology}</td>
+                                            <td><ParticularTimeZone timeZone ={client.location}/></td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                        </Table>
+                    </> : <>
+                    {
+                    users.length ? (<> <Table striped hover responsive>    
                         <thead style={{ color: '#000' }}>
                             <tr>
                                 {
@@ -429,6 +465,9 @@ const AdminPage = () => {
                         </Modal>
                         </>) : <h3>Data Loading.....</h3>
                 }
+                    </>
+                }
+                
             </div> : <div style={{ textAlign: 'center' }}>
                 <div>
                     <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQc8odhMTP7bNGEGX4tiBh8NXaDu6CcycWlg&usqp=CAU' alt='img' />

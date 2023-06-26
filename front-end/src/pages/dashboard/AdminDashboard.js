@@ -5,6 +5,7 @@ import UserDashboard from './UserDashboard'
 import AssignTicketModal from '../../components/modal/AssignTicket'
 import AddNewTicket from '../../components/modal/AddNewTicket'
 import { addActivity } from '../activityPage/ActivityPage'
+import UpdateSheet from './UpdateSheet'
 
 export const setTrBg = (type, date) => {
     let bg;
@@ -39,7 +40,7 @@ export const setTrBg = (type, date) => {
 }
 
 const AdminDashboard = ({ currentUserVal, socket }) => {
-    const [isAdminDashboard, setIsAdminDashboard] = useState(true)
+    const [isAdminDashboard, setIsAdminDashboard] = useState('UPDATESHEET')
     const [modelOpen, setModelOpen] = useState(false)
     const [openNewTicketModal, setOpenNewTicketModal] = useState(false)
     const [selectedDev, setSelectedDev] = useState('')
@@ -159,13 +160,16 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         }
     }
     
-
+    
     return <Row>
-        <Col>
+        {/* <Col>
             <Button onClick={() => setIsAdminDashboard(false)}>User Dashboard</Button>
-        </Col>
+        </Col> */}
         <Col>
             <Button onClick={() => setIsAdminDashboard(true)}>Admin Dashboard</Button>
+        </Col>
+        <Col>
+            <Button onClick={()=> setIsAdminDashboard(false)}>Update Sheet</Button>
         </Col>
         {
             isAdminDashboard ? <Col>
@@ -243,7 +247,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                 <Row>
                     <Col className='card my-3' style={{ height: '500px' }}>
                         <span className='fs-3 fw-bold' >Today Tickets : </span>
-                        <Col className='container-fluid m-auto text-center' style={{ overflow: 'hidden scroll' }}>
+                        <Col className='container-fluid m-auto text-center' style={{ overflow: 'scroll' }}>
                             <Table className='striped ticketsTable'>
                                 <thead style={{ position: 'sticky' }}>
                                     <tr>
@@ -279,8 +283,8 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                                 <td>{dateFormatter(ticket.targetDate)}</td>
                                                 <td>{dateFormatter(ticket.completedDate)}</td>
                                                 <td>{ticket.technology}</td>
-                                                <td>{ticket.descriptions?.slice(0, 10)}...</td>
-                                                <td>{ticket.comments?.slice(0, 20)}</td>
+                                                <td><span>{ticket.descriptions?.slice(0, 10)}...</span></td>
+                                                <td><span style={{textOverflow:'ellipsis', }}>{ticket.comments?.slice(0, 20)}</span></td>
                                             </tr>
                                         ))
                                     }
@@ -302,7 +306,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                     getTodayTickets={getTodayTickets}
                     deleteTicket={deleteTicket}
                 />
-            </Col> : <UserDashboard currentUserVal={currentUserVal} />
+            </Col> : <UpdateSheet currentUserVal={currentUserVal} todayTickets={todayTickets}/>
         }
 
     </Row>
