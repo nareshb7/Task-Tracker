@@ -43,7 +43,7 @@ const UserDashboard = ({ currentUserVal }) => {
         if (success && data?.length) {
             navigate('/addIssue', { state: { data: data[0], mode: 'UPDATE' } })
         } else {
-            navigate('/addIssue', { state: { technology: tkt.technology, cName: tkt.consultantName, id: tkt._id } })
+            navigate('/addIssue', { state: { technology: tkt.technology,consultantId: tkt.consultantId, cName: tkt.consultantName, id: tkt._id } })
         }
         addActivity(currentUserVal, 'Dashboard page', `clicked on update issue for ${tkt.consultantName}`)
     }

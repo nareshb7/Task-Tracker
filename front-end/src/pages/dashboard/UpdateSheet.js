@@ -36,6 +36,7 @@ const UpdateSheet = ({ currentUserVal, todayTickets }) => {
                         <th>Sl. No</th>
                         <th>Consultant Name</th>
                         <th>Technology</th>
+                        <th>Ticket Status</th>
                         <th>Description</th>
                         <th>Comments</th>
                         <th>Send Update</th>
@@ -48,6 +49,7 @@ const UpdateSheet = ({ currentUserVal, todayTickets }) => {
                                 <td>{idx + 1}</td>
                                 <td>{ticket.consultantName}</td>
                                 <td>{ticket.technology}</td>
+                                <td>{ticket.status}</td>
                                 <td>{ticket.description}</td>
                                 <td>{ticket.comments}</td>
                                 <td><Button onClick={handleSend}>Send Update</Button></td>

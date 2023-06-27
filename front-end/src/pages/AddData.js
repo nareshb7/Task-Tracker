@@ -35,14 +35,15 @@ const AddData = () => {
         issueTitle: '',
         solutions: [],
         solution: '',
-        companyName: '',
+        companyName: state?.companyName,
         appType: '',
         developerId: '',
         images: "",
         issueImages: [{ image: '' }],
         issueStatus: '',
         helpedDev: '',
-        id: state?.id || ''
+        id: state?.id || '',
+        consultantId : state?.consultantId
     }
     const schema = {
         cName: Yup.string().required('String required'),

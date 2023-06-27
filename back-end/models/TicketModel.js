@@ -97,6 +97,10 @@ const mockTicketSchema = mongoose.Schema({
     assignedBy: {
         type: Object, 
         require: true
+    },
+    consultantId: {
+        type:String,
+        require:true
     }
 })
 const clientSchema = mongoose.Schema({

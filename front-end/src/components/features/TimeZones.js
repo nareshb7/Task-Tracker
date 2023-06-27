@@ -21,8 +21,8 @@ const TimeZones = () => {
     return (
         <div className='fs-3 fw-bolder d-flex gap-4 align-items-center'>
             <div className='bg-primary rounded p-1'>PST : {timeByZones.PST}</div>
-            <div className='bg-secondary rounded p-1'>EST : {timeByZones.EST}</div>
             <div className='bg-warning rounded p-1'>CST : {timeByZones.CST}</div>
+            <div className='bg-secondary rounded p-1'>EST : {timeByZones.EST}</div>
         </div>
     )
 }
