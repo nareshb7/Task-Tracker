@@ -6,6 +6,11 @@ import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import { setTrBg } from './AdminDashboard'
 import { addActivity } from '../activityPage/ActivityPage'
 
+export const getTodayTicketsFunc = async (id) => {
+    const resp = await fetchGetCall('/api/gettodayticket', { id })
+    return resp
+}
+
 const UserDashboard = ({ currentUserVal }) => {
     const navigate = useNavigate()
     const [dashboardData, setDashboardData] = useState({
@@ -15,17 +20,14 @@ const UserDashboard = ({ currentUserVal }) => {
         fixed: 0,
         todayTickets: []
     })
-    const getTodayTicketsFunc = async () => {
-        const resp = await fetchGetCall('/api/gettodayticket', { id: currentUserVal._id })
-        return resp
-    }
+    
     useEffect(() => {
         const getIssues = async () => {
             const totalIssues = await uploadedIssues(currentUserVal._id)
             const resolved = totalIssues.filter(issue => issue.issueStatus == 'Resolved').length
             const pending = totalIssues.filter(issue => issue.issueStatus == 'Pending').length
             const fixed = totalIssues.filter(issue => issue.issueStatus == 'Fixed').length
-            const { success, data } = await getTodayTicketsFunc()
+            const { success, data } = await getTodayTicketsFunc(currentUserVal._id)
             const todayTickets = success && data.filter(tkt => {
                 const d1 = new Date(tkt.assignedDate).toDateString()
                 const d2 = new Date().toDateString()

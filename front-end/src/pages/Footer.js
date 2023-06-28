@@ -1,9 +1,10 @@
 import React from 'react'
 import './style/Footer.css'
 import { Link } from 'react-router-dom'
+import { COMPANY_NAME } from '../components/utils/Constants'
 
 const Footer = () => {
-  return (
+  return (<div>
     <div className='footer-main'>
       <div>
         <div className='footer-logo'>
@@ -35,6 +36,8 @@ const Footer = () => {
             <li>Privacy Policy</li>
         </ul>
       </div>
+    </div>
+    <div className='text-center' style={{background: "#2d4174", color:'#728edd'}}>Copyrights © 2023 All Rights Reserved by {COMPANY_NAME}</div>
     </div>
   )
 }

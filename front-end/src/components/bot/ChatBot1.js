@@ -7,6 +7,7 @@ import DotTyping from '../utils/typing/DotTyping'
 
 import { responseMessage } from './ResponseMessage'
 import { useNavigate } from 'react-router-dom'
+import { COMPANY_NAME } from '../utils/Constants'
 
 const ChatBot1 = ({ setShowBot, showBot }) => {
     const { currentUserVal } = useContext(UserContext)
@@ -52,7 +53,7 @@ const ChatBot1 = ({ setShowBot, showBot }) => {
         <div id='chat-bot' style={botStyle}>
             <span onClick={() => setShowBot(!showBot)} style={{ position: 'absolute', right: '10px', top: '5px' }}><CloseButton onClick={() => setShowBot(!showBot)} /></span>
             <div className='bot-header'>
-                <h3>Resource One IT Solutions</h3>
+                <h3>{COMPANY_NAME}</h3>
                 <p>We typically reply in few minutes.</p>
             </div>
             <div className='bot-body scrollbar-container'>
