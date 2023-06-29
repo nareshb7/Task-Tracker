@@ -14,7 +14,8 @@ const Home = () => {
     }, [])
 
     return (
-        <div className='main2 '>
+        <div className='main2 home-bg'>
+            <div></div>
             <div className='fs-1 fw-bolder'>Welcome To,</div>
             <div className='logo1'>{COMPANY_NAME}</div>
             <div style={{ alignSelf: 'end', fontFamily:'cursive'}} className='fs-3 fst-italic'>Chat Box</div>

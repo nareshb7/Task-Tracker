@@ -8,7 +8,7 @@ const Footer = () => {
     <div className='footer-main'>
       <div>
         <div className='footer-logo'>
-            <img src='https://media.licdn.com/dms/image/C560BAQFYCcCZ6hWFGA/company-logo_200_200/0/1519910499757?e=1687996800&v=beta&t=FHGu7-sMUPe_ZZJswZq7QGA19UZf2AWJVoJ8t5WiNdA' alt='cmpnyLogo' />
+            <img src='https://media.licdn.com/dms/image/C560BAQFYCcCZ6hWFGA/company-logo_200_200/0/1519910499757?e=1695859200&v=beta&t=8rcR_Thc-O5dA4U6lOoNMhF5SiYTv6pL_PspEtY-0cE' alt='cmpnyLogo' />
         </div>
         <h3>ResourceOne IT Solutions.</h3>
       </div>

@@ -16,6 +16,7 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const [mszTyping, setMszTyping] = useState(false)
+    const [chatBotSubmitMessage,setChatBotSubmitMessage] = useState('')
 
     const getTodayTickets = async (id) => {
         const res = await getTodayTicketsFunc(id)
@@ -39,8 +40,19 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             setMessages(e=> [...e,  mszFormatter(msz)])
         } else setMessages(e=> [...e,  mszFormatter(CHAT_BOT_ERROR_MESSAGE)])
     }
-    const chatBotRequests= (type)=> {
-        console.log('BOT-REQUEST', type)
+    const chatBotRequests= (request)=> {
+        console.log('BOT-REQUEST', request)
+    }
+    const handleChange = (e)=> {
+        const newValue = e.target.value;
+        setChatBotSubmitMessage(newValue);
+    }
+    const createBotObject = (type, msz) => {
+        return {
+            user: {name: getFullName(currentUserVal), id: currentUserVal._id},
+            type, 
+            description: msz
+        }
     }
 
     const messagesData = [
@@ -115,8 +127,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["ticketUpdatingIssueSubmitted", "1", "submit"]],
             value: [
                 <div>
-                    <Form.Control as='textarea' rows={3} />
-                    <Button onClick={() => handleClick('ticketUpdatingIssueSubmitted', () => chatBotRequests(`${getFullName(currentUserVal)} raised Ticket Updating Issue`))} className='btn btn-warning my-1'> Submit</Button><br />
+                    <Form.Control onChange={handleChange} defaultValue={chatBotSubmitMessage} as='textarea' rows={3} />
+                    <Button onClick={() => handleClick('ticketUpdatingIssueSubmitted', (msz) => chatBotRequests(createBotObject('TicketUpdating', msz)), chatBotSubmitMessage)} className='btn btn-warning my-1'> Submit</Button><br />
                 </div>
             ]
         }, {
@@ -133,8 +145,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["sentMessagetoIT", "1", "submit"]],
             value: [
                 <div>
-                    <Form.Control as='textarea' rows={3} />
-                    <Button onClick={() => handleClick('sentMessagetoIT', () => chatBotRequests(`${getFullName(currentUserVal)} sent a message to IT Team`))} className='btn btn-warning my-1'> Submit</Button><br />
+                    <Form.Control onChange={handleChange} as='textarea' rows={3} />
+                    <Button onClick={() => handleClick('sentMessagetoIT', (msz) => chatBotRequests(createBotObject('IT Team Message', msz)))} className='btn btn-warning my-1'> Submit</Button><br />
                 </div>
             ]
         }, {
@@ -174,8 +186,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["hrAdminForLeaveSubmitted", "1", "leave"], ["hrAdminForSalary", "2",'salary'],["hrAdminForOther", "3",'other']],
             value: [
                 <div>
-                    <Form.Control as='textarea' rows={3} />
-                    <Button onClick={() => handleClick('hrAdminForLeaveSubmitted', () => chatBotRequests(`${getFullName(currentUserVal)} raised a ticket for leave`))} className='btn btn-primary my-1'>Submit</Button><br />
+                    <Form.Control onChange={handleChange} as='textarea' rows={3} />
+                    <Button onClick={() => handleClick('hrAdminForLeaveSubmitted', (msz) => chatBotRequests(createBotObject('Leave Request', msz)))} className='btn btn-primary my-1'>Submit</Button><br />
                     <Button onClick={() => handleClick('hrAdmin')} className='btn btn-warning my-1'> Back</Button><br />
                 </div>
             ]
@@ -193,8 +205,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["hrAdminForSalarySubmitted", "1", "leave"], ["hrAdminForSalary", "2",'salary'],["hrAdminForOther", "3",'other']],
             value: [
                 <div>
-                    <Form.Control as='textarea' rows={3} />
-                    <Button onClick={() => handleClick('hrAdminForSalarySubmitted', () => chatBotRequests(`${getFullName(currentUserVal)} raised Salary Issue`))} className='btn btn-primary my-1'>Submit</Button><br />
+                    <Form.Control onChange={handleChange} as='textarea' rows={3} />
+                    <Button onClick={() => handleClick('hrAdminForSalarySubmitted', (msz) => chatBotRequests(createBotObject('Salary Issue', msz)))} className='btn btn-primary my-1'>Submit</Button><br />
                     <Button onClick={() => handleClick('hrAdmin')} className='btn btn-warning my-1'> Back</Button><br />
                 </div>
             ]
@@ -212,8 +224,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["hrAdminForOtherSubmitted", '1', 'submit']],
             value: [
                 <div>
-                    <Form.Control as='textarea' rows={3} />
-                    <Button onClick={() => handleClick('hrAdminForOtherSubmitted', () => chatBotRequests(`${getFullName(currentUserVal)} raised Ticket for other issue for HR Team`))} className='btn btn-primary my-1'>Submit</Button><br />
+                    <Form.Control onChange={handleChange} as='textarea' rows={3} />
+                    <Button onClick={() => handleClick('hrAdminForOtherSubmitted', (msz) => chatBotRequests(createBotObject('Other Query HR Team', msz)))} className='btn btn-primary my-1'>Submit</Button><br />
                     <Button onClick={() => handleClick('hrAdmin')} className='btn btn-warning my-1'> Back</Button><br />
                 </div>
             ]
@@ -231,8 +243,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["contactManagerMszSubmitted", '1', 'submit']],
             value: [
                 <div>
-                    <Form.Control as='textarea' rows={3} />
-                    <Button onClick={() => handleClick('contactManagerMszSubmitted', () => chatBotRequests(`${getFullName(currentUserVal)} sent a message to Manager`))} className='btn btn-primary my-1'>Submit</Button><br />
+                    <Form.Control onChange={handleChange} as='textarea' rows={3} />
+                    <Button onClick={() => handleClick('contactManagerMszSubmitted', (msz) => chatBotRequests(createBotObject('Manager Message', msz)))} className='btn btn-primary my-1'>Submit</Button><br />
                     <Button onClick={() => handleClick('hrAdmin')} className='btn btn-warning my-1'> Back</Button><br />
                 </div>
             ]
@@ -254,8 +266,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["mobileUpdateSubmitted", "1", "submit"]],
             value: [
                 <div>
-                    <Form.Control/>
-                    <Button onClick={() => handleClick('mobileUpdateSubmitted', () => chatBotRequests(`${getFullName(currentUserVal)} raised mobile number change request`))} className='btn btn-primary my-1'>1. Email</Button><br />
+                    <Form.Control onChange={handleChange}/>
+                    <Button onClick={() => handleClick('mobileUpdateSubmitted', (msz) => chatBotRequests(createBotObject('Mobile number Update', msz)))} className='btn btn-primary my-1'>Submit</Button><br />
                     <Button onClick={() => handleClick('profileUpdate')} className='btn btn-warning my-1'> Back</Button><br />
                 </div>
             ]
@@ -265,8 +277,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["emailUpdateSubmitted", "1", "submit"]],
             value: [
                 <div>
-                    <Form.Control/>
-                    <Button onClick={() => handleClick('emailUpdateSubmitted', () => chatBotRequests(`${getFullName(currentUserVal)} raised email change request`))} className='btn btn-primary my-1'>1. Email</Button><br />
+                    <Form.Control onChange={handleChange}/>
+                    <Button onClick={() => handleClick('emailUpdateSubmitted', (msz) => chatBotRequests(createBotObject('Email Update', msz)))} className='btn btn-primary my-1'>Submit</Button><br />
                     <Button onClick={() => handleClick('profileUpdate')} className='btn btn-warning my-1'> Back</Button><br />
                 </div>
             ]
@@ -276,8 +288,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["feedbackResponse", "submit"]],
             value: [
                 <div>
-                    <Form.Control as='textarea' rows={3} />
-                    <Button onClick={() => handleClick('feedbackResponse', () => chatBotRequests(`${getFullName(currentUserVal)} raised email change request`))}>Submit</Button>
+                    <Form.Control onChange={handleChange} as='textarea' rows={3} />
+                    <Button onClick={() => handleClick('feedbackResponse', (msz) => chatBotRequests(createBotObject('Feedback/Suggestion', msz)))}>Submit</Button>
                 </div>
             ]
         }, {
@@ -294,7 +306,7 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
                 <div>
                     <Button onClick={() => handleClick('reactHelp')} className='btn btn-primary my-1'>1. React</Button><br />
                     <Button onClick={() => handleClick('angularHelp')} className='btn btn-primary my-1'>2. Angular</Button><br />
-                    <Button onClick={() => handleClick('cssHelp', () => chatBotRequests(`${getFullName(currentUserVal)} needs help in designing`))} className='btn btn-primary my-1'>3. CSS</Button><br />
+                    <Button onClick={() => handleClick('cssHelp', () => chatBotRequests(createBotObject('CSS Help', 'Required')))} className='btn btn-primary my-1'>3. CSS</Button><br />
                     <Button onClick={() => handleClick('initialResponse')} className='btn btn-warning my-1'>Back</Button>
                 </div>
             ]
@@ -304,8 +316,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["reactFunctionality", "1", "functionality"], ['reactTestCases',"2", "test cases"]],
             value: [
                 <div>
-                    <Button onClick={() => handleClick('reactFunctionality', () => chatBotRequests(`${getFullName(currentUserVal)} needs help in React Functionality`))} className='btn btn-primary my-1'>Functionality</Button><br />
-                    <Button onClick={() => handleClick('reactTestCases', () => chatBotRequests(`${getFullName(currentUserVal)} needs help in Recat TestCases`))} className='btn btn-primary my-1'>Test Cases</Button><br />
+                    <Button onClick={() => handleClick('reactFunctionality', () => chatBotRequests(createBotObject('React Help', 'Needs Help in rect functionality')))} className='btn btn-primary my-1'>Functionality</Button><br />
+                    <Button onClick={() => handleClick('reactTestCases', () => chatBotRequests(createBotObject('React Help', 'Needs help in React TestCases')))} className='btn btn-primary my-1'>Test Cases</Button><br />
                     <Button onClick={() => handleClick('needHelpinTicketSolving')} className='btn btn-warning my-1'>Back</Button>
                 </div>
             ]
@@ -333,8 +345,8 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             keys: [["angularFunctionality", "1", "functionality"], ['angularTestCases',"2", "test cases"]],
             value: [
                 <div>
-                    <Button onClick={() => handleClick('angularFunctionality', () => chatBotRequests(`${getFullName(currentUserVal)} needs help in Angular Functionality`))} className='btn btn-primary my-1'>Functionality</Button><br />
-                    <Button onClick={() => handleClick('angularTestCases', () => chatBotRequests(`${getFullName(currentUserVal)} needs help in Angular Test Cases`))} className='btn btn-primary my-1'>Test Cases</Button><br />
+                    <Button onClick={() => handleClick('angularFunctionality', () => chatBotRequests(createBotObject('Angular Help', 'Needs help for Angular Functionality')))} className='btn btn-primary my-1'>Functionality</Button><br />
+                    <Button onClick={() => handleClick('angularTestCases', () => chatBotRequests(createBotObject('Angular Help', 'Needs help for Angular TestCases')))} className='btn btn-primary my-1'>Test Cases</Button><br />
                     <Button onClick={() => handleClick('needHelpinTicketSolving')} className='btn btn-warning my-1'>Back</Button>
                 </div>
             ]
@@ -372,10 +384,13 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behaviour: 'smooth' })
     }
-    const handleClick = (response, cb) => {
-        if (cb) {
-            cb()
-        }
+    const getMessage =async ()=> {
+        let msz = ''
+        await setChatBotSubmitMessage((e)=> msz = e);
+        return msz
+    }
+    const handleClick =async (response, cb) => {
+        if (cb) cb(await getMessage()) 
         setMszTyping(true)
         const reply = messagesData.find(msz => msz.key == response)
         if (reply) {

@@ -11,16 +11,17 @@
 .home-main1 p{
   font-size: 5rem;
 }
-
-.main2 {
+.home-bg {
   background-image: url('../assets/home-bg-image-1.jpg');
-  background-size: 100% 100%;
+  background-size: cover;
+  filter: blur(1px);
+}
+.main2 {
   color: whitesmoke;
   margin: 0;
   padding: 10pc 15px;
   display: flex;
   align-items: center;
-  height: 90vh;
   font-family: Arial, sans-serif;
   flex-direction: column;
 }
