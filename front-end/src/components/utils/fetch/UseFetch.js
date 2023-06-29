@@ -16,7 +16,7 @@ export const fetchGetCall = async (url, params) => {
         return {data: res.data, success: true, error:false}
     })
     .catch(err => {
-        return {error: err, success: false, data: false}
+        return {error: err.response.data?.message, success: false, data: false}
     })
 }
 export const fetchDeletecall = async (url, data) => {

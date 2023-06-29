@@ -97,6 +97,7 @@ const AddNewTicket = ({ isOpen, setIsOpen, addNewType }) => {
         const val = JSON.parse(value)
         if (val.hasOwnProperty('_id')) {
             values.phone = val.phone
+            values.email = val.email
             values.location= val.location
             values.technology = val.technology
             values.consultantId = val._id

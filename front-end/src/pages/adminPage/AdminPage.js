@@ -231,6 +231,10 @@ const AdminPage = () => {
             setOpenUpdateModal(false)
         }
     }
+    
+    const showClientStats = (client)=> {
+        navigate('/clientstats', {state: client})
+    }
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
@@ -379,9 +383,9 @@ const AdminPage = () => {
                             <tbody>
                                 {
                                     clientsData.map((client, idx )=> {
-                                        return <tr key={client._id}>
+                                        return <tr key={client._id} onClick={() => showClientStats(client)}>
                                             <td>{idx +1}</td>
-                                            <td>{client.consultantName}</td>
+                                            <td>{client.consultantName} - {client._id}</td>
                                             <td>{client.email}</td>
                                             <td>{client.phone}</td>
                                             <td>{client.location}</td>

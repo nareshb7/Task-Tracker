@@ -62,3 +62,10 @@ module.exports.getTicketIDs =async (req,res)=> {
     }
     
 }
+
+module.exports.getClientTickets = async (req,res) => {
+    console.log(req.query, 'CLIENTIDS')
+    const {id} = req.query
+    const result = await TaskModel.find({consultantId: id})
+    res.status(200).json(result)
+}

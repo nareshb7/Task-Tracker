@@ -80,6 +80,17 @@ module.exports.clientList =async (req,res)=> {
     .catch(e => res.status(400).json(e.message))
     // await clientModel.deleteMany({})
 }
+module.exports.getClientData = async (req,res) => {
+    try {
+        const {id} = req.query
+    const data = await clientModel.findById({_id: id})
+    console.log('REQ', req.query)
+    res.status(200).json(data)
+    } catch(e) {
+        res.status(400).json(e)
+    }
+    
+}
 
 // mongoose.connection.db.collection('mocktickets').find({}).toArray(function(err, result) {
 //     if (err) throw err;

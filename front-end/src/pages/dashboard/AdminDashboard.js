@@ -159,7 +159,9 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
             }
         }
     }
-    
+    useEffect(()=> {
+        getTodayTickets()
+    },[openNewTicketModal])
     
     return <Row>
         {/* <Col>
@@ -246,7 +248,7 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                 {/* Maping today tickets into a table */}
                 <Row>
                     <Col className='card my-3' style={{ height: '500px' }}>
-                        <span className='fs-3 fw-bold' >Today Tickets : </span>
+                        <span className='fs-3 fw-bold' >Today Tickets : {todayTickets.total.length}</span>
                         <Col className='container-fluid m-auto text-center' style={{ overflow: 'scroll' }}>
                             <Table className='striped ticketsTable'>
                                 <thead style={{ position: 'sticky' }}>
