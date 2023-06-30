@@ -1,0 +1,7 @@
+.clientStats-table {
+    height: 400px;
+    overflow-y: scroll;
+}
+.clientStats-table .table-head {
+    position: sticky;
+}

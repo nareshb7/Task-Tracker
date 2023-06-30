@@ -25,6 +25,7 @@ nav ul li{
 }
 table  tbody tr:hover {
   background-color: #999;
+  cursor: pointer;
 }
 
 /* Togglwe Switch */

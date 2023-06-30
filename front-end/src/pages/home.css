@@ -12,9 +12,10 @@
   font-size: 5rem;
 }
 .home-bg {
-  background-image: url('../assets/home-bg-image-1.jpg');
-  background-size: cover;
-  filter: blur(1px);
+  background-image: url('../assets/home-bg-1.jpg');
+  background-size: 100% 100%;
+  min-height: 600px;
+  /* filter: blur(1px); */
 }
 .main2 {
   color: whitesmoke;

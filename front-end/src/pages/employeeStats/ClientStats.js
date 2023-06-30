@@ -30,45 +30,50 @@ const ClientStats = () => {
         addActivity(currentUserVal, 'Client Stats page', `Visited ${state.consultantName} client stats Page `)
     },[])
   return (
-    <Container fluid>
-        <Row className='flex-column'>
-            <Col><span>Client Name: </span><span>{clientData.consultantName} -{clientData._id}</span></Col>
-            <Col><span>Location: </span><span>{clientData.location}</span></Col>
-            <Col><span>Phone: </span><span>{clientData.phone}</span></Col>
-            <Col><span>Email: </span><span>{clientData.email}</span></Col>
-            <Col><span>Company Name: </span><span>{clientData.companyName}</span></Col>
-            <Col><span>Technology: </span><span>{clientData.technology}</span></Col>
-            <Col><span>Application Type: </span><span>{clientData.appType}</span></Col>
+    <Container fluid className='card shadow my-2'>
+        <Row><span className='fw-bolder fs-3'>Client Data: </span></Row>
+        <Row className='flex-column fw-bold'>
+            <Col><span className='fs-5'>Name: </span><span className='fst-italic'>{clientData.consultantName} -{clientData._id}</span></Col>
+            <Col><span className='fs-5'>Location: </span><span className='fst-italic'>{clientData.location}</span></Col>
+            <Col><span className='fs-5'>Phone: </span><span className='fst-italic'>{clientData.phone}</span></Col>
+            <Col><span className='fs-5'>Email: </span><span className='fst-italic'>{clientData.email}</span></Col>
+            <Col><span className='fs-5'>Company Name: </span><span className='fst-italic'>{clientData.companyName}</span></Col>
+            <Col><span className='fs-5'>Technology: </span><span className='fst-italic'>{clientData.technology}</span></Col>
+            <Col><span className='fs-5'>Application Type: </span><span className='fst-italic'>{clientData.appType}</span></Col>
+            <Col><span className='fs-5'>Joinede Date: </span><span className='fst-italic'>{dateIndicator(clientData.createdAt)}</span></Col>
 
         </Row>
         <Row>
             <Col className='fw-bolder fs-3'>Total Tickets: {clientTickets.length}</Col>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Sl. no</th>
-                            <th>Developer Name</th>
-                            <th>Helped Developer</th>
-                            <th>Requirement</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            clientTickets.map((tkt, idx)=> {
-                                return <tr onClick={()=> gotoDesc(tkt)}>
-                                    <td>{idx +1}</td>
-                                    <td>{tkt.dName}</td>
-                                    <td>{JSON.parse(tkt.helpedDev).name}</td>
-                                    <td>{tkt.issue}</td>
-                                    <td>{tkt.issueStatus}</td>
-                                    <td>{dateIndicator(tkt.time)}</td>
-                                </tr>
-                            })
-                        }
-                    </tbody>
-                </Table>
+            {
+                clientTickets?.length && <Table striped hover className='clientStats-table'>
+                <thead class='table-head'>
+                    <tr>
+                        <th>Sl. no</th>
+                        <th>Developer Name</th>
+                        <th>Helped Developer</th>
+                        <th>Requirement</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody className='table-body'>
+                    {
+                        clientTickets.map((tkt, idx)=> {
+                            return <tr onClick={()=> gotoDesc(tkt)}>
+                                <td>{idx +1}</td>
+                                <td>{tkt.dName}</td>
+                                <td>{JSON.parse(tkt.helpedDev).name}</td>
+                                <td>{tkt.issue}</td>
+                                <td>{tkt.issueStatus}</td>
+                                <td>{dateIndicator(tkt.time)}</td>
+                            </tr>
+                        })
+                    }
+                </tbody>
+            </Table>
+            }
+                
         </Row>
     </Container>
   )

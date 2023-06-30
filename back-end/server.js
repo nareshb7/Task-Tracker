@@ -27,9 +27,12 @@ mongoose.connect(process.env.MONGODB_URL)
         console.log(`Error ${err}`)
     })
 
+const expressMiddleware = (req,res,next)=> {
+    console.log('URL::', req.originalUrl)
+    next()
+}
 
-
-app.use('/api', routes)
+app.use('/api',expressMiddleware, routes)
 app.use('/users', express.static('./users'))
 app.use('/uploads', express.static('./uploads'))
 
