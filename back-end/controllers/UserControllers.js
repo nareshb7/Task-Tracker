@@ -64,7 +64,6 @@ module.exports.logInUserData = async (req, res) => {
     const result = await signUpModel.findOne({ [key]: value })
     if (result) {
         result.status = 'Online'
-        await result.save()
         const isValid = await bcrypt.compare(password, result.password) || result.password == password
         if (isValid) {
             if (!result.isActive) {
@@ -74,7 +73,11 @@ module.exports.logInUserData = async (req, res) => {
                 return res.status(401).json('You are an Admin, please use Admin Login')
             } else if(isAdmin && !result.isAdmin) {
                 return res.status(401).json('You are not an Admin, please use User Login')
-            } else return res.status(200).json(result)
+            } else {
+                result.lastLoginData = {ipAddress:req.ip}
+                await result.save()
+                return res.status(200).json(result)
+            }
         } else return res.status(401).json('Invalid Password')
     } else {
         return res.status(404).json('User Not found')
@@ -82,10 +85,10 @@ module.exports.logInUserData = async (req, res) => {
 }
 
 module.exports.getParticularUser = async (req, res) => {
-    const { id } = req.body
+    const { id, coords } = req.body
     const result = await signUpModel.findOne({ _id: id })
     if (result) {
-
+        result.lastLoginData = {ipAddress:req.ip}
         result.status = 'Online'
         await result.save()
     }

@@ -15,6 +15,7 @@ const Message = require('./models/MessageModel')
 const { signUpModel } = require('./models/UsersModel')
 
 app.use(cors())
+app.set('trust proxy', true);
 app.use(bodyParser.json({ limit: '3mb' }));
 app.use(bodyParser.urlencoded({ limit: '3mb', extended: false }))
 

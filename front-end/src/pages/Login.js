@@ -39,7 +39,7 @@ const Login = () => {
     const loginSucessFunc = async (currentUser) => {
         setCurrentUserVal(currentUser)
         setResponse('Login Sucessfully')
-        console.log('LoggedIn User', currentUser)
+        console.log('LoggedIn User', currentUser, window)
         setCookie(currentUser._id, 2)
         const roomsCount = Object.keys(currentUser.newMessages).length
         setNotificationRooms(roomsCount)

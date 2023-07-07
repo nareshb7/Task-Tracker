@@ -89,6 +89,10 @@ const signinSchema = mongoose.Schema({
     dob: {
         type: Date,
         require: true
+    },
+    lastLoginData: {
+        type:Object,
+        require:true
     }
 }, { minimize: false, timestamps: true })
 module.exports.signUpModel = mongoose.model('UserData', signinSchema)
