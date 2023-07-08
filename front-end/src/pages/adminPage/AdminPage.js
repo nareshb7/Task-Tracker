@@ -7,7 +7,7 @@ import Loader from '../../components/utils/loader/Loader'
 import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from '../chatBox/MessageBox'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import TimeZones, { ParticularTimeZone, particularTimeZone, TimeZone } from '../../components/features/TimeZones'
 import { getFullName } from '../../components/utils/GetFullName'
@@ -15,6 +15,7 @@ import { getFullName } from '../../components/utils/GetFullName'
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const navigate = useNavigate()
+    const {state} = useLocation()
     const [openUpdateModal, setOpenUpdateModal] = useState(false)
     const [updateUserObj, setUpdateUserObj] = useState({})
     const [users, setUsers] = useState([])
@@ -66,6 +67,12 @@ const AdminPage = () => {
                 setMailChangeReqIDs(data.data)
             })
             .catch(err => console.log(err, 'error'))
+            if (state?._id && state?.popup == "EMPMODAL") {
+                setShowEmpModal(true)
+                setShowEmpData(state)
+                state.popup = ''
+
+            }
     }, [])
     useEffect(() => {
         setCurrentUser(currentUserVal)
@@ -244,6 +251,7 @@ const AdminPage = () => {
                 </div>
                 <Button onClick={()=> setShowClientsData(!showClientsData)}>Show {showClientsData ? 'Users': 'Clients' }</Button>
                 <div style={{ textAlign: 'end' }}>
+                <Link className='mx-2' to='/botrequest'><Button > Bot Requests</Button></Link>
                 <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
                     <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
                     <Button className='mx-2' onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </Button>
@@ -358,6 +366,7 @@ const AdminPage = () => {
                                 }}>
                                     Go to Stats page
                                 </Button>
+                                <Button className='mx-2' onClick={()=> navigate('/chat', {state: showEmpData })}>Send Message</Button>
                             </div>
                         </div>
                         <div style={{ width: '100px', height: '100px' }}>

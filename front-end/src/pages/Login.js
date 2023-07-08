@@ -7,6 +7,7 @@ import { Col, Row, Form, Button } from 'react-bootstrap'
 import './style/Login.css'
 import { fetchCall } from '../components/utils/fetch/UseFetch'
 import { addActivity } from './activityPage/ActivityPage'
+import { getBrowserName, getLocationCoords } from '../components/utils/Authentication'
 
 const Login = () => {
     const navigate = useNavigate()
@@ -28,6 +29,8 @@ const Login = () => {
         e.preventDefault()
         setResponse('Loading...')
         data.isAdmin = isAdminLogin
+        data['browserName'] = getBrowserName()
+        data['location'] = await getLocationCoords()
         const response =await fetchCall('/api/loginData', data)
         if (response._id) {
             setData(obj)

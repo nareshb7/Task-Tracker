@@ -22,6 +22,7 @@ import MultiplicationGame from '../components/games/multiplication'
 import NoRouteFound from '../components/utils/NoRouteFound'
 import ActivityPage from './activityPage/ActivityPage'
 import ClientStats from './employeeStats/ClientStats'
+import AdminBotPage from '../components/bot/AdminBotPage'
 
 const RoutesComp = () => {
     const { currentUserVal } = useContext(UserContext)
@@ -54,6 +55,7 @@ const RoutesComp = () => {
                         <Route path='/game/1' element={<RockPaperScissor/>} />
                         <Route path='game/2' element={<MultiplicationGame/>} />
                         <Route path='clientstats' element={<ClientStats />} />
+                        <Route path='botrequest' element={<AdminBotPage />} />
                     </>
                 }
                 {/* <Route path='profile' element={<MyProfile/> } /> */}

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import './ChatBox.css'
 import MessageBox from './MessageBox'
@@ -9,8 +9,9 @@ import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 import { addActivity } from '../activityPage/ActivityPage'
 
 const ChatBox = () => {
-    const { setNotificationRooms, currentUserVal, socket, setTotalMessages, setCurrentUserVal,  currentRoom, setCurrentRoom } = useContext(UserContext)
+    const { setNotificationRooms, currentUserVal, socket, setTotalMessages, setCurrentUserVal, currentRoom, setCurrentRoom } = useContext(UserContext)
     const stateData = useSelector(state => state.user)
+    const {state} = useLocation()
     const dispatch = useDispatch()
     const [users, setUsers] = useState([])
     const [openMszList, setOpenMszList] = useState(false)
@@ -31,7 +32,10 @@ const ChatBox = () => {
     useEffect(() => {
         socket.emit('new-user')
         addActivity(currentUserVal, 'Chat page', `Visited Chat Page`)
-        return ()=> {
+        if (state._id && currentUserVal._id) {
+            selectedUser(state, currentUserVal)
+        }
+        return () => {
             socket.emit('join-room', 'sample', currentRoom)
             setCurrentRoom('sample')
         }
@@ -48,7 +52,7 @@ const ChatBox = () => {
         let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
         setTotalMessages(totalMessage)
         const roomsCount = Object.keys(currentUserVal?.newMessages).length
-      setNotificationRooms(roomsCount)
+        setNotificationRooms(roomsCount)
     }
     const imgPopup = (src, fName) => {
         setImgSrc({ src, fName })
@@ -84,7 +88,14 @@ const ChatBox = () => {
                             })
                         }
                     </div>
-                    <MessageBox socket={socket} user={currentUserVal} setOpponent={setOpponent} roomId={currentRoom} opponent={opponent} setOpenMszList={setOpenMszList} imgPopup={imgPopup} />
+                    <MessageBox
+                        socket={socket}
+                        user={currentUserVal}
+                        setOpponent={setOpponent}
+                        roomId={currentRoom}
+                        opponent={opponent}
+                        setOpenMszList={setOpenMszList}
+                        imgPopup={imgPopup} />
                     <Modal isOpen={imgmodal} setModal={setImgmodal} >
                         <div>
                             <h3>{imgSrc.fName}</h3>

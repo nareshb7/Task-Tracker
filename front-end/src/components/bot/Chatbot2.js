@@ -9,9 +9,10 @@ import { messagesData as data } from './messagesData2'
 import { uploadedIssues } from '../issues/UserIssues';
 import { getTodayTicketsFunc } from '../../pages/dashboard/UserDashboard';
 import { CHAT_BOT_ERROR_MESSAGE } from '../utils/Constants';
+import { fetchCall } from '../utils/fetch/UseFetch';
 
 const Chatbot2 = ({ setShowBot, showBot }) => {
-    const { currentUserVal } = useContext(UserContext)
+    const { currentUserVal, socket } = useContext(UserContext)
     const messageEndRef = useRef(null)
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
@@ -28,7 +29,7 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             </div>
             setMessages(e=> [...e,  mszFormatter(msz)])
         } else setMessages(e=> [...e,  mszFormatter(CHAT_BOT_ERROR_MESSAGE)])
-        return    
+        return 
     }
     const getTotalTickets =async (id)=> {
         const res = await uploadedIssues(id)
@@ -40,8 +41,10 @@ const Chatbot2 = ({ setShowBot, showBot }) => {
             setMessages(e=> [...e,  mszFormatter(msz)])
         } else setMessages(e=> [...e,  mszFormatter(CHAT_BOT_ERROR_MESSAGE)])
     }
-    const chatBotRequests= (request)=> {
-        console.log('BOT-REQUEST', request)
+    const chatBotRequests=async (request)=> {
+        const resp = await fetchCall('/api/botRequest', {request})
+        console.log('BOT-REQUEST', request, resp)
+        socket.emit('new-bot-request', request)
     }
     const handleChange = (e)=> {
         const newValue = e.target.value;

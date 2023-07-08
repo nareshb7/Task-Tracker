@@ -5,6 +5,7 @@ const { setData, getData, addSolution, deleteSolution, updateSolution, uploadedI
 const {signUpData, logInUserData, getParticularUser, getAllUsers, deleteUser, updateUser, userLogout, assignTicket, addNewActivity, getActivity} = require('../controllers/UserControllers')
 const { messages, deleteMessage } = require('../controllers/MessageController')
 const { todayTickts, updateTicket, getTodayTicket, addNewTicket, deleteTicket, addNewClient, clientList, getClientData } = require('../controllers/TicketsController')
+const { botRequests, getBotRequest } = require('../controllers/BotController')
 
 router.post('/setData', setData)
 router.get('/getData', getData)
@@ -44,6 +45,8 @@ router.get('/getactivity', getActivity)
 router.post('/clientupdatesend',clientUpdateSend)
 router.get('/getclientdata', getClientData)
 router.get('/getclienttickets', getClientTickets)
+router.post('/botRequest', botRequests)
+router.get('/getbotrequests', getBotRequest)
 
 
 

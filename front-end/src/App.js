@@ -10,6 +10,7 @@ import { logoutFunc } from './components/utils/LogoutFunc';
 import Navigation from './pages/Nav';
 import { fetchGetCall } from './components/utils/fetch/UseFetch';
 import ChatBot from './components/bot/ChatBot';
+import AlertBox from './components/utils/alert/AlertBox';
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
@@ -24,6 +25,8 @@ function App() {
   const [quote, setQuote] = useState({})
   const [newsData, setNewsData] = useState([])
   const [notificationRooms, setNotificationRooms] = useState(0)
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
   const value = {
     notificationRooms,
     setNotificationRooms,
@@ -38,7 +41,7 @@ function App() {
     quote
   }
   useEffect(() => {
-    socket.emit('new-user')
+    // socket.emit('new-user')
     const handleTabClose = async (event) => {
       event.preventDefault();
       if (currentUserVal._id) {
@@ -57,12 +60,6 @@ function App() {
       window.removeEventListener('beforeunload', handleTabClose);
     };
   }, [currentUserVal]);
-  window.addEventListener('beforeunload', async function (e) {
-    e.preventDefault();
-    currentUserVal._id && await logoutFunc(currentUserVal)
-    socket.emit('new-user')
-    e.returnValue = '';
-  });
   socket.off("ticketAssigned").on("ticketAssigned", (val, id, sender) => {
     if (currentUserVal._id == id) {
       alert(`${sender.fName} assigned you ticket`)
@@ -76,7 +73,8 @@ function App() {
       setNotificationRooms(roomsCount)
       setTotalMessages(totalMessage)
       setCurrentUserVal(currentUserVal)
-      alert('You got a message from ' + sender.fName)
+      setAlertMessage('You got a message from ' + sender.fName)
+      // alert('You got a message from ' + sender.fName)
     }
   })
   useEffect(() => {
@@ -96,7 +94,6 @@ function App() {
     }
     getNews()
     getQuote()
-
   }, [])
   useEffect(() => {
     socket.emit('new-user')
@@ -118,6 +115,7 @@ function App() {
         <RoutesComp />
         <Footer />
         <ChatBot />
+        <AlertBox showAlert={showAlert} setShowAlert={setShowAlert} message={alertMessage}/>
       </UserContext.Provider>
       </div>
 

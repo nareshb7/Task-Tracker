@@ -23,19 +23,19 @@ const signinStorage = multer({
     }
 }).single('profileImage')
 
-const generateEmpID =async ()=> {
+const generateEmpID = async () => {
     const d = new Date()
     const count = await signUpModel.count()
-    const m = d.getMonth().length == 2 ? d.getMonth() +1 : `0${d.getMonth() +1}`
-    const empId = `${d.getFullYear()}${m}${count+1}`
+    const m = d.getMonth().length == 2 ? d.getMonth() + 1 : `0${d.getMonth() + 1}`
+    const empId = `${d.getFullYear()}${m}${count + 1}`
     return empId
 }
-const generateNewId = (data)=> {
- return data.fName.slice(0,3).toLowerCase() + Math.random().toString(16).slice(2, 7)
+const generateNewId = (data) => {
+    return data.fName.slice(0, 3).toLowerCase() + Math.random().toString(16).slice(2, 7)
 }
-const generateUserID =async (data)=> {
+const generateUserID = async (data) => {
     const ids = await signUpModel.aggregate([
-        {$group : {_id: 'userIds',  userIds: {$push: '$userId'}}}
+        { $group: { _id: 'userIds', userIds: { $push: '$userId' } } }
     ])
     const id = generateNewId(data)
     if (ids[0].userIds.includes(id)) {
@@ -49,14 +49,14 @@ module.exports.signUpData = async (req, res) => {
     const { data } = req.body
     data.password = await bcrypt.hash(data.password, 10)
     data['userLevel'] = 1
-    data['empId'] =await generateEmpID()
-    data['userId'] =await generateUserID(data)
+    data['empId'] = await generateEmpID()
+    data['userId'] = await generateUserID(data)
     await signUpModel.create(data).then(data => res.status(200).send(data)).catch(err => res.status(401).send(err))
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 const emailpattern = /^[a-z][a-z.0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
 module.exports.logInUserData = async (req, res) => {
-    const { value, password , isAdmin} = req.body
+    const { value, password, isAdmin, browserName, location } = req.body
     let key = "userId"
     if (value.match(emailpattern)) {
         key = "email"
@@ -71,10 +71,16 @@ module.exports.logInUserData = async (req, res) => {
             }
             if (!isAdmin && result.isAdmin) {
                 return res.status(401).json('You are an Admin, please use Admin Login')
-            } else if(isAdmin && !result.isAdmin) {
+            } else if (isAdmin && !result.isAdmin) {
                 return res.status(401).json('You are not an Admin, please use User Login')
             } else {
-                result.lastLoginData = {ipAddress:req.ip}
+                const loginData = {
+                    ipAddress: req.ip,
+                    browserName,
+                    loginTime: new Date(),
+                    location
+                }
+                result.lastLoginData = loginData
                 await result.save()
                 return res.status(200).json(result)
             }
@@ -85,10 +91,16 @@ module.exports.logInUserData = async (req, res) => {
 }
 
 module.exports.getParticularUser = async (req, res) => {
-    const { id, coords } = req.body
+    const { id, browserName, location } = req.body
     const result = await signUpModel.findOne({ _id: id })
     if (result) {
-        result.lastLoginData = {ipAddress:req.ip}
+        const loginData = {
+            ipAddress: req.ip,
+            browserName,
+            loginTime: new Date(),
+            location
+        }
+        result.lastLoginData = loginData
         result.status = 'Online'
         await result.save()
     }
@@ -139,24 +151,24 @@ module.exports.userLogout = async (req, res) => {
 }
 
 let content = ''
-module.exports.addNewActivity = async (req,res)=> {
-    const {payLoad} = req.body
+module.exports.addNewActivity = async (req, res) => {
+    const { payLoad } = req.body
     if (content == payLoad.content) return res.status(201).json('Content is Same')
     content = payLoad.content
-    await ActivityModel.create({...payLoad})
-    .then(resp => res.status(200).json(resp))
+    await ActivityModel.create({ ...payLoad })
+        .then(resp => res.status(200).json(resp))
 }
-const getActivityByDate =async (id)=> {
-    const result =await ActivityModel.aggregate([
-        {$match: {id}},
-        {$sort: {createdAt : -1}},
-        {$group: {_id: '$date', activityByDate: {$push: '$$ROOT'}}},
-        { $sort: {_id: -1}}
+const getActivityByDate = async (id) => {
+    const result = await ActivityModel.aggregate([
+        { $match: { id } },
+        { $sort: { createdAt: -1 } },
+        { $group: { _id: '$date', activityByDate: { $push: '$$ROOT' } } },
+        { $sort: { _id: -1 } }
     ])
     return result
 }
-module.exports.getActivity = async (req,res) => {
-    const {id} = req.query
+module.exports.getActivity = async (req, res) => {
+    const { id } = req.query
     console.log('ACTIVITY', id)
     const result = await getActivityByDate(id)
     res.status(200).json(result)

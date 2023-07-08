@@ -89,6 +89,9 @@ io.on('connection',async (socket)=> {
     socket.on('AssignTicket', (val, id, sender)=> {
         socket.broadcast.emit('ticketAssigned', val, id, sender)
     })
+    socket.on('new-bot-request', (request)=> {
+        socket.broadcast.emit('new-bot-request-added', request)
+    } )
 })
 
 server.listen(port, () => {
