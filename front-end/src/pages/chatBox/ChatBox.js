@@ -32,7 +32,7 @@ const ChatBox = () => {
     useEffect(() => {
         socket.emit('new-user')
         addActivity(currentUserVal, 'Chat page', `Visited Chat Page`)
-        if (state._id && currentUserVal._id) {
+        if (state?._id && currentUserVal?._id) {
             selectedUser(state, currentUserVal)
         }
         return () => {

@@ -74,6 +74,7 @@ function App() {
       setTotalMessages(totalMessage)
       setCurrentUserVal(currentUserVal)
       setAlertMessage('You got a message from ' + sender.fName)
+      setShowAlert(true)
       // alert('You got a message from ' + sender.fName)
     }
   })
