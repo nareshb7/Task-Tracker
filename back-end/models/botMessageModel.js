@@ -16,6 +16,11 @@ const botSchema = mongoose.Schema({
     team : {
         type: String,
         require: true
+    },
+    status: {
+        type: String,
+        require: true,
+        default: 'Pending'
     }
 },{ timestamps: true})
 

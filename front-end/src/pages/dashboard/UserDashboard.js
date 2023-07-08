@@ -91,6 +91,7 @@ const UserDashboard = ({ currentUserVal }) => {
             <Row>
                 <Row>
                     <Col><span className='fs-5 fw-bold'>Today Tickets : </span><span className='fs-3 fw-bold'>{dashboardData.todayTickets.length}</span></Col>
+                    <Col><span className='fs-5 fw-bold'>Raised Tickets : </span><span className='fs-3 fw-bold'> 5</span></Col>
                 </Row>
                 <Row>
                     {

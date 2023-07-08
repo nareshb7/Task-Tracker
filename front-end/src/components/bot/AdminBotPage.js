@@ -51,6 +51,7 @@ const AdminBotPage = () => {
                     <th>Team</th>
                     <th>Description</th>
                     <th>Received Time</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,6 +62,7 @@ const AdminBotPage = () => {
                             <td>{request.type}</td>
                             <td>{request.description}</td>
                             <td>{new Date(request?.createdAt).toLocaleString()}</td>
+                            <td>{request?.status}</td>
                         </tr>
                     ))
                 }
