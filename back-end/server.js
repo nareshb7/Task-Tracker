@@ -74,8 +74,9 @@ io.on('connection',async (socket)=> {
         roomMessages = sortRoomMessagesByDate(roomMessages)
         socket.emit('room-messages', roomMessages, room)
     })
-    socket.on('message-room', async (room, content, sender, time, date, opponentId )=> {
-        const newMessage =await Message.create({to: room, content,from : sender, time, date})
+    socket.on('message-room', async (room, content, sender, time, date, opponentId , type, fileLink)=> {
+        const newMessage =await Message.create({to: room, content,from : sender, time, date, type, fileLink})
+        // await Message.deleteMany({})
         const userData = await signUpModel.findById({_id: opponentId})
         userData.newMessages[room] = (userData.newMessages[room] || 0 ) + 1
         await userData.markModified('newMessages');

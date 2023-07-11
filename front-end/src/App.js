@@ -123,6 +123,7 @@ function App() {
             const notification = new Notification('Wel-Come', {
               body: `Welcome to ResourceOne ChatBox`,
               icon: cLogo,
+              tag: 'Welcome Message'
               // Other options like icon, badge, etc.
             });
           }

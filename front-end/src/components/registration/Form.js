@@ -56,19 +56,7 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
       formData['profileImage'] = dataURLtoFile(formData.binaryData, 'image.jpeg');
     }
   }, [])
-  const convertToBase64 = async (file) => {
-    let result = await new Promise((resolve, reject) => {
-      const filereader = new FileReader()
-      filereader.readAsDataURL(file)
-      filereader.onload = () => {
-        resolve(filereader.result)
-      }
-      filereader.onerror = (err) => {
-        reject(err)
-      }
-    })
-    return result
-  }
+ 
   function dataURLtoFile(dataurl, filename) {
     var arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
@@ -208,3 +196,17 @@ const SignupForm = ({ submitFunc, formData, error, isSubmitted, component }) => 
   );
 };
 export default SignupForm;
+
+export const convertToBase64 = async (file) => {
+  let result = await new Promise((resolve, reject) => {
+    const filereader = new FileReader()
+    filereader.readAsDataURL(file)
+    filereader.onload = () => {
+      resolve(filereader.result)
+    }
+    filereader.onerror = (err) => {
+      reject(err)
+    }
+  })
+  return result
+}

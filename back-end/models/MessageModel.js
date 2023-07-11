@@ -6,7 +6,9 @@ const messageSchema = new mongoose.Schema({
     to:String,
     time:String,
     date:String,
-    time:String
-})
+    time:String,
+    type:String,
+    fileLink: String
+}, {minimize: false})
 const Message = mongoose.model('Message', messageSchema)
 module.exports = Message
