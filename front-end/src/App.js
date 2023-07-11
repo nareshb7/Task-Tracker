@@ -11,6 +11,7 @@ import Navigation from './pages/Nav';
 import { fetchGetCall } from './components/utils/fetch/UseFetch';
 import ChatBot from './components/bot/ChatBot';
 import AlertBox from './components/utils/alert/AlertBox';
+import cLogo from './assets/company-logo.jpg'
 
 export const UserContext = createContext()
 const SOCKET_URL = BE_URL
@@ -26,6 +27,7 @@ function App() {
   const [newsData, setNewsData] = useState([])
   const [notificationRooms, setNotificationRooms] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const value = {
     notificationRooms,
@@ -38,31 +40,30 @@ function App() {
     setTotalMessages,
     currentRoom,
     setCurrentRoom,
-    quote
+    quote,
+    isLoggedIn
   }
-  useEffect(() => {
-    // socket.emit('new-user')
-    const handleTabClose = async (event) => {
-      event.preventDefault();
-      if (currentUserVal._id) {
+  const handleVisible = async () => {
+    if (currentUserVal._id) {
+      if (document.visibilityState === 'hidden') {
         await logoutFunc(currentUserVal)
         socket.emit('new-user')
-        console.log('iffff')
+      } else {
+        await logoutFunc(currentUserVal, 'Online')
+        socket.emit('new-user')
       }
-      if (event) {
-        event.returnValue = 'want to close...?'
-      }
-      // return (event.returnValue =
-      //   'Are you sure you want to exit?');
-    };
-    window.addEventListener('beforeunload', handleTabClose);
-    return () => {
-      window.removeEventListener('beforeunload', handleTabClose);
-    };
-  }, [currentUserVal]);
+    }
+  }
   socket.off("ticketAssigned").on("ticketAssigned", (val, id, sender) => {
     if (currentUserVal._id == id) {
-      alert(`${sender.fName} assigned you ticket`)
+      // alert(`${sender.fName} assigned you ticket`)
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const notification = new Notification('Ticket Assgned', {
+          body: `${sender.fName} assigned you ticket`,
+          icon: cLogo,
+          // Other options like icon, badge, etc.
+        });
+      }
     }
   })
   socket.off('notifications').on('notifications', (room, id, sender) => {
@@ -76,8 +77,27 @@ function App() {
       setAlertMessage('You got a message from ' + sender.fName)
       setShowAlert(true)
       // alert('You got a message from ' + sender.fName)
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const notification = new Notification('Message', {
+          body: `You got a message from ${sender.fName}`,
+          icon: cLogo,
+          // Other options like icon, badge, etc.
+        });
+      }
     }
   })
+  useEffect(() => {
+    window.addEventListener('visibilitychange', handleVisible)
+    return () => {
+      window.addEventListener('visibilitychange', handleVisible)
+    };
+  }, [isLoggedIn]);
+
+  useEffect(()=> {
+    if (currentUserVal._id) setIsLoggedIn(true)
+    else setIsLoggedIn(false)
+  }, [currentUserVal])
+  
   useEffect(() => {
     const getQuote = async () => {
       const d = new Date()
@@ -95,6 +115,19 @@ function App() {
     }
     getNews()
     getQuote()
+    if ('Notification' in window) {
+      Notification.requestPermission()
+        .then(permission => {
+          if (permission === 'granted') {
+            // Permission granted, you can now show notifications
+            const notification = new Notification('Wel-Come', {
+              body: `Welcome to ResourceOne ChatBox`,
+              icon: cLogo,
+              // Other options like icon, badge, etc.
+            });
+          }
+        });
+    }
   }, [])
   useEffect(() => {
     socket.emit('new-user')
@@ -111,13 +144,13 @@ function App() {
     <Provider store={store} >
       <div className='scrollbar-container '>
 
-      <UserContext.Provider value={value}>
-        <Navigation />
-        <RoutesComp />
-        <Footer />
-        <ChatBot />
-        <AlertBox showAlert={showAlert} setShowAlert={setShowAlert} message={alertMessage}/>
-      </UserContext.Provider>
+        <UserContext.Provider value={value}>
+          <Navigation />
+          <RoutesComp />
+          <Footer />
+          <ChatBot />
+          <AlertBox showAlert={showAlert} setShowAlert={setShowAlert} message={alertMessage} />
+        </UserContext.Provider>
       </div>
 
     </Provider>

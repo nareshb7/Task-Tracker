@@ -12,6 +12,7 @@ import '../pages/chatBox/ChatBox.css'
 import Time from '../components/utils/Time'
 import './style/Navigation.css'
 import { addActivity } from './activityPage/ActivityPage'
+import logo from '../assets/company-logo.jpg'
 
 const Navigation = () => {
     const { currentUserVal, setCurrentUserVal, socket, notificationRooms } = useContext(UserContext)
@@ -44,7 +45,7 @@ const Navigation = () => {
             <Container fluid>
                 <LinkContainer to='/'>
                     <Navbar.Brand className='nav-logo'>
-                        <img className="logo" src='https://media.licdn.com/dms/image/C560BAQFYCcCZ6hWFGA/company-logo_200_200/0/1519910499757?e=1687996800&v=beta&t=FHGu7-sMUPe_ZZJswZq7QGA19UZf2AWJVoJ8t5WiNdA' alt='cmpnyLogo' />
+                        <img className="logo" src={logo} alt='cmpnyLogo' />
                         Task- Tracker</Navbar.Brand>
                 </LinkContainer>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

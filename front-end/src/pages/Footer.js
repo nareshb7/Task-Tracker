@@ -10,7 +10,7 @@ const Footer = () => {
         <div className='footer-logo'>
             <img src='https://media.licdn.com/dms/image/C560BAQFYCcCZ6hWFGA/company-logo_200_200/0/1519910499757?e=1695859200&v=beta&t=8rcR_Thc-O5dA4U6lOoNMhF5SiYTv6pL_PspEtY-0cE' alt='cmpnyLogo' />
         </div>
-        <h3>ResourceOne IT Solutions.</h3>
+        <h3>{COMPANY_NAME}</h3>
       </div>
       <div>
         <h3>External Links</h3>
