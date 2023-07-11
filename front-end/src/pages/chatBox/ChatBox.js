@@ -7,6 +7,7 @@ import Modal from '../../components/modal/Modal'
 import { UserContext } from '../../App'
 import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 import { addActivity } from '../activityPage/ActivityPage'
+import { getFullName } from '../../components/utils/GetFullName'
 
 const ChatBox = () => {
     const { setNotificationRooms, currentUserVal, socket, setTotalMessages, setCurrentUserVal, currentRoom, setCurrentRoom } = useContext(UserContext)
@@ -18,6 +19,7 @@ const ChatBox = () => {
     const [opponent, setOpponent] = useState({})
     const [imgSrc, setImgSrc] = useState('')
     const [imgmodal, setImgmodal] = useState(false)
+    const [employessList, setEmployeesList] = useState([])
     socket.off('new-user').on('new-user', (payload) => {
         setUsers(payload)
     })
@@ -29,17 +31,7 @@ const ChatBox = () => {
             return id2 + "-" + id1
         }
     }
-    useEffect(() => {
-        socket.emit('new-user')
-        addActivity(currentUserVal, 'Chat page', `Visited Chat Page`)
-        if (state?._id && currentUserVal?._id) {
-            selectedUser(state, currentUserVal)
-        }
-        return () => {
-            socket.emit('join-room', 'sample', currentRoom)
-            setCurrentRoom('sample')
-        }
-    }, [])
+   
     const selectedUser = (user, currentUserVal) => {
         const roomId = getRoomId(user._id, currentUserVal._id)
         setCurrentRoom(roomId)
@@ -58,15 +50,35 @@ const ChatBox = () => {
         setImgSrc({ src, fName })
         setImgmodal(true)
     }
-
+    const handleSearchUsers =(e)=> {
+        const filteredUsers = users.filter(user => getFullName(user).toLowerCase().includes(e.target.value.toLowerCase()))
+        setEmployeesList(filteredUsers)
+    }
+    useEffect(() => {
+        socket.emit('new-user')
+        addActivity(currentUserVal, 'Chat page', `Visited Chat Page`)
+        if (state?._id && currentUserVal?._id) {
+            selectedUser(state, currentUserVal)
+        }
+        return () => {
+            socket.emit('join-room', 'sample', currentRoom)
+            setCurrentRoom('sample')
+        }
+    }, [])
+    useEffect(()=> {
+        setEmployeesList(users)
+    }, [users])
     return (
         <>
             {
                 currentUserVal._id ? <div className='chatBox-main'>
                     <div className='chatBox-userList'>
                         <div>{users.length < 0 && 'Loading....'}</div>
+                        <div>
+                            <input className='form-control' type='search' onChange={handleSearchUsers} />
+                        </div>
                         {
-                            users.map((user, idx) => {
+                            employessList.map((user, idx) => {
                                 if (user._id === currentUserVal._id) {
                                     return
                                 }
