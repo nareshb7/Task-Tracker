@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import { fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
+import { COMPANY_NAME } from '../../components/utils/Constants'
 
 export const lastSeenTimeFormat = (time) => {
     const val = new Date(time).toLocaleString()
@@ -131,9 +132,9 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                 console.log('CONVERTED', fileLink)
                 sendMessage(file.name, file.type, fileLink)
             }
-            else console.log('NOt VALID SIZE')
+            else alert('More than 300kb not allowed')
         }
-        else console.log('NOT VALID FORMAT')
+        else alert('This format is not supported to send')
     }
     const handleSendContact = (contact) => {
         const cnfrm = window.confirm(`Do u want to share ${contact.consultantName} contact?`)
@@ -255,7 +256,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                     </div>
                 }
 
-            </div> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><h3>ResourceOne IT</h3></div>
+            </div> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><h3>{COMPANY_NAME}</h3></div>
         }
     </>
 

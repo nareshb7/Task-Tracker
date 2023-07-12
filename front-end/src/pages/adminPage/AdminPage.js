@@ -11,6 +11,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import TimeZones, { ParticularTimeZone, particularTimeZone, TimeZone } from '../../components/features/TimeZones'
 import { getFullName } from '../../components/utils/GetFullName'
+import { debounce } from '../../components/utils/Debounce'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -126,11 +127,11 @@ const AdminPage = () => {
         }
         setTableData(sortData)
     }
-    const handleSearch = (e) => {
+    const handleSearch = debounce((e) => {
         setSearchVal(e.target.value)
         const searchData = users.filter(val => val.fName.toLowerCase().includes(e.target.value.toLowerCase()) || val.lName.toLowerCase().includes(e.target.value.toLowerCase()))
         setTableData(searchData)
-    }
+    })
     const adminRequests = () => {
         setIsModalOpen(true)
     }

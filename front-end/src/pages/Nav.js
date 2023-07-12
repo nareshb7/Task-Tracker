@@ -15,7 +15,7 @@ import { addActivity } from './activityPage/ActivityPage'
 import logo from '../assets/company-logo.jpg'
 
 const Navigation = () => {
-    const { currentUserVal, setCurrentUserVal, socket, notificationRooms } = useContext(UserContext)
+    const { currentUserVal, setCurrentUserVal, socket, notificationRooms, isLoggedIn } = useContext(UserContext)
 
     const navigate = useNavigate()
     const logout = async (id) => {
@@ -56,7 +56,7 @@ const Navigation = () => {
                         </LinkContainer>
 
                         {
-                            currentUserVal.fName && <>
+                            isLoggedIn && <>
                                 <LinkContainer to='/getIssue'>
                                     <Nav.Link >Tickets</Nav.Link>
                                 </LinkContainer>
@@ -67,7 +67,7 @@ const Navigation = () => {
                                 }
                                 <LinkContainer to='/chat'>
                                     <Nav.Link >Chat
-                                        {currentUserVal._id && notificationRooms != 0 && <span className='notification-icon'>{notificationRooms}</span>}
+                                        {isLoggedIn && notificationRooms != 0 && <span className='notification-icon'>{notificationRooms}</span>}
                                     </Nav.Link>
                                 </LinkContainer>
                                 <LinkContainer to='/dashboard'>
@@ -77,7 +77,7 @@ const Navigation = () => {
                         }
 
                         {
-                            currentUserVal.fName && <li>
+                            isLoggedIn && <li>
                                 <label className="switch mt-2">
                                     <input type="checkbox" onChange={handleStatus} defaultChecked={true} />
                                     <span className="slider round"></span>
@@ -85,10 +85,10 @@ const Navigation = () => {
                             </li>
                         }
                         <LinkContainer to='/login'>
-                            <Nav.Link > {currentUserVal.mobile ? "My  Profile" : "Login"}</Nav.Link>
+                            <Nav.Link > {isLoggedIn ? "My  Profile" : "Login"}</Nav.Link>
                         </LinkContainer>
                         {
-                            currentUserVal.fName && (
+                            isLoggedIn && (
                                 <NavDropdown title={
                                     <>
                                         <img src={currentUserVal.binaryData} style={{ width: 30, height: 30, marginRight: 10, objectFit: 'cover', borderRadius: '50%' }} />

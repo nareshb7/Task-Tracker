@@ -1,0 +1,60 @@
+Dt: 12-07-23
+-> Location data updated in stats page
+-> Loader updated in Tickets Page and ChatBox Page
+-> Debounce Feature added for tickets handleSearch
+-> isLogin Variable created in App to kow the user is login or not
+-> ContextProvider component added
+
+Dt :11-07-23
+-> Updated Chat component message box files upload and storing in cloudinary
+-> updated search filter for EmployeesList in chat comp 
+-> Updated Visibiility State for Online and Offiline
+-> Added Push Notifications when user sent any message or get any message from admin
+
+Dt : 08-07-23
+-> Bot modelSchema updated added team and status
+-> Storing the employee last login details like browser , location and time
+-> Created AdminBotPage to see the Bot Requests
+
+Dt: 29-06-23
+-> Clients Stats page Created
+
+Dt: 28-06-23
+-> Bot requests getting in console
+
+Dt: 27-06-23
+-> consultantId key added for tickets to track the client tickets
+
+Dt: 26-06-23
+-> Show Clients List created in Admin Page
+
+Dt: 23-06-23
+-> Bot responses updated when user clicks on option
+
+Dt : 20-06-23
+-> Chat Bot Created
+
+Dt: 18-06-23
+-> Updated date format for userActivity to show date wise
+
+Dt: 17-06-23
+-> Added date for Activity data
+
+Dt: 16-06-23
+-> Activity Page Created 
+
+Dt: 14-06-23
+-> User Dahsboard Error Updated
+-> Employess stats page updated
+
+Dt: 06-06-23
+-> Chat notification will update even employee is in Offiline
+
+Dt: 03-06-23
+-> Entertainment zone and newsArticle zone updated in myProfile Page
+
+Dt: 02-06-23
+-> Add Ticket and Add Client feature added in Admin Dahsboard Page
+
+Dt : 01-06-23
+-> Updated Home page

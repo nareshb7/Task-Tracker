@@ -8,12 +8,12 @@ import Pagination from '../components/issues/Pagination'
 import './style/IssueList.css'
 import { addActivity } from './activityPage/ActivityPage'
 import { fetchGetCall } from '../components/utils/fetch/UseFetch'
+import { debounce } from '../components/utils/Debounce'
 
 const GetTask = () => {
     const stateIssues = useSelector(state => state.issues)
     const navigate = useNavigate()
     const { currentUserVal } = useContext(UserContext)
-    const [currentUser, setCurrentUser] = useState({})
     const [searchVal, setSearchVal] = useState('')
     const [data, setData] = useState([])
     const [tableData, setTableData] = useState([])
@@ -61,38 +61,40 @@ const GetTask = () => {
         navigate(`/description`, { state: val })
     }
     const editFunc = (id, data) => {
-        navigate('/addIssue', {state: {data, mode:'UPDATE'}})
+        navigate('/addIssue', { state: { data, mode: 'UPDATE' } })
     }
     const deleteFunc = (id) => {
         let cnfrm = window.confirm('Do you want to delete this ticket??')
+        setLoading(true)
         if (cnfrm) {
             axios.post('/api/deletesolution', { id })
                 .then(res => {
                     const newData = data.filter(val => val._id !== res.data._id)
                     setData(newData)
                     addActivity(currentUserVal, 'Tickets page', `Ticket Deleted ${id}`)
+                    setLoading(false)
                 })
-                .catch(err => console.log(err, 'Error Occured during delete'))
+                .catch(err => setLoading(false))
         }
     }
-    const handleSearch = (e)=> {
-        const {value} = e.target
-        setSearchVal(value)
-        let mockData = value ? data : data
-        const searchData = mockData.filter(val => {
-            if(val.cName.toLowerCase().includes(value.toLowerCase()) || val.dName.toLowerCase().includes(value.toLowerCase()) || val.technology.toLowerCase().includes(value.toLowerCase()) ){
+    const handleSearch = debounce((e) => {
+        const { value } = e.target
+        const searchData = data.filter(val => {
+            if (val.cName.toLowerCase().includes(value.toLowerCase()) || val.dName.toLowerCase().includes(value.toLowerCase()) || val.technology.toLowerCase().includes(value.toLowerCase())) {
                 return val
             }
         })
-        console.log('Search',searchData,value)
+        console.log('Search', value)
         setTableData(searchData)
         addActivity(currentUserVal, 'Tickets page', `Performed search operation`)
-    }
-    const getTickets =async ()=> {
-        const {success, data} = await fetchGetCall('/api/getData')
+    })
+    const getTickets = async () => {
+        setLoading(true)
+        const { success, data } = await fetchGetCall('/api/getData')
         if (success) {
             setData(data)
         }
+        setLoading(false)
     }
     useEffect(() => {
         addActivity(currentUserVal, 'Tickets page', `Visited tickets page`)
@@ -102,29 +104,19 @@ const GetTask = () => {
     useEffect(() => {
         if (data.length) {
             setTableData(data)
-            setLoading(false)
             sortList()
-        } else {
-            setLoading(true)
         }
     }, [data])
 
-    useEffect(() => {
-        if (Object.keys(currentUserVal).length > 2) {
-            setCurrentUser(currentUserVal)
-            setLoading(false)
-        }
-    }, [currentUserVal])
-    
-    return (<div className='bgi' style={{color:'#eee'}}>
-    <div className='issueList-main'>
-        <h1 style={{color:'#000'}}>Uploaded Ticket's: </h1>
-        <div>
-            <input className='searchIpt' type='search' value={searchVal} onChange={handleSearch} placeholder='Search Here' />
-        </div>
+    return (<div className='bgi' style={{ color: '#eee' }}>
+        <div className='issueList-main'>
+            <h1 style={{ color: '#000' }}>Uploaded Ticket's: </h1>
+            <div>
+                <input className='searchIpt' type='search' value={searchVal} onChange={(e)=> {handleSearch(e); setSearchVal(e.target.value)}} placeholder='Search Here' />
+            </div>
         </div>
         {
-            loading ? <h3>Loading....</h3> : <div >
+            loading ? <h3><Loader /></h3> :
                 <table border='1' cellPadding={10} className='table table-striped table-hover'>
                     <thead className='thead-dark'>
                         <tr>
@@ -186,16 +178,14 @@ const GetTask = () => {
                             <th>Edit / Delete</th>
                         </tr>
                     </thead>
-                        {
-                            tableData.length ? <>
-                            
-                            <Pagination currentUser={currentUser} data={tableData} gotoDesc={gotoDesc} editFunc={editFunc} deleteFunc={deleteFunc} />
-                            </> : <tbody><tr>
-                                <td colSpan={11} > {tableData.length === 0 ? <h3 style={{ textAlign: 'center' }}>No result found</h3> : <Loader />} </td>
-                            </tr></tbody>
-                        }
+                    {
+                        tableData.length ? <>
+                            <Pagination currentUser={currentUserVal} data={tableData} gotoDesc={gotoDesc} editFunc={editFunc} deleteFunc={deleteFunc} />
+                        </> : <tbody><tr>
+                            <td colSpan={11} > <h3 style={{ textAlign: 'center' }}>No Data Available</h3></td>
+                        </tr></tbody>
+                    }
                 </table>
-            </div>
         }
     </div>
 

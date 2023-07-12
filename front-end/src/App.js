@@ -1,48 +1,32 @@
-import React, { createContext, useEffect, useState } from 'react'
-import { io } from 'socket.io-client'
+import React, { createContext, useContext, useEffect } from 'react'
 import { Provider } from 'react-redux';
 import RoutesComp from './pages/RoutesComp';
 import useAuth from './components/utils/Authentication';
 import { store } from './redux/store/Store';
 import Footer from './pages/Footer';
-import { BE_URL } from './components/utils/Constants';
 import { logoutFunc } from './components/utils/LogoutFunc';
 import Navigation from './pages/Nav';
 import { fetchGetCall } from './components/utils/fetch/UseFetch';
 import ChatBot from './components/bot/ChatBot';
-import AlertBox from './components/utils/alert/AlertBox';
 import cLogo from './assets/company-logo.jpg'
 
 export const UserContext = createContext()
-const SOCKET_URL = BE_URL
-const socket = io(SOCKET_URL);
 
 function App() {
 
   const userDetails = useAuth()
-  const [currentUserVal, setCurrentUserVal] = useState({})
-  const [totalMessages, setTotalMessages] = useState(0)
-  const [currentRoom, setCurrentRoom] = useState('')
-  const [quote, setQuote] = useState({})
-  const [newsData, setNewsData] = useState([])
-  const [notificationRooms, setNotificationRooms] = useState(0)
-  const [showAlert, setShowAlert] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const value = {
-    notificationRooms,
+  const {
     setNotificationRooms,
-    newsData,
+    setNewsData,
     currentUserVal,
     setCurrentUserVal,
     socket,
-    totalMessages,
     setTotalMessages,
     currentRoom,
-    setCurrentRoom,
-    quote,
-    isLoggedIn
-  }
+    setQuote,
+    isLoggedIn,
+    setIsLoggedIn
+  } = useContext(UserContext)
   const handleVisible = async () => {
     if (currentUserVal._id) {
       if (document.visibilityState === 'hidden') {
@@ -64,6 +48,7 @@ function App() {
           // Other options like icon, badge, etc.
         });
       }
+      alert(`${sender.fName} assigned you ticket`)
     }
   })
   socket.off('notifications').on('notifications', (room, id, sender) => {
@@ -74,8 +59,6 @@ function App() {
       setNotificationRooms(roomsCount)
       setTotalMessages(totalMessage)
       setCurrentUserVal(currentUserVal)
-      setAlertMessage('You got a message from ' + sender.fName)
-      setShowAlert(true)
       // alert('You got a message from ' + sender.fName)
       if ('Notification' in window && Notification.permission === 'granted') {
         const notification = new Notification('Message', {
@@ -84,6 +67,7 @@ function App() {
           // Other options like icon, badge, etc.
         });
       }
+      alert(`You got a message from ${sender.fName}`)
     }
   })
   useEffect(() => {
@@ -93,11 +77,11 @@ function App() {
     };
   }, [isLoggedIn]);
 
-  useEffect(()=> {
+  useEffect(() => {
     if (currentUserVal._id) setIsLoggedIn(true)
     else setIsLoggedIn(false)
   }, [currentUserVal])
-  
+
   useEffect(() => {
     const getQuote = async () => {
       const d = new Date()
@@ -138,24 +122,19 @@ function App() {
       const roomsCount = Object.keys(userDetails?.newMessages).length
       setNotificationRooms(roomsCount)
       setTotalMessages(totalMessage)
-
     }
   }, [userDetails])
   return (
     <Provider store={store} >
       <div className='scrollbar-container '>
-
-        <UserContext.Provider value={value}>
           <Navigation />
           <RoutesComp />
           <Footer />
           <ChatBot />
-          <AlertBox showAlert={showAlert} setShowAlert={setShowAlert} message={alertMessage} />
-        </UserContext.Provider>
       </div>
-
     </Provider>
   );
 }
 
 export default App;
+// <AlertBox showAlert={showAlert} setShowAlert={setShowAlert} message={alertMessage} />

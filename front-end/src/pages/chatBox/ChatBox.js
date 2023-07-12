@@ -8,19 +8,21 @@ import { UserContext } from '../../App'
 import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 import { addActivity } from '../activityPage/ActivityPage'
 import { getFullName } from '../../components/utils/GetFullName'
+import { Spinner } from 'react-bootstrap'
+import Loader from '../../components/utils/loader/Loader'
 
 const ChatBox = () => {
     const { setNotificationRooms, currentUserVal, socket, setTotalMessages, setCurrentUserVal, currentRoom, setCurrentRoom } = useContext(UserContext)
-    const stateData = useSelector(state => state.user)
-    const {state} = useLocation()
-    const dispatch = useDispatch()
+    const { state } = useLocation()
     const [users, setUsers] = useState([])
-    const [openMszList, setOpenMszList] = useState(false)
     const [opponent, setOpponent] = useState({})
     const [imgSrc, setImgSrc] = useState('')
     const [imgmodal, setImgmodal] = useState(false)
     const [employessList, setEmployeesList] = useState([])
+    const [searchVal, setSearchVal] = useState('')
+    const [loading, setLoading] = useState(false)
     socket.off('new-user').on('new-user', (payload) => {
+        setLoading(false)
         setUsers(payload)
     })
 
@@ -31,7 +33,7 @@ const ChatBox = () => {
             return id2 + "-" + id1
         }
     }
-   
+
     const selectedUser = (user, currentUserVal) => {
         const roomId = getRoomId(user._id, currentUserVal._id)
         setCurrentRoom(roomId)
@@ -39,8 +41,8 @@ const ChatBox = () => {
         socket.emit('new-user')
         currentUserVal.newMessages && delete currentUserVal.newMessages[roomId]
         setCurrentUserVal(currentUserVal)
+        setSearchVal('')
         setOpponent(user)
-        setOpenMszList(true)
         let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
         setTotalMessages(totalMessage)
         const roomsCount = Object.keys(currentUserVal?.newMessages).length
@@ -50,11 +52,13 @@ const ChatBox = () => {
         setImgSrc({ src, fName })
         setImgmodal(true)
     }
-    const handleSearchUsers =(e)=> {
+    const handleSearchUsers = (e) => {
+        setSearchVal(e.target.value)
         const filteredUsers = users.filter(user => getFullName(user).toLowerCase().includes(e.target.value.toLowerCase()))
         setEmployeesList(filteredUsers)
     }
     useEffect(() => {
+        setLoading(true)
         socket.emit('new-user')
         addActivity(currentUserVal, 'Chat page', `Visited Chat Page`)
         if (state?._id && currentUserVal?._id) {
@@ -65,7 +69,7 @@ const ChatBox = () => {
             setCurrentRoom('sample')
         }
     }, [])
-    useEffect(()=> {
+    useEffect(() => {
         setEmployeesList(users)
     }, [users])
     return (
@@ -75,30 +79,36 @@ const ChatBox = () => {
                     <div className='chatBox-userList'>
                         <div>{users.length < 0 && 'Loading....'}</div>
                         <div>
-                            <input className='form-control' type='search' onChange={handleSearchUsers} />
+                            <input placeholder='Search here...' value={searchVal} className='form-control' type='search' onChange={handleSearchUsers} />
                         </div>
-                        {
-                            employessList.map((user, idx) => {
-                                if (user._id === currentUserVal._id) {
-                                    return
+                        <>{
+                            loading ? <Loader /> : <>
+                                {
+                                    employessList.map((user, idx) => {
+                                        if (user._id === currentUserVal._id) {
+                                            return
+                                        }
+                                        return <div key={idx} className='chatBox-div'  >
+                                            <div onClick={() => imgPopup(user.binaryData, user.fName)} className='chatBox-image'>
+                                                <img className='img' src={user.binaryData} />
+                                                <span className='online-indicator'>{user.status == 'Online' ? <GreenDot /> : <RedDot />}</span>
+                                            </div>
+                                            <div onClick={() => selectedUser(user, currentUserVal)} className='author-details'>
+                                                <h3 className='chatBox-header'>{user.fName} {user.lName}</h3>
+                                                <h5 className='chatBox-technology'>{user.designation ? user.designation : 'React JS'}</h5>
+                                            </div>
+                                            <div> {
+                                                currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)] &&
+                                                <span className='notification-icon'>{currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)]}</span>
+                                            }
+                                            </div>
+                                        </div>
+                                    })
                                 }
-                                return <div key={idx} className='chatBox-div'  >
-                                    <div onClick={() => imgPopup(user.binaryData, user.fName)} className='chatBox-image'>
-                                        <img className='img' src={user.binaryData} />
-                                        <span className='online-indicator'>{user.status == 'Online' ? <GreenDot /> : <RedDot />}</span>
-                                    </div>
-                                    <div onClick={() => selectedUser(user, currentUserVal)} className='author-details'>
-                                        <h3 className='chatBox-header'>{user.fName} {user.lName}</h3>
-                                        <h5 className='chatBox-technology'>{user.designation ? user.designation : 'React JS'}</h5>
-                                    </div>
-                                    <div> {
-                                        currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)] &&
-                                        <span className='notification-icon'>{currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)]}</span>
-                                    }
-                                    </div>
-                                </div>
-                            })
+                            </>
                         }
+                        </>
+
                     </div>
                     <MessageBox
                         socket={socket}
@@ -106,7 +116,6 @@ const ChatBox = () => {
                         setOpponent={setOpponent}
                         roomId={currentRoom}
                         opponent={opponent}
-                        setOpenMszList={setOpenMszList}
                         imgPopup={imgPopup} />
                     <Modal isOpen={imgmodal} setModal={setImgmodal} >
                         <div>

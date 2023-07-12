@@ -29,9 +29,15 @@ const useAuth = () => {
 export default useAuth
 
 export async function getLocationCoords() {
+    let obj = {}
+    window.navigator.geolocation.watchPosition(function (position) {
+        obj = {latitude: position.coords.latitude, longitude: position.coords.longitude}
+      });
     return await fetch('https://geolocation-db.com/json/')
         .then((res) => res.json())
-        .then(data => data)
+        .then(data => {
+            return {...data, ...obj}
+        })
         .catch((err) => console.log(err, 'err'));
 }
 

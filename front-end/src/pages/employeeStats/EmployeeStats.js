@@ -7,6 +7,7 @@ import { fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import ActivityPage, { addActivity } from '../activityPage/ActivityPage'
 import { getFullName } from '../../components/utils/GetFullName'
 import { UserContext } from '../../App'
+import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 
 const EmployeeStats = () => {
   const { state, } = useLocation()
@@ -68,7 +69,8 @@ const EmployeeStats = () => {
           <div className='img-container'>
             <img src={state.binaryData} className='img br-50' />
           </div>
-          <span className='fw-bold fs-3'>{state.fName} {state.lName}</span>
+          <span className='fw-bold fs-3'>{state.fName} {state.lName} </span>
+          <span>{state.status === 'Online' ? <GreenDot />: <RedDot />}</span>
           <span className='fw-bold' style={{color : '#666'}}> ( {state.userId} )</span>
         </Col>
       </Row>
@@ -121,6 +123,17 @@ const EmployeeStats = () => {
             <Col><span>Solved with another Dev: </span><span>{statsData.helpTaken}</span></Col>
             <Col><span>Helped Tickets: </span><span>{helpedTickets.length} </span></Col>
           </Row>
+        </Col>
+        <Col>
+        <Row className='d-flex flex-column'>
+        <span style={{ color: '#888' }} className='my-2'>Last LoggedIn Data</span>
+        <Col><span>Browser : </span><span>{state?.lastLoginData.browserName}</span></Col>
+        <Col><span>IP Address: </span><span>{state?.lastLoginData.ipAddress}</span></Col>
+        <Col><span>Login Time: </span><span>{new Date(state?.lastLoginData.loginTime).toLocaleString()}</span></Col>
+        <Col><span>Location: </span><span>{state?.lastLoginData.location.city}, {state?.lastLoginData.location.state} </span></Col>
+        <Col><span>Map: </span><a href={`https://www.latlong.net/c/?lat=${state?.lastLoginData.location.latitude}&long=${state?.lastLoginData.location.longitude}`} target='_blank'>Click here </a></Col>
+        <Col></Col>
+        </Row>
         </Col>
       </Row>
       <ActivityPage id={state._id} name={getFullName(state)}/>
