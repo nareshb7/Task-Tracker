@@ -38,6 +38,11 @@ function App() {
       }
     }
   }
+  const onUnload = e => { // the method that will be used for both add and remove event
+    e.preventDefault();
+    handleVisible()
+    e.returnValue = '';
+ }
   socket.off("ticketAssigned").on("ticketAssigned", (val, id, sender) => {
     if (currentUserVal._id == id) {
       // alert(`${sender.fName} assigned you ticket`)
@@ -72,15 +77,13 @@ function App() {
   })
   useEffect(() => {
     window.addEventListener('visibilitychange', handleVisible)
+    window.addEventListener('beforeunload', onUnload)
     return () => {
       window.addEventListener('visibilitychange', handleVisible)
+      window.addEventListener('beforeunload', onUnload)
     };
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    if (currentUserVal._id) setIsLoggedIn(true)
-    else setIsLoggedIn(false)
-  }, [currentUserVal])
 
   useEffect(() => {
     const getQuote = async () => {
@@ -115,13 +118,14 @@ function App() {
     }
   }, [])
   useEffect(() => {
-    socket.emit('new-user')
-    setCurrentUserVal(userDetails)
-    if (userDetails?.newMessages) {
+    if (userDetails?._id) {
       let totalMessage = Object.values(userDetails?.newMessages).length && Object.values(userDetails?.newMessages)?.reduce((a, b) => a + b)
       const roomsCount = Object.keys(userDetails?.newMessages).length
       setNotificationRooms(roomsCount)
       setTotalMessages(totalMessage)
+      setIsLoggedIn(true)
+      setCurrentUserVal(userDetails)
+      socket.emit('new-user')
     }
   }, [userDetails])
   return (

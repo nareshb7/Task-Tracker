@@ -12,11 +12,12 @@ import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import TimeZones, { ParticularTimeZone, particularTimeZone, TimeZone } from '../../components/features/TimeZones'
 import { getFullName } from '../../components/utils/GetFullName'
 import { debounce } from '../../components/utils/Debounce'
+import TaskTable from '../../components/reusable/table/Table'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
     const navigate = useNavigate()
-    const {state} = useLocation()
+    const { state } = useLocation()
     const [openUpdateModal, setOpenUpdateModal] = useState(false)
     const [updateUserObj, setUpdateUserObj] = useState({})
     const [users, setUsers] = useState([])
@@ -44,6 +45,7 @@ const AdminPage = () => {
         { header: 'Uploaded Issues' },
         { header: 'Remove User' }
     ]
+
     const statusIndicatorStyle = { position: 'absolute', top: '0', right: '0' }
     const getAllUsers = async () => {
         axios.get('/api/getallusers')
@@ -68,12 +70,12 @@ const AdminPage = () => {
                 setMailChangeReqIDs(data.data)
             })
             .catch(err => console.log(err, 'error'))
-            if (state?._id && state?.popup == "EMPMODAL") {
-                setShowEmpModal(true)
-                setShowEmpData(state)
-                state.popup = ''
+        if (state?._id && state?.popup == "EMPMODAL") {
+            setShowEmpModal(true)
+            setShowEmpData(state)
+            state.popup = ''
 
-            }
+        }
     }, [])
     useEffect(() => {
         setCurrentUser(currentUserVal)
@@ -227,33 +229,77 @@ const AdminPage = () => {
         }
         setMailChangeModal(true)
     }
-    const handleRoleChange =async (e)=> {
+    const handleRoleChange = async (e) => {
         console.log('VAL', e.target.value, updateUserObj)
         const msz = `You are updating ${updateUserObj.fName}'s role from ${updateUserObj.designation} to ${e.target.value}`
         const cnfrm = window.confirm(msz)
         if (cnfrm && e.target.value) {
-            const obj = {id: updateUserObj._id, updateKey: 'designation', updateValue: e.target.value, update: 'single' }
-            const res = await fetchCall('/api/adminupdateuser', {...obj})
+            const obj = { id: updateUserObj._id, updateKey: 'designation', updateValue: e.target.value, update: 'single' }
+            const res = await fetchCall('/api/adminupdateuser', { ...obj })
             console.log('UPDATE', res)
             getAllUsers()
             setOpenUpdateModal(false)
         }
     }
-    
-    const showClientStats = (client)=> {
-        navigate('/clientstats', {state: client})
+
+    const showClientStats = (client) => {
+        navigate('/clientstats', { state: client })
     }
+    const clientTableHeaders = [
+        { title: 'Sl. No', key: 'serialNo' },
+        { title: 'Consultant Name', key: '', tdFormat: (client) => <span>{client.consultantName} - {client._id}</span> },
+        { title: 'Email', key: 'email' },
+        { title: 'Phone', key: 'phone' },
+        { title: 'Location', key: 'location' },
+        { title: 'Technology', key: 'technology' },
+        { title: 'Time', key: '', tdFormat: (client) => <ParticularTimeZone timeZone={client.location} /> },
+    ]
+    const tHeadss = [
+        { header: 'Sl. No' },
+        { header: 'Name', filter: 'fName' },
+        { header: 'Email', filter: 'email' },
+        { header: 'Mobile', filter: 'mobile' },
+        { header: 'Role', filter: 'designation' },
+        { header: 'Profile Image' },
+        { header: 'Active User', filter: 'isActive' },
+        { header: 'Uploaded Issues' },
+        { header: 'Remove User' }
+    ]
+    const empTableHeaders = [
+        { title: 'Sl. No', key: 'serialNo' },
+        {
+            title: 'Name',node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }], key: '', 
+            tdFormat: (user) => <><span>{user.fName} {user.lName}</span><br />
+                <span style={{ color: '#888' }} >( {user.userId} )</span></>,
+            onClick: sortFunc
+        },
+        { title: 'Email', key: 'email',node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc },
+        { title: 'Mobile', key: 'mobile', node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc },
+        { title: 'Role', key: 'designation',node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc },
+        {
+            title: 'Profile Image', key: '', 
+            tdFormat: (user) => <>{user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
+                <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} /></>
+        },
+        { title: 'Active User', key: '',node:'select',onClick: sortFunc, values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc, tdFormat: (user) => <span>{user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </span> },
+        { title: 'Uploaded Issues', key: '', tdFormat: (user) => <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button> },
+        {
+            title: 'Remove User', key: 'serialNo', tdFormat: (user) => <><Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
+                <Button variant='danger' disabled={currentUser.mobile == user.mobile} onClick={() => removeUser(user)}>Remove</Button></>
+        },
+
+    ]
     return (
         <>{
             currentUser && currentUser.isAdmin ? <div>
                 <div className='d-flex justify-content-between'>
-                <h1>Users : </h1>
-                <TimeZones />
+                    <h1>Users : </h1>
+                    <TimeZones />
                 </div>
-                <Button onClick={()=> setShowClientsData(!showClientsData)}>Show {showClientsData ? 'Users': 'Clients' }</Button>
+                <Button onClick={() => setShowClientsData(!showClientsData)}>Show {showClientsData ? 'Users' : 'Clients'}</Button>
                 <div style={{ textAlign: 'end' }}>
-                <Link className='mx-2' to='/botrequest'><Button > Bot Requests</Button></Link>
-                <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
+                    <Link className='mx-2' to='/botrequest'><Button > Bot Requests</Button></Link>
+                    <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
                     <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
                     <Button className='mx-2' onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </Button>
                     <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />
@@ -344,144 +390,121 @@ const AdminPage = () => {
                 </Modal>
                 {
                     showEmpModal && <Modal isOpen={showEmpModal} setModal={setShowEmpModal}>
-                    <div style={{ display: 'flex' }}>
-                        <div>
-                            <h3>Name : {showEmpData.fName + " " + showEmpData.lName}</h3>
-                            <h3>Email: {showEmpData.email}</h3>
-                            <h3>Mobile : {showEmpData.mobile}</h3>
-                            {
-                                showEmpData.status === 'Online' ? <h3>Status : Online</h3> :
-                                    <h3>Last Active On : {lastSeenTimeFormat(showEmpData.lastActiveOn)}</h3>
-                            }
-                            <h3>Active User : {showEmpData.isActive ? "Yes" : 'No'}</h3>
-                            <h3>Admin : {showEmpData.isAdmin ? "Yes" : "No"}</h3>
-                            <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
-                            <h3>Uploaded Issues :{showEmpData.uploadedIssues?.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
-                            <h3>Technologies : {showEmpData.technologies?.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
+                        <div style={{ display: 'flex' }}>
                             <div>
-                                <Button onClick={() => {
-                                    setShowEmpModal(!showEmpModal)
-                                    setTimeout(() => {
-                                        navigate('/empstats', { state: showEmpData })
-                                    }, 0)
-                                }}>
-                                    Go to Stats page
-                                </Button>
-                                <Button className='mx-2' onClick={()=> navigate('/chat', {state: showEmpData })}>Send Message</Button>
+                                <h3>Name : {showEmpData.fName + " " + showEmpData.lName}</h3>
+                                <h3>Email: {showEmpData.email}</h3>
+                                <h3>Mobile : {showEmpData.mobile}</h3>
+                                {
+                                    showEmpData.status === 'Online' ? <h3>Status : Online</h3> :
+                                        <h3>Last Active On : {lastSeenTimeFormat(showEmpData.lastActiveOn)}</h3>
+                                }
+                                <h3>Active User : {showEmpData.isActive ? "Yes" : 'No'}</h3>
+                                <h3>Admin : {showEmpData.isAdmin ? "Yes" : "No"}</h3>
+                                <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
+                                <h3>Uploaded Issues :{showEmpData.uploadedIssues?.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
+                                <h3>Technologies : {showEmpData.technologies?.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
+                                <div>
+                                    <Button onClick={() => {
+                                        setShowEmpModal(!showEmpModal)
+                                        setTimeout(() => {
+                                            navigate('/empstats', { state: showEmpData })
+                                        }, 0)
+                                    }}>
+                                        Go to Stats page
+                                    </Button>
+                                    <Button className='mx-2' onClick={() => navigate('/chat', { state: showEmpData })}>Send Message</Button>
+                                </div>
+                            </div>
+                            <div style={{ width: '100px', height: '100px' }}>
+                                <img src={showEmpData.binaryData} style={{ width: '100%', height: '100%' }} />
                             </div>
                         </div>
-                        <div style={{ width: '100px', height: '100px' }}>
-                            <img src={showEmpData.binaryData} style={{ width: '100%', height: '100%' }} />
-                        </div>
-                    </div>
-                </Modal>
-                } 
+                    </Modal>
+                }
+
                 {
                     showClientsData ? <>
-                        <Table striped hover responsive>
-                            <thead>
-                                <tr>
-                                    <th>Sl. No</th>
-                                    <th>Consultant Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Location</th>
-                                    <th>Technology</th>
-                                    <th>Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    clientsData.map((client, idx )=> {
-                                        return <tr key={client._id} onClick={() => showClientStats(client)}>
-                                            <td>{idx +1}</td>
-                                            <td>{client.consultantName} - {client._id}</td>
-                                            <td>{client.email}</td>
-                                            <td>{client.phone}</td>
-                                            <td>{client.location}</td>
-                                            <td>{client.technology}</td>
-                                            <td><ParticularTimeZone timeZone ={client.location}/></td>
-                                        </tr>
-                                    })
-                                }
-                            </tbody>
-                        </Table>
+                        <TaskTable headers={clientTableHeaders} tableData={clientsData} handleRowClick={showClientStats} />
                     </> : <>
-                    {
-                    users.length ? (<> <Table striped hover responsive>    
-                        <thead style={{ color: '#000' }}>
-                            <tr>
-                                {
-                                    tHead.map((th, idx) => {
-                                        return (
-                                            <th key={idx}>
-                                                <span>{th.header}</span>
+                        {
+                            users.length ? (<>
+                                <TaskTable />
+                                <Table striped hover responsive>
+                                    <thead style={{ color: '#000' }}>
+                                        <tr>
+                                            {
+                                                tHead.map((th, idx) => {
+                                                    return (
+                                                        <th key={idx}>
+                                                            <span>{th.header}</span>
+                                                            {
+                                                                th.filter && <select onClick={(e) => sortFunc(th.filter, e.target.value)}>
+                                                                    <option value='asc'> Up</option>
+                                                                    <option value='desc'>Down</option>
+                                                                </select>
+                                                            }
+                                                        </th>
+                                                    )
+                                                })
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            tableData.length ? <>
+
                                                 {
-                                                    th.filter && <select onClick={(e) => sortFunc(th.filter, e.target.value)}>
-                                                        <option value='asc'> Up</option>
-                                                        <option value='desc'>Down</option>
-                                                    </select>
-                                                } 
-                                            </th>
-                                        )
-                                    })
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                tableData.length ? <>
-                                    {
-                                        tableData.map((user, idx) => {
-                                            return (
-                                                <tr key={idx}>
-                                                    <td>{idx + 1}</td>
-                                                    <td>
-                                                        <span>{user.fName} {user.lName}</span><br/>
-                                                        <span style={{color:'#888'}} >( {user.userId} )</span>
-                                                    </td>
-                                                    <td>{user.email}</td>
-                                                    <td>{user.mobile}</td>
-                                                    <td>{user.designation}</td>
-                                                    <td style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>
-                                                        {user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
-                                                        <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
-                                                    </td>
-                                                    <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
-                                                    <td>
-                                                        <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button>
-                                                    </td>
-                                                    <td>
-                                                        <Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
-                                                        <Button variant='danger' disabled={currentUser.mobile == user.mobile} onClick={() => removeUser(user)}>Remove</Button>
-                                                    </td>
-                                                </tr>
+                                                    tableData.map((user, idx) => {
+                                                        return (
+                                                            <tr key={idx}>
+                                                                <td>{idx + 1}</td>
+                                                                <td>
+                                                                    <span>{user.fName} {user.lName}</span><br />
+                                                                    <span style={{ color: '#888' }} >( {user.userId} )</span>
+                                                                </td>
+                                                                <td>{user.email}</td>
+                                                                <td>{user.mobile}</td>
+                                                                <td>{user.designation}</td>
+                                                                <td style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>
+                                                                    {user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
+                                                                    <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
+                                                                </td>
+                                                                <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
+                                                                <td>
+                                                                    <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button>
+                                                                </td>
+                                                                <td>
+                                                                    <Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
+                                                                    <Button variant='danger' disabled={currentUser.mobile == user.mobile} onClick={() => removeUser(user)}>Remove</Button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </> : <tr>
+                                                <td colSpan={8}>No result found <Loader /> </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </Table>
+                                <hr style={{ border: '3px dashed #888' }} />
+                                <Modal isOpen={showTicketsModal} setModal={setShowTicketsModal}>
+                                    <div style={{ marginBlock: '20px', height: '300px', overflowY: 'scroll' }}>
+                                        {
+                                            issuesList.length > 0 ? (
+                                                <UserIssues issuesList={issuesList} />
+                                            ) : (
+                                                <h3>No Solutions Added</h3>
                                             )
-                                        })
-                                    }
-                                </> : <tr>
-                                    <td colSpan={8}>No result found <Loader /> </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </Table>
-                        <hr style={{ border: '3px dashed #888' }} />
-                        <Modal isOpen={showTicketsModal} setModal={setShowTicketsModal}>
-                        <div style={{ marginBlock: '20px', height:'300px', overflowY:'scroll' }}>
-                            {
-                                issuesList.length > 0 ? (
-                                    <UserIssues issuesList={issuesList} />
-                                ) : (
-                                    <h3>No Solutions Added</h3>
-                                )
-                            }
-                        </div>
-                        </Modal>
-                        </>) : <h3>Data Loading.....</h3>
-                }
+                                        }
+                                    </div>
+                                </Modal>
+                            </>) : <h3>Data Loading.....</h3>
+                        }
                     </>
                 }
-                
+
             </div> : <div style={{ textAlign: 'center' }}>
                 <div>
                     <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQc8odhMTP7bNGEGX4tiBh8NXaDu6CcycWlg&usqp=CAU' alt='img' />

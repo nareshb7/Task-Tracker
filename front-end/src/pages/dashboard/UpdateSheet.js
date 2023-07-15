@@ -15,8 +15,14 @@ const UpdateSheet = ({ currentUserVal, todayTickets }) => {
     const handleChange = (e)=> {
         setMailObject({...mailObject, [e.target.name]: e.target.value})
     }
-    const handleSend = ()=> {
-        setMailUpdateModalOpen(!mailUpdateModalOpen); 
+    const handleSend = (ticket)=> {
+        setMailUpdateModalOpen(!mailUpdateModalOpen);
+        const obj = {
+            email: 'nareshbjava7@gmail.com',
+            subject: ticket.comments,
+            description: ticket.description
+        }
+        setMailObject(obj)
         
     }
     const handleMailSend =async ()=> {
@@ -52,7 +58,7 @@ const UpdateSheet = ({ currentUserVal, todayTickets }) => {
                                 <td>{ticket.status}</td>
                                 <td>{ticket.description}</td>
                                 <td>{ticket.comments}</td>
-                                <td><Button onClick={handleSend}>Send Update</Button></td>
+                                <td><Button onClick={()=>handleSend(ticket)}>Send Update</Button></td>
                             </tr>
                         })
                     }

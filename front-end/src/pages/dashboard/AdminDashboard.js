@@ -6,38 +6,10 @@ import AssignTicketModal from '../../components/modal/AssignTicket'
 import AddNewTicket from '../../components/modal/AddNewTicket'
 import { addActivity } from '../activityPage/ActivityPage'
 import UpdateSheet from './UpdateSheet'
+import TaskTable from '../../components/reusable/table/Table'
+import { setTrBg } from '../../components/utils/Util'
+import DashboardTicketData from './DashboardTicketData'
 
-export const setTrBg = (type, date) => {
-    let bg;
-    const today = new Date().toLocaleDateString()
-    const targetDate = new Date(date).toLocaleDateString()
-    const deadLine = new Date(today) >= new Date(targetDate)
-    switch (type) {
-        case "Assigned": {
-            bg = 'primary'
-            break;
-        }
-        case "Resolved": {
-            bg = 'success'
-            break;
-        }
-        case "Pending": {
-            bg = 'warning'
-            break;
-        }
-        case "In Progress": {
-            bg = 'info'
-            break;
-        }
-        default: {
-            bg = ''
-        }
-    }
-    if (!bg && deadLine) {
-        return `bg-danger`
-    }
-    return `bg-${bg}`
-}
 
 const AdminDashboard = ({ currentUserVal, socket }) => {
     const [isAdminDashboard, setIsAdminDashboard] = useState('UPDATESHEET')
@@ -108,7 +80,6 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         }
         addActivity(currentUserVal, 'Admin Dashboard page', `Visited Dashboard Page`)
         getTotalTickets()
-        getTodayTickets()
     }, [])
 
     const selectDev = (ticketData) => {
@@ -147,11 +118,11 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
         setNewType(type)
         setOpenNewTicketModal(true)
     }
-    const deleteTicket =async ()=> {
+    const deleteTicket = async () => {
         const cnfrm = window.confirm(`Do u want to delete ${selectedTicket.consultantName} ticket??`)
         if (cnfrm) {
-            const result = await fetchDeletecall('/api/deleteticket',{id: selectedTicket._id} )
-            if(result._id) {
+            const result = await fetchDeletecall('/api/deleteticket', { id: selectedTicket._id })
+            if (result._id) {
                 setModelOpen(false)
                 getTodayTickets()
                 alert('Deleted Successfully')
@@ -159,98 +130,67 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
             }
         }
     }
-    useEffect(()=> {
+    useEffect(() => {
         getTodayTickets()
-    },[openNewTicketModal])
-    
+    }, [openNewTicketModal])
+    const headers = [
+        { title: 'Sl.No', key: "serialNo" },
+        { title: 'Consultant', key: "consultantName" },
+        { title: 'Phone', key: "phone" },
+        { title: 'Status', key: "status", tdFormat: (ticket) => <span>{ticket.status ? ticket.status : "Not assigned"}</span> },
+        { title: 'Assigned to', key: "assignedTo", tdFormat: (ticket) => <span>{ticket.assignedTo ? ticket.assignedTo.name : "Null"}</span> },
+        { title: 'Helped Dev', key: "helpedDev.name" },
+        { title: 'Location', key: "location" },
+        { title: 'Received Date', key: "receivedDate", tdFormat: (ticket) => <span>{dateFormatter(ticket.receivedDate)}</span> },
+        { title: 'Assigned Date', key: "assignedDate", tdFormat: (ticket) => <span>{dateFormatter(ticket.assignedDate)}</span> },
+        { title: 'Target Date', key: "targetDate", tdFormat: (ticket) => <span>{dateFormatter(ticket.targetDate)}</span> },
+        { title: 'Completed Date', key: "completedDate", tdFormat: (ticket) => <span>{dateFormatter(ticket.completedDate)}</span> },
+        { title: 'Technology', key: "technology" },
+        { title: 'Task Description', key: "descriptions", tdFormat: (ticket) => <span>{ticket.descriptions?.slice(0, 10)}...</span> },
+        { title: 'Comments', key: "comments", tdFormat: (ticket) => <span>{ticket.comments?.slice(0, 20)}</span> },
+    ]
+
     return <Row>
-        {/* <Col>
-            <Button onClick={() => setIsAdminDashboard(false)}>User Dashboard</Button>
-        </Col> */}
         <Col>
             <Button onClick={() => setIsAdminDashboard(true)}>Admin Dashboard</Button>
         </Col>
         <Col>
-            <Button onClick={()=> setIsAdminDashboard(false)}>Update Sheet</Button>
+            <Button onClick={() => setIsAdminDashboard(false)}>Update Sheet</Button>
         </Col>
         {
             isAdminDashboard ? <Col>
                 <p>Admin Dashboard</p>
-                {/* Employess Data */}
-                <Row>
-                    <Col><Button onClick={() => addNewTickets('TICKET')}>Add New Ticket</Button></Col>
-                    <Col><Button onClick={() => addNewTickets('CLIENT')}>Add New Client</Button></Col>
-                </Row>
-                <Row className='d-flex m-2 gap-3 fw-300'>
-                    <Col className='card bg-primary'>
-                        <span className='fs-4 px-1'>Total Employees: </span>
-                        <span className='fs-1 text-start'>{employeesdata.total}</span>
-                    </Col>
-                    <Col className='card bg-success'>
-                        <span className='fs-4 px-1'>Active Employees: </span>
-                        <span className='fs-1 text-start'>{employeesdata.active}</span>
-                    </Col>
-                    <Col className='card bg-info'>
-                        <span className='fs-4 px-1'>Offline Employees: </span>
-                        <span className='fs-1 text-start'>{employeesdata.offline}</span>
-                    </Col>
-                    <Col className='card bg-warning'>
-                        <span className='fs-4 px-1'>Active Percentage: </span>
-                        <span className='fs-1 text-start'>{employeesdata.percentage}%</span>
-                    </Col>
-                </Row>
-                {/* Total Tickets data */}
-                <Row className='d-flex my-2 gap-3 fw-300'>
-                    <Col className='card bg-primary'>
-                        <span className='fs-3 px-1'>Total Tickets :</span>
-                        <span className='fs-1 text-start'>{ticketsData.total.length}</span>
-                    </Col>
-                    <Col className='card bg-success'>
-                        <span className='fs-3 px-1'>Fixed Tickets :</span>
-                        <span className='fs-1 text-start'>{ticketsData.fixed}</span>
-                    </Col>
-                    <Col className='card bg-secondary'>
-                        <span className='fs-3 px-1'>Resolved Tickets:</span>
-                        <span className='fs-1 text-start'>{ticketsData.resolved}</span>
-                    </Col>
-                    <Col className='card bg-info'>
-                        <span className='fs-3 px-1'>Pending Tickets :</span>
-                        <span className='fs-1 text-start'>{ticketsData.pending}</span>
-                    </Col>
-                    <Col className='card bg-warning'>
-                        <span className='fs-3 px-1'>Percentage: </span>
-                        <span className='fs-1 text-start'>{ticketsData.percentage}%</span>
-                    </Col>
-                </Row>
-                {/* Today Tickets data */}
-                <Row className='d-flex my-2 gap-3 fw-bold'>
-                    <Col className='card bg-primary'>
-                        <span className='fs-3 px-1'>Today Tickets: </span>
-                        <span className='fs-1 text-start'>{todayTickets.total.length}</span>
-                    </Col>
-                    <Col className='card bg-success'>
-                        <span className='fs-3 px-1'>Assigned: </span>
-                        <span className='fs-1 text-start'>{todayTickets.assigned}</span>
-                    </Col>
-                    <Col className='card bg-info'>
-                        <span className='fs-3 px-1'>Resolved: </span>
-                        <span className='fs-1 text-start'>{todayTickets.resolved}</span>
-                    </Col>
-                    <Col className='card bg-warning'>
-                        <span className='fs-3 px-1'>Pending: </span>
-                        <span className='fs-1 text-start'>{todayTickets.pending}</span>
-                    </Col>
-                    <Col className='card bg-info'>
-                        <span className='fs-3 px-1'>Percentage: </span>
-                        <span className='fs-1 text-start'>{todayTickets.percentage}%</span>
-                    </Col>
-                </Row>
-                {/* Maping today tickets into a table */}
+                <DashboardTicketData addNewTickets={addNewTickets} employeesdata={employeesdata} ticketsData={ticketsData} todayTickets={todayTickets} />
                 <Row>
                     <Col className='card my-3' style={{ height: '500px' }}>
                         <span className='fs-3 fw-bold' >Today Tickets : {todayTickets.total.length}</span>
-                        <Col className='container-fluid m-auto text-center' style={{ overflow: 'scroll' }}>
-                            <Table className='striped ticketsTable'>
+                        <Col className='container-fluid m-auto text-center' style={{ overflow: 'scroll', position: 'relative' }}>
+                            <TaskTable tHeadClassName='todayTickets-thead' headers={headers} tableData={todayTickets.total} handleRowClick={(ticket) => selectDev(ticket)} />
+                        </Col>
+                    </Col>
+                </Row>
+                <AddNewTicket isOpen={openNewTicketModal} setIsOpen={setOpenNewTicketModal} addNewType={addNewType} />
+                <AssignTicketModal
+                    modelOpen={modelOpen}
+                    setModelOpen={setModelOpen}
+                    selectedDev={selectedDev}
+                    selectedTicket={selectedTicket}
+                    assignTicket={assignTicket}
+                    cancelTicket={cancelTicket}
+                    employeesdata={employeesdata}
+                    setSelectedDev={setSelectedDev}
+                    getTodayTickets={getTodayTickets}
+                    deleteTicket={deleteTicket}
+                />
+            </Col> : <UpdateSheet currentUserVal={currentUserVal} todayTickets={todayTickets} />
+        }
+    </Row>
+
+}
+export default AdminDashboard
+
+/* 
+<Table className='striped ticketsTable'>
                                 <thead style={{ position: 'sticky' }}>
                                     <tr>
                                         <th>Sl.NO</th>
@@ -292,26 +232,4 @@ const AdminDashboard = ({ currentUserVal, socket }) => {
                                     }
                                 </tbody>
                             </Table>
-                        </Col>
-                    </Col>
-                </Row>
-                <AddNewTicket isOpen={openNewTicketModal} setIsOpen={setOpenNewTicketModal} addNewType={addNewType} />
-                <AssignTicketModal
-                    modelOpen={modelOpen}
-                    setModelOpen={setModelOpen}
-                    selectedDev={selectedDev}
-                    selectedTicket={selectedTicket}
-                    assignTicket={assignTicket}
-                    cancelTicket={cancelTicket}
-                    employeesdata={employeesdata}
-                    setSelectedDev={setSelectedDev}
-                    getTodayTickets={getTodayTickets}
-                    deleteTicket={deleteTicket}
-                />
-            </Col> : <UpdateSheet currentUserVal={currentUserVal} todayTickets={todayTickets}/>
-        }
-
-    </Row>
-
-}
-export default AdminDashboard
+*/

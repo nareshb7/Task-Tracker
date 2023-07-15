@@ -1,3 +1,16 @@
+Do's : 
+-> Update the pagination for reusable table
+
+Dt: 15-07-23
+-> TaskTable updated in adminDashboard page, botRequests and contactUsAdmin page 
+-> AdminDashboard table setTrBg pending
+-> userDashboard page table with TaskTable
+
+Dt: 14-07-23
+-> Reusable Table Created as TaskTable
+-> App.js onUnload added
+-> UpdateSheet mail update data updated dynamically
+
 Dt: 12-07-23
 -> Location data updated in stats page
 -> Loader updated in Tickets Page and ChatBox Page

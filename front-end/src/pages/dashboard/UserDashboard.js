@@ -3,8 +3,9 @@ import { Button, Col, Row, Table } from 'react-bootstrap'
 import { uploadedIssues } from '../../components/issues/UserIssues'
 import { useNavigate } from 'react-router-dom'
 import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
-import { setTrBg } from './AdminDashboard'
+import { setTrBg } from '../../components/utils/Util'
 import { addActivity } from '../activityPage/ActivityPage'
+import TaskTable from '../../components/reusable/table/Table'
 
 export const getTodayTicketsFunc = async (id) => {
     const resp = await fetchGetCall('/api/gettodayticket', { id })
@@ -67,6 +68,16 @@ const UserDashboard = ({ currentUserVal }) => {
         }
     }
     console.log('Current User Dashboard::', currentUserVal)
+    const tableHeaders = [
+        {title: 'Client', key:'consultantName'},
+        {title: 'Phone', key:'phone'},
+        {title: 'Technology', key:'technology'},
+        {title: 'AssignedBy', key:'assignedBy.name'},
+        {title: 'Assigned Time', key:'assignedDate', tdFormat: (tkt)=> <span>{new Date(tkt.assignedDate).toLocaleString()}</span>},
+        {title: 'Status', key:'status'},
+        {title: 'Update', key:'', tdFormat: (tkt)=> <Button onClick={() => updateIssue(tkt)}>Update</Button>},
+        {title: 'Working On', key:'', tdFormat: (tkt)=> <Button onClick={() => selectWorkingTicket(tkt)} disabled={tkt.status == 'In Progress'}>{tkt.status == 'In Progress' ? 'Selected' : 'Select'}</Button> },
+    ]
     return <Row>
         <Col >
             <p className='text-center fw-bold fs-3 card m-3'>User DashBoard</p>
@@ -95,36 +106,7 @@ const UserDashboard = ({ currentUserVal }) => {
                 </Row>
                 <Row>
                     {
-                        dashboardData.todayTickets.length && <Table>
-                            <thead>
-                                <tr>
-                                    <th>Client </th>
-                                    <th>Phone</th>
-                                    <th>Technology</th>
-                                    <th>AssignedBy</th>
-                                    <th>Assigned Time</th>
-                                    <th>Status</th>
-                                    <th>Update</th>
-                                    <th>Working On</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    dashboardData.todayTickets.map((tkt, idx) => {
-                                        return <tr key={idx + Math.random()} className={setTrBg(tkt.status)} >
-                                            <td>{tkt.consultantName}</td>
-                                            <td>{tkt.phone}</td>
-                                            <td>{tkt.technology}</td>
-                                            <td>{tkt.assignedBy?.name}</td>
-                                            <td> {new Date(tkt.assignedDate).toLocaleString()}</td>
-                                            <td>{tkt.status}</td>
-                                            <td><Button onClick={() => updateIssue(tkt)}>Update</Button></td>
-                                            <td><Button onClick={() => selectWorkingTicket(tkt)} disabled={tkt.status == 'In Progress'}>{tkt.status == 'In Progress' ? 'Selected' : 'Select'}</Button> </td>
-                                        </tr>
-                                    })
-                                }
-                            </tbody>
-                        </Table>
+                        dashboardData.todayTickets.length && <TaskTable headers={tableHeaders} tableData={dashboardData.todayTickets} />
                     }
                 </Row>
             </Row>

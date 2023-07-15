@@ -156,5 +156,6 @@ module.exports.getNews = async (req,res)=> {
     //     // newsData = getLatestNews()
     //     newsData.then(d=> res.status(200).json(d)).catch(e=> res.status(400).json(e))
     // }
+    res.status(200).json('SUCCESS')
     
 }

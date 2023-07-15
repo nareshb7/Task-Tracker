@@ -3,6 +3,7 @@ import { fetchCall, fetchGetCall } from '../utils/fetch/UseFetch'
 import { Table } from 'react-bootstrap'
 import { UserContext } from '../../App'
 import { useNavigate } from 'react-router-dom'
+import TaskTable from '../reusable/table/Table'
 
 const AdminBotPage = () => {
     const {currentUserVal, socket } = useContext(UserContext)
@@ -42,32 +43,17 @@ const AdminBotPage = () => {
     useEffect(()=> {
         getRequests()
     },[])
+    const headers = [
+        {title:'Sl no', key:'serialNo'},
+        {title: 'Dev Name', key:'user.name'},
+        {title:'Team', key:'type'},
+        {title:'Description', key:'description'},
+        {title: 'Received Time', key:'createdAt', tdFormat:(request)=> <span>{new Date(request?.createdAt).toLocaleString()}</span>},
+        {title:'Status', key:'status',}
+    ]
   return (
     <div><h2>Bot Requests:</h2>
-        <Table striped hover>
-            <thead>
-                <tr>
-                    <th>Dev Name</th>
-                    <th>Team</th>
-                    <th>Description</th>
-                    <th>Received Time</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    requests.map((request, idx)=> (
-                        <tr key={idx} onClick={() => rowClick(request)}>
-                            <td>{request.user.name}</td>
-                            <td>{request.type}</td>
-                            <td>{request.description}</td>
-                            <td>{new Date(request?.createdAt).toLocaleString()}</td>
-                            <td>{request?.status}</td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </Table>
+        <TaskTable headers={headers} tableData={requests} />
     </div>
   )
 }
