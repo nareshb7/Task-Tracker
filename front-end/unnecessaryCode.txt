@@ -1,0 +1,70 @@
+<Table striped hover responsive>
+                                    <thead style={{ color: '#000' }}>
+                                        <tr>
+                                            {
+                                                tHead.map((th, idx) => {
+                                                    return (
+                                                        <th key={idx}>
+                                                            <span>{th.header}</span>
+                                                            {
+                                                                th.filter && <select onClick={(e) => sortFunc(th.filter, e.target.value)}>
+                                                                    <option value='asc'> Up</option>
+                                                                    <option value='desc'>Down</option>
+                                                                </select>
+                                                            }
+                                                        </th>
+                                                    )
+                                                })
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            tableData.length ? <>
+
+                                                {
+                                                    tableData.map((user, idx) => {
+                                                        return (
+                                                            <tr key={idx}>
+                                                                <td>{idx + 1}</td>
+                                                                <td>
+                                                                    <span>{user.fName} {user.lName}</span><br />
+                                                                    <span style={{ color: '#888' }} >( {user.userId} )</span>
+                                                                </td>
+                                                                <td>{user.email}</td>
+                                                                <td>{user.mobile}</td>
+                                                                <td>{user.designation}</td>
+                                                                <td style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>
+                                                                    {user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
+                                                                    <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
+                                                                </td>
+                                                                <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
+                                                                <td>
+                                                                    <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button>
+                                                                </td>
+                                                                <td>
+                                                                    <Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
+                                                                    <Button variant='danger' disabled={currentUser.mobile == user.mobile} onClick={() => removeUser(user)}>Remove</Button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </> : <tr>
+                                                <td colSpan={8}>No result found <Loader /> </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </Table>
+
+                                <Modal isOpen={showTicketsModal} setModal={setShowTicketsModal}>
+                                    <div style={{ marginBlock: '20px', height: '300px', overflowY: 'scroll' }}>
+                                        {
+                                            issuesList.length > 0 ? (
+                                                <UserIssues issuesList={issuesList} />
+                                            ) : (
+                                                <h3>No Solutions Added</h3>
+                                            )
+                                        }
+                                    </div>
+                                </Modal>

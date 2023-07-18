@@ -1,6 +1,7 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { data, headersData, defaultTdFormat } from './tableMockData'
 import './table.css'
+import TablePagination from './Pagination'
 
 const TaskTable = memo((props) => {
     const {
@@ -11,13 +12,25 @@ const TaskTable = memo((props) => {
         tHeadClassName = '',
         tBodyClassName = '',
         className = 'task-table',
+        pagination = false,
+        paginationAlign = 'center',
+        paginationClassName = 'table-pagination',
         ...args
     } = props
+    const dt = tableData.map((val, idx) => {
+        return { ...val, serialNo: idx + 1 }
+    })
+    const [formattedData, setFormattedData] = useState(dt)
+    const [currentPageData, setCurrentPageData] = useState([])
+    useEffect(() => {
+        setFormattedData(dt)
+        pagination ? setCurrentPageData(dt) : setCurrentPageData(dt.slice(0, 5))
+    }, [tableData])
     const renderHeader = (header, idx) => {
         switch (header.node) {
             case 'select': {
                 return <th key={idx}><span>{header.title}</span>
-                    <select onChange={(e)=> header?.onClick(e, header)}>
+                    <select onChange={(e) => header?.onClick(e, header)} name={header.key}>
                         {
                             header?.values?.map((opt, idx) => <option key={idx} value={opt?.value}>{opt?.key || opt}</option>)
                         }
@@ -32,7 +45,7 @@ const TaskTable = memo((props) => {
             {
                 headers.map((val1, index) => {
                     if (val1?.key == 'serialNo') {
-                        return <td key={index}>{idx + 1}. </td>
+                        return <td key={index}>{obj.serialNo}. </td>
                     }
                     const hasOption = !val1.tdFormat && val1?.key.split('.')
                     return val1.tdFormat ?
@@ -46,7 +59,7 @@ const TaskTable = memo((props) => {
             }
         </tr>
     }
-    return (
+    return (<>
         <table className={className} {...args}>
             <thead className={tHeadClassName}>
                 <tr>
@@ -56,10 +69,14 @@ const TaskTable = memo((props) => {
             <tbody className={tBodyClassName}>
                 {
                     loading ? <tr><td colSpan={headers.length}>Loading...</td></tr> :
-                        tableData.map((obj, idx) => renderBodyRow(obj, idx))
+                        currentPageData.map((obj, idx) => renderBodyRow(obj, idx))
                 }
             </tbody>
         </table>
+        {
+            pagination && <TablePagination paginationClassName={paginationClassName} paginationAlign={paginationAlign} tableData={formattedData} setCurrentPageData={setCurrentPageData} />
+        }
+    </>
     )
 })
 

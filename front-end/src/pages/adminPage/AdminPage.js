@@ -8,11 +8,12 @@ import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
 import { Button, Col, Row, Table } from 'react-bootstrap'
 import { lastSeenTimeFormat } from '../chatBox/MessageBox'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { fetchCall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
+import { fetchCall, fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import TimeZones, { ParticularTimeZone, particularTimeZone, TimeZone } from '../../components/features/TimeZones'
 import { getFullName } from '../../components/utils/GetFullName'
 import { debounce } from '../../components/utils/Debounce'
 import TaskTable from '../../components/reusable/table/Table'
+import AdminPageModals from './AdminPageModals'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -34,27 +35,15 @@ const AdminPage = () => {
     const [showTicketsModal, setShowTicketsModal] = useState(false)
     const [clientsData, setClientsData] = useState([])
     const [showClientsData, setShowClientsData] = useState(false)
-    const tHead = [
-        { header: 'Sl. No' },
-        { header: 'Name', filter: 'fName' },
-        { header: 'Email', filter: 'email' },
-        { header: 'Mobile', filter: 'mobile' },
-        { header: 'Role', filter: 'designation' },
-        { header: 'Profile Image' },
-        { header: 'Active User', filter: 'isActive' },
-        { header: 'Uploaded Issues' },
-        { header: 'Remove User' }
-    ]
-
     const statusIndicatorStyle = { position: 'absolute', top: '0', right: '0' }
+
     const getAllUsers = async () => {
-        axios.get('/api/getallusers')
-            .then(data => {
-                setUsers(data.data)
-                const val = data.data.filter(user => user?.reqforAdmin == true && user.isAdmin === false)
-                setAdminReqData(val)
-            })
-            .catch(err => console.log(err, 'err'))
+        const response = await fetchGetCall('/api/getallusers')
+        if (response?.success) {
+            setUsers(response.data)
+            const val = response.data.filter(user => user?.reqforAdmin == true && user.isAdmin === false)
+            setAdminReqData(val)
+        }
     }
     const getClients = async () => {
         const { data, success } = await fetchGetCall('/api/getclientslist')
@@ -62,51 +51,26 @@ const AdminPage = () => {
             setClientsData(data)
         }
     }
-    useEffect(() => {
-        getAllUsers()
-        getClients()
-        axios.get('/api/getmailreqIDs')
-            .then(data => {
-                setMailChangeReqIDs(data.data)
-            })
-            .catch(err => console.log(err, 'error'))
-        if (state?._id && state?.popup == "EMPMODAL") {
-            setShowEmpModal(true)
-            setShowEmpData(state)
-            state.popup = ''
 
-        }
-    }, [])
-    useEffect(() => {
-        setCurrentUser(currentUserVal)
-    }, [currentUserVal])
-    useEffect(() => {
-        setTableData(users)
-    }, [users])
 
     const setAlert = (val, type) => {
         window.alert(`${val}'s account ${type} sucessfully`)
     }
-    const removeUser = (user) => {
+    const removeUser = async (user) => {
         let cnfrm = window.confirm(`Do you want to delete ${user.fName}'s account ??`)
         if (cnfrm) {
-            axios.delete('/api/deleteuser', {
-                data: { id: user._id },
-                headers: {
-                    Authorization: `Bearer`,
-                },
-            })
-                .then(data => {
-                    let newData = users.filter(user => user._id != data.data._id)
-                    setUsers(newData)
-                    setAlert(data.data.fName + " " + data.data.lName, 'Deleted')
-                })
-                .catch(err => console.log(err, 'err'))
+            const resp = await fetchDeletecall('/api/deleteuser', { id: user._id })
+            if (resp._id) {
+                let newData = users.filter(user => user._id != resp._id)
+                setUsers(newData)
+                setAlert(getFullName(resp), 'Deleted')
+            }
         }
     }
 
-
-    const sortFunc = (val, type) => {
+    const sortFunc = (value, header) => {
+        const type = value.target.value
+        const val = header.key
         let sortData = JSON.parse(JSON.stringify(users))
         if (type == 'asc') {
             sortData.sort((a, b) => {
@@ -129,11 +93,11 @@ const AdminPage = () => {
         }
         setTableData(sortData)
     }
-    const handleSearch = debounce((e) => {
+    const handleSearch = (e) => {
         setSearchVal(e.target.value)
         const searchData = users.filter(val => val.fName.toLowerCase().includes(e.target.value.toLowerCase()) || val.lName.toLowerCase().includes(e.target.value.toLowerCase()))
         setTableData(searchData)
-    })
+    }
     const adminRequests = () => {
         setIsModalOpen(true)
     }
@@ -143,33 +107,31 @@ const AdminPage = () => {
         setUpdateUserObj(user)
         setOpenUpdateModal(true)
     }
-    const userLoginPermission = (user, access) => {
+    const userLoginPermission = async (user, access) => {
         let status = access
-        let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'no longer accessible' : "accessible"} `)
+        let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'accessible' : "no longer accessible"} `)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id: user._id, updateValue: status, updateKey: 'isActive', update: 'single' })
-                .then(res => {
-                    let newData = users.map(user => user._id == res.data._id ? res.data : user)
-                    setUsers(newData)
-                    setAlert(res.data.fName + res.data.lName, 'Updated')
-                    setOpenUpdateModal(false)
-                })
-                .catch(err => console.log(err, 'err'))
+            const updateUser = await fetchCall('/api/adminupdateuser', { id: user._id, updateValue: status, updateKey: 'isActive', update: 'single' })
+            if (updateUser._id) {
+                let newData = users.map(user => user._id == updateUser._id ? updateUser : user)
+                setUsers(newData)
+                setAlert(getFullName(updateUser), 'Updated')
+                setOpenUpdateModal(false)
+            }
         }
     }
-    const requestAcceptFunc = (id, type, updateField) => {
+    const requestAcceptFunc = async (id, type, updateField) => {
         const updateKey = updateField || type ? 'isAdmin' : 'reqforAdmin'
         let cnfrm = window.confirm(`Do you want to ${type ? "give" : "remove"} the Admin Access ? `)
         if (cnfrm) {
-            axios.post('/api/adminupdateuser', { id, updateKey: updateKey, updateValue: type, update: 'single' })
-                .then(res => {
-                    let newReqData = adminReqData.filter(user => user._id != res.data._id)
-                    setAdminReqData(newReqData)
-                    setOpenUpdateModal(false)
-                    alert('Request Updated')
-                    getAllUsers()
-                })
-                .catch(err => console.log(err, 'Admin access rejected'))
+            const updatedData = await fetchCall('/api/adminupdateuser', { id, updateKey: updateKey, updateValue: type, update: 'single' })
+            if (updatedData) {
+                let newReqData = adminReqData.filter(user => user._id != updatedData._id)
+                setAdminReqData(newReqData)
+                setOpenUpdateModal(false)
+                alert('Request Updated')
+                getAllUsers()
+            }
         }
     }
     const uploadedIssuesList = async (developerId) => {
@@ -178,7 +140,7 @@ const AdminPage = () => {
         setShowTicketsModal(true)
     }
 
-    const mailChangeAcceptFunc = (id, type) => {
+    const mailChangeAcceptFunc = async (id, type) => {
         const mailUpdateData = mailChangeReqIDs.find(val => val._id == id)
         let cnfrm = window.confirm(`Do you want to ${type ? "accept" : "reject"} the request ? `)
         if (cnfrm) {
@@ -188,26 +150,20 @@ const AdminPage = () => {
                 mailUpdateData[updateKey] = mailUpdateData.updateData.updateValue
                 let apiPayload = JSON.parse(JSON.stringify(mailUpdateData))
                 delete apiPayload.updateData
-                axios.post('api/adminupdateuser', { id, updateValue: apiPayload, update: 'MULTIPLE' })
-                    .then(res => {
-                        let newData = mailChangeReqIDs.filter(val => val._id != res.data._id)
-                        setMailChangeReqIDs(newData)
-                    })
-                    .catch(err => console.log(err, 'User Update Err'))
+                const apiResponse = await fetchCall('api/adminupdateuser', { id, updateValue: apiPayload, update: 'MULTIPLE' })
+                if (apiResponse._id) {
+                    let newData = mailChangeReqIDs.filter(val => val._id != apiResponse._id)
+                    setMailChangeReqIDs(newData)
+                }
             }
-            else {
-                axios.post('/api/adminupdateuser', { id, updateKey: 'reqforMailChange', updateValue: type, update: 'single' })
-                    .then(res => console.log(res.data, 'success'))
-                    .catch(err => console.log(err, 'Reqfor Mail Change error in user account'))
-            }
+            else await fetchCall('/api/adminupdateuser', { id, updateKey: 'reqforMailChange', updateValue: type, update: 'single' })
 
             // Deleting the req in database
-            axios.post('/api/mailupdatereq', { user: { id: id, updateKey: 'DELETE' } })
-                .then(res => {
-                    let newData = mailChangeReqIDs.filter(val => val._id != res.data.id)
-                    setMailChangeReqIDs(newData)
-                })
-                .catch(err => console.log(err, 'else Mail Update Err'))
+            const updateResponse = await fetchCall('/api/mailupdatereq', { user: { id: id, updateKey: 'DELETE' } })
+            if (updateResponse._id) {
+                let newData = mailChangeReqIDs.filter(val => val._id != updateResponse.id)
+                setMailChangeReqIDs(newData)
+            }
         }
     }
     const showEmployeeData = async (empDetails) => {
@@ -254,263 +210,104 @@ const AdminPage = () => {
         { title: 'Technology', key: 'technology' },
         { title: 'Time', key: '', tdFormat: (client) => <ParticularTimeZone timeZone={client.location} /> },
     ]
-    const tHeadss = [
-        { header: 'Sl. No' },
-        { header: 'Name', filter: 'fName' },
-        { header: 'Email', filter: 'email' },
-        { header: 'Mobile', filter: 'mobile' },
-        { header: 'Role', filter: 'designation' },
-        { header: 'Profile Image' },
-        { header: 'Active User', filter: 'isActive' },
-        { header: 'Uploaded Issues' },
-        { header: 'Remove User' }
-    ]
     const empTableHeaders = [
         { title: 'Sl. No', key: 'serialNo' },
         {
-            title: 'Name',node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }], key: '', 
+            title: 'Name', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], key: '',
             tdFormat: (user) => <><span>{user.fName} {user.lName}</span><br />
                 <span style={{ color: '#888' }} >( {user.userId} )</span></>,
             onClick: sortFunc
         },
-        { title: 'Email', key: 'email',node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc },
-        { title: 'Mobile', key: 'mobile', node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc },
-        { title: 'Role', key: 'designation',node:'select', values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc },
+        { title: 'Email', key: 'email', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc },
+        { title: 'Mobile', key: 'mobile', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc },
+        { title: 'Role', key: 'designation', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc },
         {
-            title: 'Profile Image', key: '', 
-            tdFormat: (user) => <>{user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
-                <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} /></>
+            title: 'Profile Image', key: '',
+            tdFormat: (user) => <div style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>{user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
+                <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} /></div>
         },
-        { title: 'Active User', key: '',node:'select',onClick: sortFunc, values: [{ key: "asc", value: "Up" }, { key: "desc", value: 'Down' }],onClick: sortFunc, tdFormat: (user) => <span>{user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </span> },
+        { title: 'Active User', key: '', node: 'select', onClick: sortFunc, values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc, tdFormat: (user) => <span>{user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </span> },
         { title: 'Uploaded Issues', key: '', tdFormat: (user) => <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button> },
         {
-            title: 'Remove User', key: 'serialNo', tdFormat: (user) => <><Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
+            title: 'Remove User', key: '', tdFormat: (user) => <><Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
                 <Button variant='danger' disabled={currentUser.mobile == user.mobile} onClick={() => removeUser(user)}>Remove</Button></>
         },
-
     ]
-    return (
-        <>{
-            currentUser && currentUser.isAdmin ? <div>
-                <div className='d-flex justify-content-between'>
-                    <h1>Users : </h1>
-                    <TimeZones />
-                </div>
-                <Button onClick={() => setShowClientsData(!showClientsData)}>Show {showClientsData ? 'Users' : 'Clients'}</Button>
-                <div style={{ textAlign: 'end' }}>
-                    <Link className='mx-2' to='/botrequest'><Button > Bot Requests</Button></Link>
-                    <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
-                    <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
-                    <Button className='mx-2' onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </Button>
-                    <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />
-                    <Button style={{ marginInline: '10px' }} >Search</Button>
-                </div>
-                <Modal isOpen={openUpdateModal} setModal={setOpenUpdateModal}>
-                    <>
-                        <h3>Update the user</h3>
-                        <Row className='d-flex flex-column'>
-                            <Col>
-                                <span className='fw-bold fs-3'>Admin Access : </span>
-                                <Button onClick={() => requestAcceptFunc(updateUserObj._id, true)} > Allow </Button>
-                                <Button variant='warning' onClick={() => requestAcceptFunc(updateUserObj._id, false, 'isAdmin')} >Deny</Button>
-                            </Col>
-                            <Col>
-                                <span className='fw-bold fs-3'>Login Access : </span>
-                                <Button onClick={() => userLoginPermission(updateUserObj, true)} > Allow </Button>
-                                <Button variant='warning' onClick={() => userLoginPermission(updateUserObj, false)}>Deny</Button>
-                            </Col>
-                            <Col>
-                                <span className='fw-bold fs-3 '>Update Role:</span>
-                                <select className='form-control' onChange={handleRoleChange}>
-                                    <option>Select Role</option>
-                                    <option value='UI Developer'>UI Developer</option>
-                                    <option value='ReactJS Developer'>ReactJS Developer</option>
-                                    <option value='Angular Developer'>Angular Developer</option>
-                                    <option value='UI/UX Developer'>UI/UX Designer</option>
-                                </select>
-                            </Col>
-                        </Row>
-                    </>
-                </Modal>
-                <Modal isOpen={mailChangeModal} setModal={setMailChangeModal}>
-                    <>
-                        <h2>Profile Update Requests</h2>
-                        {
-                            mailChangeReqIDs.length ? <>
-                                {
-                                    mailChangeReqIDs.map((user, idx) => {
-                                        return (
-                                            <li key={idx} className='li-style'>
-                                                <div>
-                                                    {user.fName && <h3>{getFullName(user)} - {user.email} </h3>}
-                                                    {user.updateData && <h3><span>Update Data: </span> <span>{user.updateData.updateKey}</span> - <span>{user.updateData.updateValue}</span></h3>}
-                                                </div>
-                                                <div>
-                                                    <Button onClick={() => mailChangeAcceptFunc(user._id, true)}>Approve</Button>
-                                                    <Button onClick={() => mailChangeAcceptFunc(user._id, false)}>Deny</Button>
-                                                </div>
-                                            </li>
-                                        )
-                                    })
-                                }
-                            </> : <h4>No Requests</h4>
-                        }
-                    </>
-
-                </Modal>
-                <Modal isOpen={isModalOpen} setModal={setIsModalOpen} >
-                    <>
-                        <h2>Admin Access Requests</h2>
-                        {
-                            adminReqData.length ? <>
-                                {
-                                    adminReqData.map((user, idx) => {
-                                        return (
-                                            <li key={idx} className='li-style'>
-                                                <div>
-                                                    {
-                                                        user.fName && <h3>{user.fName + " " + user.lName} - {user.email} </h3>
-                                                    }
-                                                    {
-                                                        user.updateData && <h3><span>Update Data: </span> <span>{user.updateData.updateKey}</span> - <span>{user.updateData.updateValue}</span></h3>
-                                                    }
-                                                </div>
-
-                                                <div>
-                                                    <button onClick={() => requestAcceptFunc(user._id, true)}>Approve</button>
-                                                    <button onClick={() => requestAcceptFunc(user._id, false)}>Deny</button>
-                                                </div>
-                                            </li>
-                                        )
-                                    })
-                                }
-                            </> : <h4>No Requests</h4>
-                        }
-                    </>
-                </Modal>
-                {
-                    showEmpModal && <Modal isOpen={showEmpModal} setModal={setShowEmpModal}>
-                        <div style={{ display: 'flex' }}>
-                            <div>
-                                <h3>Name : {showEmpData.fName + " " + showEmpData.lName}</h3>
-                                <h3>Email: {showEmpData.email}</h3>
-                                <h3>Mobile : {showEmpData.mobile}</h3>
-                                {
-                                    showEmpData.status === 'Online' ? <h3>Status : Online</h3> :
-                                        <h3>Last Active On : {lastSeenTimeFormat(showEmpData.lastActiveOn)}</h3>
-                                }
-                                <h3>Active User : {showEmpData.isActive ? "Yes" : 'No'}</h3>
-                                <h3>Admin : {showEmpData.isAdmin ? "Yes" : "No"}</h3>
-                                <h3>Joined Date : {showEmpData.joinedDate ? new Date(showEmpData.joinedDate).toLocaleString() : 'No Data Found'}</h3>
-                                <h3>Uploaded Issues :{showEmpData.uploadedIssues?.length ? `${showEmpData.uploadedIssues.length}` : 'counting....'}</h3>
-                                <h3>Technologies : {showEmpData.technologies?.length ? `${showEmpData.technologies}` : "Loading...."}</h3>
-                                <div>
-                                    <Button onClick={() => {
-                                        setShowEmpModal(!showEmpModal)
-                                        setTimeout(() => {
-                                            navigate('/empstats', { state: showEmpData })
-                                        }, 0)
-                                    }}>
-                                        Go to Stats page
-                                    </Button>
-                                    <Button className='mx-2' onClick={() => navigate('/chat', { state: showEmpData })}>Send Message</Button>
-                                </div>
-                            </div>
-                            <div style={{ width: '100px', height: '100px' }}>
-                                <img src={showEmpData.binaryData} style={{ width: '100%', height: '100%' }} />
-                            </div>
-                        </div>
-                    </Modal>
-                }
-
-                {
-                    showClientsData ? <>
-                        <TaskTable headers={clientTableHeaders} tableData={clientsData} handleRowClick={showClientStats} />
-                    </> : <>
-                        {
-                            users.length ? (<>
-                                <TaskTable />
-                                <Table striped hover responsive>
-                                    <thead style={{ color: '#000' }}>
-                                        <tr>
-                                            {
-                                                tHead.map((th, idx) => {
-                                                    return (
-                                                        <th key={idx}>
-                                                            <span>{th.header}</span>
-                                                            {
-                                                                th.filter && <select onClick={(e) => sortFunc(th.filter, e.target.value)}>
-                                                                    <option value='asc'> Up</option>
-                                                                    <option value='desc'>Down</option>
-                                                                </select>
-                                                            }
-                                                        </th>
-                                                    )
-                                                })
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            tableData.length ? <>
-
-                                                {
-                                                    tableData.map((user, idx) => {
-                                                        return (
-                                                            <tr key={idx}>
-                                                                <td>{idx + 1}</td>
-                                                                <td>
-                                                                    <span>{user.fName} {user.lName}</span><br />
-                                                                    <span style={{ color: '#888' }} >( {user.userId} )</span>
-                                                                </td>
-                                                                <td>{user.email}</td>
-                                                                <td>{user.mobile}</td>
-                                                                <td>{user.designation}</td>
-                                                                <td style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>
-                                                                    {user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
-                                                                    <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} />
-                                                                </td>
-                                                                <td> {user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </td>
-                                                                <td>
-                                                                    <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button>
-                                                                </td>
-                                                                <td>
-                                                                    <Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>
-                                                                    <Button variant='danger' disabled={currentUser.mobile == user.mobile} onClick={() => removeUser(user)}>Remove</Button>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
-                                            </> : <tr>
-                                                <td colSpan={8}>No result found <Loader /> </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </Table>
-                                <hr style={{ border: '3px dashed #888' }} />
-                                <Modal isOpen={showTicketsModal} setModal={setShowTicketsModal}>
-                                    <div style={{ marginBlock: '20px', height: '300px', overflowY: 'scroll' }}>
-                                        {
-                                            issuesList.length > 0 ? (
-                                                <UserIssues issuesList={issuesList} />
-                                            ) : (
-                                                <h3>No Solutions Added</h3>
-                                            )
-                                        }
-                                    </div>
-                                </Modal>
-                            </>) : <h3>Data Loading.....</h3>
-                        }
-                    </>
-                }
-
-            </div> : <div style={{ textAlign: 'center' }}>
-                <div>
-                    <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQc8odhMTP7bNGEGX4tiBh8NXaDu6CcycWlg&usqp=CAU' alt='img' />
-                </div>
-                <h1>Sorry, You are not an authorised person to access this page :)</h1></div>
+    useEffect(() => {
+        getAllUsers()
+        getClients()
+        axios.get('/api/getmailreqIDs')
+            .then(data => {
+                setMailChangeReqIDs(data.data)
+            })
+            .catch(err => console.log(err, 'error'))
+        if (state?._id && state?.popup == "EMPMODAL") {
+            setShowEmpModal(true)
+            setShowEmpData(state)
+            state.popup = ''
         }
+    }, [])
+    useEffect(() => {
+        setCurrentUser(currentUserVal)
+    }, [currentUserVal])
+    useEffect(() => {
+        setTableData(users)
+    }, [users])
+    return (
+        <>
+            <div className='d-flex justify-content-between'>
+                <h1>Admin Page : </h1>
+                <TimeZones />
+            </div>
+            <Button onClick={() => setShowClientsData(!showClientsData)}>Show {showClientsData ? 'Users' : 'Clients'}</Button>
+            <div style={{ textAlign: 'end' }}>
+                <Link className='mx-2' to='/botrequest'><Button > Bot Requests</Button></Link>
+                <Link to='/contactData'><Button > ContactUs Messages</Button></Link>
+                <Button className='mx-2' onClick={getMailReqIDs}>Mail Request ID's<span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{mailChangeReqIDs.length}</span>  </Button>
+                <Button className='mx-2' onClick={adminRequests}>Admin requests <span style={{ borderRadius: '50%', backgroundColor: '#888', padding: "5px" }}>{adminReqData.length}</span> </Button>
+                <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />
+                <Button style={{ marginInline: '10px' }} >Search</Button>
+            </div>
+            <AdminPageModals
+                openUpdateModal={openUpdateModal}
+                setOpenUpdateModal={setOpenUpdateModal}
+                updateUserObj={updateUserObj}
+                requestAcceptFunc={requestAcceptFunc}
+                userLoginPermission={userLoginPermission}
+                handleRoleChange={handleRoleChange}
+                mailChangeModal={mailChangeModal}
+                setMailChangeModal={setMailChangeModal}
+                mailChangeReqIDs={mailChangeReqIDs}
+                mailChangeAcceptFunc={mailChangeAcceptFunc}
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                adminReqData={adminReqData}
+                showEmpModal={showEmpModal}
+                setShowEmpModal={setShowEmpModal}
+                showEmpData={showEmpData}
+                showTicketsModal={showTicketsModal}
+                setShowTicketsModal={setShowTicketsModal}
+                issuesList={issuesList}
+            />
+            {
+                showClientsData ? <>
+                    <TaskTable
+                        pagination
+                        headers={clientTableHeaders}
+                        tableData={clientsData}
+                        handleRowClick={showClientStats}
+                    />
+                </> : <>
+                    {
+                        users.length ?
+                            <TaskTable
+                                pagination
+                                headers={empTableHeaders}
+                                tableData={tableData}
+                            /> : <h3>Data Loading.....</h3>
+                    }
+                </>
+            }
         </>
     )
 }

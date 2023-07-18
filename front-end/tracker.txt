@@ -1,6 +1,12 @@
 Do's : 
 -> Update the pagination for reusable table
 
+Dt: 16-07-23
+-> Pagination Updated for TaskTable
+-> AdminPage Component refactored
+-> IssueList component renamed as Tickets
+-> Tables are replaced with TaskTable in Tickets Component and AdminPage
+
 Dt: 15-07-23
 -> TaskTable updated in adminDashboard page, botRequests and contactUsAdmin page 
 -> AdminDashboard table setTrBg pending

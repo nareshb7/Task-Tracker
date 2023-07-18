@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import AddData from './AddData'
 import Description from '../components/issues/Description'
-import GetTask from './IssueList'
+import Tickets from './Tickets'
 import Home from './Home'
 import Login from './Login'
 import MyProfile from './MyProfile'
@@ -32,7 +32,7 @@ const RoutesComp = () => {
                 <Route path='/' element={<Navigate to='home' />} />
                 <Route path='home' element={<Home />} />
                 <Route path='addIssue' element={<AddData />} />
-                <Route path='getIssue' element={<GetTask />} />
+                <Route path='getIssue' element={<Tickets />} />
                 <Route path='description' element={<Description />} />
                 <Route path='/chat' element={<ChatBox />} />
                 <Route path='adminpage' element={<AdminPage />} />
