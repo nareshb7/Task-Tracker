@@ -139,7 +139,6 @@ const Tickets = () => {
                 tableData={tableData} 
                 pagination 
                 className='table'
-                paginationAlign= 'left'
                 />
         }
     </div>

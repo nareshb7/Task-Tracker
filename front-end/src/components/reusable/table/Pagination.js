@@ -25,6 +25,14 @@ const TablePagination = memo(({ tableData, setCurrentPageData, paginationAlign, 
     const nextFunc = () => {
         setCurrentPageIndex(currentPageIndex + 1)
     }
+    const renderPageIndexes = (data)=> {
+        if (currentPageIndex == 0) return data.slice(0,5)
+        const startIndex = currentPageIndex > 2 ? currentPageIndex -2 : 0
+        const endIndex = currentPageIndex < lastPage ? currentPageIndex + 2: currentPageIndex 
+        const val = data.slice(startIndex, endIndex)
+        console.log('INDEXES', {data, currentPageIndex,val})
+        return val
+    }
     useEffect(() => {
         let currentData = tableData.slice(currentPageIndex * pageSize, currentPageIndex * pageSize + Number(pageSize))
         setCurrentPageData(currentData)
@@ -33,7 +41,7 @@ const TablePagination = memo(({ tableData, setCurrentPageData, paginationAlign, 
         <div className={paginationClassName} style={{ justifyContent: paginationAlign }}>
             <button className='prev-btn' disabled={currentPageIndex == 0} onClick={previousFunc} >Prev</button>
             {
-                pagesLength.map((page, idx) => <span className={`${currentPageIndex == page && 'selected'}`} onClick={() => setCurrentPageIndex(page)} key={idx}>{page + 1}</span>)
+                renderPageIndexes(pagesLength).map((page, idx) => <span className={`${currentPageIndex == page && 'selected'}`} onClick={() => setCurrentPageIndex(page)} key={idx}>{page + 1}</span>)
             }
             <button disabled={currentPageIndex == lastPage} className='next-btn' onClick={nextFunc}>Next</button>
             {
