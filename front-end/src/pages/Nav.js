@@ -1,11 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import React, { useContext} from 'react'
+import { useNavigate } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Navbar, Container, NavDropdown, Nav, Button } from 'react-bootstrap'
 import { UserContext } from '../App'
-// import { GreenDot, RedDot } from '../utils/Dots/Dots'
-// import { BE_URL } from '../utils/Constants'
-// import { fetchCall } from '../utils/fetch/UseFetch'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
 import '../pages/chatBox/ChatBox.css'
@@ -15,7 +12,7 @@ import { addActivity } from './activityPage/ActivityPage'
 import logo from '../assets/company-logo.jpg'
 
 const Navigation = () => {
-    const { currentUserVal, setCurrentUserVal, socket, notificationRooms, isLoggedIn } = useContext(UserContext)
+    const { currentUserVal, setCurrentUserVal, socket, notificationRooms, isLoggedIn, setIsLoggedIn } = useContext(UserContext)
 
     const navigate = useNavigate()
     const logout = async (id) => {
@@ -24,6 +21,7 @@ const Navigation = () => {
         setCookie("63dab3b51d791ebc7821db51", 2)
         setCurrentUserVal({})
         socket.emit('new-user')
+        setIsLoggedIn(false)
         navigate('/login')
     }
 
@@ -54,10 +52,9 @@ const Navigation = () => {
                         <LinkContainer to='/'>
                             <Nav.Link >Home</Nav.Link>
                         </LinkContainer>
-
                         {
                             isLoggedIn && <>
-                                <LinkContainer to='/getIssue'>
+                                <LinkContainer to='/tickets'>
                                     <Nav.Link >Tickets</Nav.Link>
                                 </LinkContainer>
                                 {
@@ -67,26 +64,28 @@ const Navigation = () => {
                                 }
                                 <LinkContainer to='/chat'>
                                     <Nav.Link >Chat
-                                        {isLoggedIn && notificationRooms != 0 && <span className='notification-icon'>{notificationRooms}</span>}
+                                        {notificationRooms != 0 && <span className='notification-icon'>{notificationRooms}</span>}
                                     </Nav.Link>
                                 </LinkContainer>
                                 <LinkContainer to='/dashboard'>
                                     <Nav.Link>Dashboard</Nav.Link>
                                 </LinkContainer>
-                            </>
-                        }
-
-                        {
-                            isLoggedIn && <li>
+                                <LinkContainer to='/profile'>
+                                    <Nav.Link>My Profile</Nav.Link>
+                                </LinkContainer>
+                                <li>
                                 <label className="switch mt-2">
                                     <input type="checkbox" onChange={handleStatus} defaultChecked={true} />
                                     <span className="slider round"></span>
                                 </label>
                             </li>
+                            </>
                         }
-                        <LinkContainer to='/login'>
-                            <Nav.Link > {isLoggedIn ? "My  Profile" : "Login"}</Nav.Link>
+                        {
+                            !isLoggedIn && <LinkContainer to='/login'>
+                            <Nav.Link >Login</Nav.Link>
                         </LinkContainer>
+                        }
                         {
                             isLoggedIn && (
                                 <NavDropdown title={

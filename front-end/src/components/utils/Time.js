@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Time = ()=> {
     const [d,setD] = useState('')
-    setInterval(()=> {
-        const d = new Date().toLocaleTimeString()
-        setD(d)
-    },1000)
+    useEffect(()=> {
+       const interval = setInterval(()=> {
+            const d = new Date().toLocaleTimeString()
+            setD(d)
+        },1000)
+        return ()=> clearInterval(interval)
+    },[])
     return (
         <div><b>{d} </b></div>
     )

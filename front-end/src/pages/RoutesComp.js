@@ -1,65 +1,87 @@
-import React, { useContext } from 'react'
+import React, { Suspense, lazy, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import AddData from './AddData'
-import Description from '../components/issues/Description'
-import Tickets from './Tickets'
-import Home from './Home'
-import Login from './Login'
-import MyProfile from './MyProfile'
-import Signup from './Signup'
-import AdminPage from './adminPage/AdminPage'
-import UserUpdate from '../components/profile/UserUpdate'
-import ForgotPassword from '../components/registration/ForgotPassword'
-import MailVerification from '../components/utils/MailVerification'
-import ChatBox from '../pages/chatBox/ChatBox'
 import { UserContext } from '../App'
-import Dashboard from './dashboard/Dashboard'
-import EmployeeStats from './employeeStats/EmployeeStats'
-import ContactUs from './contactUs/ContactUs'
-import ContactUsAdmin from './contactUs/ContactUsAdmin'
-import RockPaperScissor from '../components/games/rockPaperScissor'
-import MultiplicationGame from '../components/games/multiplication'
-import NoRouteFound from '../components/utils/NoRouteFound'
-import ActivityPage from './activityPage/ActivityPage'
-import ClientStats from './employeeStats/ClientStats'
-import AdminBotPage from '../components/bot/AdminBotPage'
+import Loader from '../components/utils/loader/Loader'
+// import AddData from './AddData'
+// import Description from '../components/issues/Description'
+// import Tickets from './Tickets'
+// import Home from './Home'
+// import Login from './Login'
+// import Signup from './Signup'
+// import AdminPage from './adminPage/AdminPage'
+// import UserUpdate from '../components/profile/UserUpdate'
+// import ForgotPassword from '../components/registration/ForgotPassword'
+// import MailVerification from '../components/utils/MailVerification'
+// import ChatBox from '../pages/chatBox/ChatBox'
+// import Dashboard from './dashboard/Dashboard'
+// import EmployeeStats from './employeeStats/EmployeeStats'
+// import ContactUs from './contactUs/ContactUs'
+// import ContactUsAdmin from './contactUs/ContactUsAdmin'
+// import RockPaperScissor from '../components/games/rockPaperScissor'
+// import MultiplicationGame from '../components/games/multiplication'
+// import NoRouteFound from '../components/utils/NoRouteFound'
+const MyProfile = lazy(()=> import('../pages/MyProfile'))
+const MailVerification = lazy(()=> import('../components/utils/MailVerification'))
+const ForgotPassword = lazy(()=> import('../components/registration/ForgotPassword'))
+const UserUpdate = lazy(()=> import('../components/profile/UserUpdate'))
+const Home = lazy(()=> import('./Home'))
+const NoRouteFound = lazy(()=> import('../components/utils/NoRouteFound'))
+const MultiplicationGame = lazy(()=> import('../components/games/multiplication'))
+const RockPaperScissor = lazy(()=> import('../components/games/rockPaperScissor'))
+const ContactUsAdmin = lazy(()=> import('./contactUs/ContactUsAdmin'))
+const ContactUs = lazy(()=> import('./contactUs/ContactUs'))
+const ChatBox = lazy(()=> import('../pages/chatBox/ChatBox'))
+const Tickets = lazy(()=> import('./Tickets'))
+const Description = lazy(()=> import('../components/issues/Description'))
+const AdminPage = lazy(()=> import('./adminPage/AdminPage'))
+const Login = lazy(()=> import('./Login'))
+const Signup = lazy(()=> import('./Login'))
+const Dashboard = lazy(()=> import('./dashboard/Dashboard'))
+const EmployeeStats = lazy(()=> import('./employeeStats/EmployeeStats'))
+// const AddData = lazy(()=> import('./AddData'))
+const ActivityPage = lazy(()=> import('./activityPage/ActivityPage'))
+const AdminBotPage = lazy(()=> import('../components/bot/AdminBotPage'))
+const ClientStats = lazy(()=> import('./employeeStats/ClientStats'))
 
 const RoutesComp = () => {
-    const { currentUserVal } = useContext(UserContext)
+    const { isLoggedIn } = useContext(UserContext)
+    const routes = [
+        {path:'/', element: <Navigate to='home'/>},
+        {path:'tickets', element:<Tickets />},
+        {path:'description', element:<Description />},
+        {path:'chat', element:<ChatBox />},
+        {path:'adminpage', element:<AdminPage />},
+        {path:'verifymail/:path', element:<MailVerification /> },
+        {path:'contact', element: <ContactUs/>},
+        {path:'contactData', element:<ContactUsAdmin/> },
+        {path:'activity', element:<ActivityPage/> },
+        {path:'*', element:<NoRouteFound/> },
+        {path:'forgotpassword', element:<ForgotPassword />},
+        {path:'dashboard', element:<Dashboard />},
+        {path:'updateuser', element:<UserUpdate />},
+        {path:'empstats', element:<EmployeeStats/>},
+        {path:'game/1', element:<RockPaperScissor/>},
+        {path:'game/2', element:<MultiplicationGame/>},
+        {path:'clientstats', element:<ClientStats />},
+        {path:'botrequest', element:<AdminBotPage />},
+        {path:'profile', element: <MyProfile/>}
+    ]
+    const defaultRoutes= [
+        {path:'/', element:<Navigate to='home' />},
+        {path:'home', element:<Home />},
+        {path:'login', element:<Login />},
+        {path:'*', element:<NoRouteFound/>},
+        {path:'signup', element:<Signup />},
+    ]
     return (
         <div className=''>
             <Routes>
-                <Route path='/' element={<Navigate to='home' />} />
-                <Route path='home' element={<Home />} />
-                <Route path='addIssue' element={<AddData />} />
-                <Route path='getIssue' element={<Tickets />} />
-                <Route path='description' element={<Description />} />
-                <Route path='/chat' element={<ChatBox />} />
-                <Route path='adminpage' element={<AdminPage />} />
-                <Route path='login' element={<Login />} /> 
-                <Route path='verifymail/:path' element={<MailVerification />} />
-                <Route path='contact' element={<ContactUs/>}/>
-                <Route path='contactData' element={<ContactUsAdmin/>}/>
-                <Route path='activity' element={<ActivityPage/>}/>
                 {
-                    !currentUserVal.fName && (
-                        <Route path='signup' element={<Signup />} />
-                    )
+                    defaultRoutes.map((route, idx)=> <Route key={idx} path={route.path} element= {<Suspense fallback={<Loader/>}>{route.element}</Suspense> }/>)
                 }
                 {
-                    currentUserVal.fName && <>
-                        <Route path='/forgotpassword' element={<ForgotPassword />} />
-                        <Route path='updateuser' element={<UserUpdate />} />
-                        <Route path='/dashboard' element={<Dashboard />} />
-                        <Route path='/empstats' element={<EmployeeStats/>}/>
-                        <Route path='/game/1' element={<RockPaperScissor/>} />
-                        <Route path='game/2' element={<MultiplicationGame/>} />
-                        <Route path='clientstats' element={<ClientStats />} />
-                        <Route path='botrequest' element={<AdminBotPage />} />
-                    </>
+                    isLoggedIn && routes.map((route, idx)=> <Route key={idx} path={route.path} element= {<Suspense fallback={<Loader/>}>{route.element}</Suspense> }/>)
                 }
-                {/* <Route path='profile' element={<MyProfile/> } /> */}
-                <Route path='*' element={<NoRouteFound/>}/>
             </Routes>
         </div>
     )

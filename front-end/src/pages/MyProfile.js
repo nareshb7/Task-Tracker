@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import UserIssues, { uploadedIssues } from '../components/issues/UserIssues'
-import { fetchCall, fetchGetCall } from '../components/utils/fetch/UseFetch'
+import { fetchCall } from '../components/utils/fetch/UseFetch'
 import { logoutFunc } from '../components/utils/LogoutFunc'
 import { setCookie } from '../components/utils/CookieComp'
 import { Button, Card, Col, Row } from 'react-bootstrap'
 import mockNewsData from '../components/utils/mockdata/newsMockData.json'
 import { addActivity } from './activityPage/ActivityPage'
+import { UserContext } from '../App'
 
-const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, newsData }) => {
+const MyProfile = () => {
+  const { currentUserVal, setCurrentUserVal, socket, setIsLoggedIn } = useContext(UserContext)
   const navigate = useNavigate()
   const location = useLocation()
   const [currentUser, setCurrentUser] = useState({})
@@ -50,11 +52,11 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
 
   const logout = async (id) => {
     setCurrentUser({})
+    setIsLoggedIn(false)
     setCurrentUserVal({})
     addActivity(currentUserVal, 'Logout page', `Logged Out`)
     await logoutFunc(currentUserVal)
     setCookie("63dab3b51d791ebc7821db51", 2)
-    setResponse('Please Login')
     socket.emit('new-user')
   }
   const styles = {
@@ -108,89 +110,84 @@ const MyProfile = ({ currentUserVal, setCurrentUserVal, setResponse, socket, new
     setIssuesList(result)
 
   }
-  return (
-    <div>
+  return (<>
+    <Row md={12}>
+      <Col md={5} className='card m-3'>
+        <h2>Name : {currentUser.fName} {currentUser.lName}  <span style={styles.span}>{currentUser.isAdmin && '( Admin )'}</span></h2>
+        <h2>Email : {currentUser.email}</h2>
+        <h2>Mobile : {currentUser.mobile}</h2>
+        <h2>User ID : {currentUser.userId}</h2>
+        {/* <h2>Password :{currentUser.password.slice(0, 2)}{''.padEnd(currentUser.password.length - 4, '*')}{currentUser.password.slice(-2)}</h2> */}
+      </Col>
+      <Col md={2} className='m-3'>
+        <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
+      </Col>
+      <Col md={4} className='card m-3'>
+        {/* <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <Button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</Button></p> */}
+        <div>
+          <Button onClick={() => logout(currentUser._id)} style={{ backgroundColor: '#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</Button>
+          <Button onClick={() => updateData(currentUser)}>Update Details</Button>
+        </div>
+        <div>
+          <Button disabled={currentUserVal.reqforMailChange} onClick={() => setMailUpdatereq(!mailUpdatereq)}> Req for Mail update</Button>
+        </div>
+        {
+          mailUpdatereq &&
+          <div style={{ marginBlock: '10px' }}>
+            <select name='updateKey' defaultValue={adminUpdates.updateKey} onChange={handleChangeMailReq}>
+              <option value='email'>Email</option>
+              {/* <option value='mobile'>Mobile</option> */}
+            </select>
+            <input placeholder='enter value here' type='text' name='updateValue' value={adminUpdates.updateValue} onChange={handleChangeMailReq} />
+            <div ><Button onClick={handleMailReq}>Submit</Button></div>
+          </div>
+        }
+        <div style={{ height: '30px' }}>{reqMailError}</div>
+        <div>
+          <Button onClick={showMyIssues}>My Tickets</Button>
+          <Button className='mx-2' onClick={() => {
+            setTimeout(() => {
+              navigate('/empstats', { state: currentUserVal })
+            }, 0)
+          }}
+          > Go to Stats page</Button>
+        </div>
+      </Col>
+    </Row>
+    <Row>
       {
-        Object.keys(currentUser).length > 2 ? <>
-          <Row md={12}>
-            <Col md={5} className='card m-3'>
-              <h2>Name : {currentUser.fName} {currentUser.lName}  <span style={styles.span}>{currentUser.isAdmin && '( Admin )'}</span></h2>
-              <h2>Email : {currentUser.email}</h2>
-              <h2>Mobile : {currentUser.mobile}</h2>
-              <h2>User ID : {currentUser.userId}</h2>
-              {/* <h2>Password :{currentUser.password.slice(0, 2)}{''.padEnd(currentUser.password.length - 4, '*')}{currentUser.password.slice(-2)}</h2> */}
-            </Col>
-            <Col md={2} className='m-3'>
-              <img src={currentUser.binaryData} alt='image' style={{ width: '200px', height: '200px' }} />
-            </Col>
-            <Col md={4} className='card m-3'>
-              {/* <p style={{ display: `${currentUser.isAdmin ? 'none' : 'block'}` }}>Request  {currentUser.reqforAdmin ? 'sent ' : 'for '}  <Button disabled={currentUser.reqforAdmin} onClick={reqAdminAccess}>Admin access</Button></p> */}
-              <div>
-                <Button onClick={() => logout(currentUser._id)} style={{ backgroundColor: '#f44', padding: '10px 20px', border: 'none', margin: '10px', fontSize: '16px' }}>Logout</Button>
-                <Button onClick={() => updateData(currentUser)}>Update Details</Button>
-              </div>
-              <div>
-                <Button disabled={currentUserVal.reqforMailChange} onClick={() => setMailUpdatereq(!mailUpdatereq)}> Req for Mail update</Button>
-              </div>
-              {
-                mailUpdatereq &&
-                <div style={{ marginBlock: '10px' }}>
-                  <select name='updateKey' defaultValue={adminUpdates.updateKey} onChange={handleChangeMailReq}>
-                    <option value='email'>Email</option>
-                    {/* <option value='mobile'>Mobile</option> */}
-                  </select>
-                  <input placeholder='enter value here' type='text' name='updateValue' value={adminUpdates.updateValue} onChange={handleChangeMailReq} />
-                  <div ><Button onClick={handleMailReq}>Submit</Button></div>
-                </div>
-              }
-              <div style={{ height: '30px' }}>{reqMailError}</div>
-              <div>
-                <Button onClick={showMyIssues}>My Tickets</Button>
-                <Button className='mx-2' onClick={() => {
-                  setTimeout(() => {
-                    navigate('/empstats', { state: currentUserVal })
-                  }, 0)
-                }}
-                > Go to Stats page</Button>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-          {
         showIssues && issuesList && <div>
           <UserIssues issuesList={issuesList} />
         </div>
       }
-          </Row>
-          <Row className='my-2 d-flex flex-column' >
-            <Col className='fw-bold fs-4 text-start'>Entertainment Zone:</Col>
-            <Col >
-              <marquee style={{ backgroundColor: '#ff0' }}>
-                <a href='https://guessthenumbergame1.netlify.app/' className='mx-2' target='_blank'>
-                  <Button>Guess the number game </Button>
-                </a>
-                <Link to='/game/1' className='mx-2'><Button> RPS Game </Button></Link>
-                <Link to='/game/2' className='mx-2'><Button>Multiplications </Button></Link>
-              </marquee>
-            </Col>
-          </Row>
-          <Row className='my-2 d-flex flex-column'>
-            <Col className='fw-bold fs-4 text-start'>Latest News:</Col>
-            <Row className=' flex-row gap-3 m-auto' style={{ overflowY: 'scroll', height: '400px' }}>
-              {
-                mockNewsData.map((article) => (
-                  <Card as={'a'} href={article.link} target='_blank' style={{ width: '300px' }} key={article._id}>
-                    <Card.Img className='rounded my-1' src={article.media} style={{ width: '250px', height: '250px'}} alt={article.rights} />
-                    <Card.Title>{article.title}</Card.Title>
-                    <Card.Text>{article.excerpt}</Card.Text>
-                  </Card>
-                ))
-              }
-            </Row>
-          </Row>
-        </> : <h3>Please login to <NavLink to='/login'> click here </NavLink> </h3>
-      }
-    </div>
+    </Row>
+    <Row className='my-2 d-flex flex-column' >
+      <Col className='fw-bold fs-4 text-start'>Entertainment Zone:</Col>
+      <Col >
+        <marquee style={{ backgroundColor: '#ff0' }}>
+          <a href='https://guessthenumbergame1.netlify.app/' className='mx-2' target='_blank'>
+            <Button>Guess the number game </Button>
+          </a>
+          <Link to='/game/1' className='mx-2'><Button> RPS Game </Button></Link>
+          <Link to='/game/2' className='mx-2'><Button>Multiplications </Button></Link>
+        </marquee>
+      </Col>
+    </Row>
+    <Row className='my-2 d-flex flex-column'>
+      <Col className='fw-bold fs-4 text-start'>Latest News:</Col>
+      <Row className=' flex-row gap-3 m-auto' style={{ overflowY: 'scroll', height: '400px' }}>
+        {
+          mockNewsData.map((article) => (
+            <Card as={'a'} href={article.link} target='_blank' style={{ width: '300px' }} key={article._id}>
+              <Card.Img className='rounded my-1' src={article.media} style={{ width: '250px', height: '250px' }} alt={article.rights} />
+              <Card.Title>{article.title}</Card.Title>
+              <Card.Text>{article.excerpt}</Card.Text>
+            </Card>
+          ))
+        }
+      </Row>
+    </Row>
+  </>
   )
 }
 

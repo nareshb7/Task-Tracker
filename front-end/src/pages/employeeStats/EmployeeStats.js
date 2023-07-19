@@ -119,7 +119,7 @@ const EmployeeStats = () => {
             <Col><span>Resolved: </span><span>{statsData.resolved}</span></Col>
             <Col><span>Pending: </span><span>{statsData.pending}</span></Col>
             <Col><span>Fixed: </span><span>{statsData.fixed}</span></Col>
-            <Col><span>Today Ticets: </span><span>{statsData.assigned.length}</span> </Col>
+            <Col><span>Today Tickets: </span><span>{statsData.assigned.length}</span> </Col>
             <Col><span>Solved with another Dev: </span><span>{statsData.helpTaken}</span></Col>
             <Col><span>Helped Tickets: </span><span>{helpedTickets.length} </span></Col>
           </Row>
@@ -131,7 +131,7 @@ const EmployeeStats = () => {
         <Col><span>IP Address: </span><span>{state?.lastLoginData.ipAddress}</span></Col>
         <Col><span>Login Time: </span><span>{new Date(state?.lastLoginData.loginTime).toLocaleString()}</span></Col>
         <Col><span>Location: </span><span>{state?.lastLoginData.location.city}, {state?.lastLoginData.location.state} </span></Col>
-        <Col><span>Map: </span><a href={`https://www.latlong.net/c/?lat=${state?.lastLoginData.location.latitude}&long=${state?.lastLoginData.location.longitude}`} target='_blank'>Click here </a></Col>
+        <Col><span>Map: </span><a href={`https://www.latlong.net/c/?lat=${state?.lastLoginData.location.latitude}&long=${state?.lastLoginData.location.longitude}`} target='_blank'>Click here </a> (Approximate location)</Col>
         <Col></Col>
         </Row>
         </Col>

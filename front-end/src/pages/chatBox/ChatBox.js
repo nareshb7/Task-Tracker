@@ -46,6 +46,7 @@ const ChatBox = () => {
         let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
         setTotalMessages(totalMessage)
         const roomsCount = Object.keys(currentUserVal?.newMessages).length
+        setTotalMessages(totalMessage)
         setNotificationRooms(roomsCount)
     }
     const imgPopup = (src, fName) => {
@@ -72,63 +73,58 @@ const ChatBox = () => {
     useEffect(() => {
         setEmployeesList(users)
     }, [users])
-    return (
-        <>
-            {
-                currentUserVal._id ? <div className='chatBox-main'>
-                    <div className='chatBox-userList'>
-                        <div>{users.length < 0 && 'Loading....'}</div>
-                        <div>
-                            <input placeholder='Search here...' value={searchVal} className='form-control' type='search' onChange={handleSearchUsers} />
-                        </div>
-                        <>{
-                            loading ? <Loader /> : <>
-                                {
-                                    employessList.map((user, idx) => {
-                                        if (user._id === currentUserVal._id) {
-                                            return
-                                        }
-                                        return <div key={idx} className='chatBox-div'  >
-                                            <div onClick={() => imgPopup(user.binaryData, user.fName)} className='chatBox-image'>
-                                                <img className='img' src={user.binaryData} />
-                                                <span className='online-indicator'>{user.status == 'Online' ? <GreenDot /> : <RedDot />}</span>
-                                            </div>
-                                            <div onClick={() => selectedUser(user, currentUserVal)} className='author-details'>
-                                                <h3 className='chatBox-header'>{user.fName} {user.lName}</h3>
-                                                <h5 className='chatBox-technology'>{user.designation ? user.designation : 'React JS'}</h5>
-                                            </div>
-                                            <div> {
-                                                currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)] &&
-                                                <span className='notification-icon'>{currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)]}</span>
-                                            }
-                                            </div>
-                                        </div>
-                                    })
+    return (<div className='chatBox-main'>
+        <div className='chatBox-userList'>
+            <div>
+                <input placeholder='Search here...' value={searchVal} className='form-control' type='search' onChange={handleSearchUsers} />
+            </div>
+            <>{
+                loading ? <Loader /> : <>
+                    {
+                        employessList.map((user, idx) => {
+                            if (user._id === currentUserVal._id) {
+                                return
+                            }
+                            return <div key={idx} className='chatBox-div'  >
+                                <div onClick={() => imgPopup(user.binaryData, user.fName)} className='chatBox-image'>
+                                    <img className='img' src={user.binaryData} />
+                                    <span className='online-indicator'>{user.status == 'Online' ? <GreenDot /> : <RedDot />}</span>
+                                </div>
+                                <div onClick={() => selectedUser(user, currentUserVal)} className='author-details'>
+                                    <h3 className='chatBox-header'>{getFullName(user)}</h3>
+                                    <h5 className='chatBox-technology'>{user.designation ? user.designation : 'React JS'}</h5>
+                                </div>
+                                <div> {
+                                    currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)] &&
+                                    <span className='notification-icon'>{currentUserVal.newMessages[getRoomId(user._id, currentUserVal._id)]}</span>
                                 }
-                            </>
-                        }
-                        </>
-
-                    </div>
-                    <MessageBox
-                        socket={socket}
-                        user={currentUserVal}
-                        setOpponent={setOpponent}
-                        roomId={currentRoom}
-                        opponent={opponent}
-                        imgPopup={imgPopup} />
-                    <Modal isOpen={imgmodal} setModal={setImgmodal} >
-                        <div>
-                            <h3>{imgSrc.fName}</h3>
-                            <div className='modalImage' >
-                                <img src={imgSrc.src} />
+                                </div>
                             </div>
-                        </div>
-                    </Modal>
-                </div> : <div style={{ textAlign: 'center' }}>Login to <NavLink to='/login'>click here </NavLink></div>
+                        })
+                    }
+                </>
             }
-        </>
-
+            </>
+        </div>
+        {
+            opponent?._id && <MessageBox
+            socket={socket}
+            user={currentUserVal}
+            setOpponent={setOpponent}
+            roomId={currentRoom}
+            opponent={opponent}
+            imgPopup={imgPopup} />
+        }
+        
+        <Modal isOpen={imgmodal} setModal={setImgmodal} >
+            <div>
+                <h3>{imgSrc.fName}</h3>
+                <div className='modalImage' >
+                    <img src={imgSrc.src} />
+                </div>
+            </div>
+        </Modal>
+    </div>
     )
 }
 export default ChatBox

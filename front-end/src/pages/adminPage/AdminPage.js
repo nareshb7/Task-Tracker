@@ -1,19 +1,16 @@
-import React, { useEffect, useState, useContext } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { UserContext } from '../../App'
-import Modal from '../../components/modal/Modal'
-import UserIssues, { uploadedIssues } from '../../components/issues/UserIssues'
-import Loader from '../../components/utils/loader/Loader'
+import { uploadedIssues } from '../../components/issues/UserIssues'
 import { GreenDot, RedDot } from '../../components/utils/Dots/Dots'
-import { Button, Col, Row, Table } from 'react-bootstrap'
-import { lastSeenTimeFormat } from '../chatBox/MessageBox'
+import { Button} from 'react-bootstrap'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { fetchCall, fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
-import TimeZones, { ParticularTimeZone, particularTimeZone, TimeZone } from '../../components/features/TimeZones'
+import TimeZones, { ParticularTimeZone } from '../../components/features/TimeZones'
 import { getFullName } from '../../components/utils/GetFullName'
 import { debounce } from '../../components/utils/Debounce'
 import TaskTable from '../../components/reusable/table/Table'
-import AdminPageModals from './AdminPageModals'
+import AdminPageModals, { EmployeeDataModal, MailChangeModal, ShowTicketsModal, UserUpdateModel } from './AdminPageModals'
+import Loader from '../../components/utils/loader/Loader'
 
 const AdminPage = () => {
     const { currentUserVal, setCurrentUserVal } = useContext(UserContext)
@@ -44,6 +41,10 @@ const AdminPage = () => {
             const val = response.data.filter(user => user?.reqforAdmin == true && user.isAdmin === false)
             setAdminReqData(val)
         }
+        const mailReqId = await fetchGetCall('/api/getmailreqIDs')
+        if (mailReqId.success) {
+            setMailChangeReqIDs(mailReqId.data)
+        }
     }
     const getClients = async () => {
         const { data, success } = await fetchGetCall('/api/getclientslist')
@@ -51,7 +52,6 @@ const AdminPage = () => {
             setClientsData(data)
         }
     }
-
 
     const setAlert = (val, type) => {
         window.alert(`${val}'s account ${type} sucessfully`)
@@ -107,7 +107,7 @@ const AdminPage = () => {
         setUpdateUserObj(user)
         setOpenUpdateModal(true)
     }
-    const userLoginPermission = async (user, access) => {
+    const userLoginPermission =useCallback( async (user, access) => {
         let status = access
         let cnfrm = window.confirm(`If u click ok ${user.fName}'s account will be ${status ? 'accessible' : "no longer accessible"} `)
         if (cnfrm) {
@@ -119,8 +119,8 @@ const AdminPage = () => {
                 setOpenUpdateModal(false)
             }
         }
-    }
-    const requestAcceptFunc = async (id, type, updateField) => {
+    },[updateUserObj])
+    const requestAcceptFunc = useCallback(async (id, type, updateField) => {
         const updateKey = updateField || type ? 'isAdmin' : 'reqforAdmin'
         let cnfrm = window.confirm(`Do you want to ${type ? "give" : "remove"} the Admin Access ? `)
         if (cnfrm) {
@@ -133,7 +133,7 @@ const AdminPage = () => {
                 getAllUsers()
             }
         }
-    }
+    }, [])
     const uploadedIssuesList = async (developerId) => {
         const result = await uploadedIssues(developerId)
         setIssuesList(result)
@@ -185,7 +185,7 @@ const AdminPage = () => {
         }
         setMailChangeModal(true)
     }
-    const handleRoleChange = async (e) => {
+    const handleRoleChange = useCallback( async (e) => {
         console.log('VAL', e.target.value, updateUserObj)
         const msz = `You are updating ${updateUserObj.fName}'s role from ${updateUserObj.designation} to ${e.target.value}`
         const cnfrm = window.confirm(msz)
@@ -196,7 +196,7 @@ const AdminPage = () => {
             getAllUsers()
             setOpenUpdateModal(false)
         }
-    }
+    },[updateUserObj])
 
     const showClientStats = (client) => {
         navigate('/clientstats', { state: client })
@@ -236,11 +236,6 @@ const AdminPage = () => {
     useEffect(() => {
         getAllUsers()
         getClients()
-        axios.get('/api/getmailreqIDs')
-            .then(data => {
-                setMailChangeReqIDs(data.data)
-            })
-            .catch(err => console.log(err, 'error'))
         if (state?._id && state?.popup == "EMPMODAL") {
             setShowEmpModal(true)
             setShowEmpData(state)
@@ -268,26 +263,35 @@ const AdminPage = () => {
                 <input style={{ padding: '10px 20px', marginBlock: '10px' }} type='text' name='searchIpt' value={searchVal} onChange={handleSearch} placeholder='Search here by Dev Name..' />
                 <Button style={{ marginInline: '10px' }} >Search</Button>
             </div>
-            <AdminPageModals
+            <UserUpdateModel
                 openUpdateModal={openUpdateModal}
                 setOpenUpdateModal={setOpenUpdateModal}
                 updateUserObj={updateUserObj}
                 requestAcceptFunc={requestAcceptFunc}
                 userLoginPermission={userLoginPermission}
                 handleRoleChange={handleRoleChange}
+            />
+            <EmployeeDataModal
+                showEmpModal={showEmpModal}
+                setShowEmpModal={setShowEmpModal}
+                showEmpData={showEmpData}
+            />
+            <MailChangeModal 
                 mailChangeModal={mailChangeModal}
                 setMailChangeModal={setMailChangeModal}
                 mailChangeReqIDs={mailChangeReqIDs}
                 mailChangeAcceptFunc={mailChangeAcceptFunc}
-                isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
-                adminReqData={adminReqData}
-                showEmpModal={showEmpModal}
-                setShowEmpModal={setShowEmpModal}
-                showEmpData={showEmpData}
+            />
+            <ShowTicketsModal 
                 showTicketsModal={showTicketsModal}
                 setShowTicketsModal={setShowTicketsModal}
                 issuesList={issuesList}
+            />
+            <AdminPageModals
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                adminReqData={adminReqData}
+                requestAcceptFunc={requestAcceptFunc}
             />
             {
                 showClientsData ? <>
@@ -296,17 +300,14 @@ const AdminPage = () => {
                         headers={clientTableHeaders}
                         tableData={clientsData}
                         handleRowClick={showClientStats}
+                        loader={{loading : !clientsData.length, component:<Loader/>}} 
                     />
-                </> : <>
-                    {
-                        users.length ?
-                            <TaskTable
-                                pagination
-                                headers={empTableHeaders}
-                                tableData={tableData}
-                            /> : <h3>Data Loading.....</h3>
-                    }
-                </>
+                </> : <TaskTable
+                    pagination
+                    headers={empTableHeaders}
+                    tableData={tableData}
+                    loader={{loading : !tableData.length, component:<Loader/>}} 
+                />
             }
         </>
     )

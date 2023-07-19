@@ -1,5 +1,14 @@
 Do's : 
--> Update the pagination for reusable table
+-> Update infinte scroll for activity page and messages
+
+Dt: 19-07-23
+-> Updates routes with LazyLoading and suspense fallback dynamically
+-> Nav Time comp updated with useEffect
+-> UserIssues updated with TaskTable
+-> Login and MyProfile page seperated and provided seperate route
+-> Admin page modals updated 
+-> Given condition for messageBox in Chatbox component
+-> NaV PAGE updated by isLoggedIn variable
 
 Dt: 16-07-23
 -> Pagination Updated for TaskTable

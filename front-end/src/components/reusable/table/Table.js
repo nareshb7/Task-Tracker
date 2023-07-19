@@ -8,13 +8,13 @@ const TaskTable = memo((props) => {
         handleRowClick = () => { },
         headers = [],
         tableData = [],
-        loading = false,
         tHeadClassName = '',
         tBodyClassName = '',
         className = 'task-table',
         pagination = false,
         paginationAlign = 'center',
         paginationClassName = 'table-pagination',
+        loader= {component: <div>Loading..</div>, loading:false},
         ...args
     } = props
     const dt = tableData.map((val, idx) => {
@@ -24,7 +24,7 @@ const TaskTable = memo((props) => {
     const [currentPageData, setCurrentPageData] = useState([])
     useEffect(() => {
         setFormattedData(dt)
-        pagination ? setCurrentPageData(dt) : setCurrentPageData(dt.slice(0, 5))
+        pagination ? setCurrentPageData(dt.slice(0, 5)) : setCurrentPageData(dt)
     }, [tableData])
     const renderHeader = (header, idx) => {
         switch (header.node) {
@@ -68,7 +68,7 @@ const TaskTable = memo((props) => {
             </thead>
             <tbody className={tBodyClassName}>
                 {
-                    loading ? <tr><td colSpan={headers.length}>Loading...</td></tr> :
+                    loader.loading ? <tr><td colSpan={headers.length}>{loader.component ? loader.component : <div>Loading...</div>}</td></tr> :
                         currentPageData.map((obj, idx) => renderBodyRow(obj, idx))
                 }
             </tbody>

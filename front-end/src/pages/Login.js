@@ -11,7 +11,7 @@ import { getBrowserName, getLocationCoords } from '../components/utils/Authentic
 
 const Login = () => {
     const navigate = useNavigate()
-    const { setNotificationRooms, currentUserVal, setCurrentUserVal, socket , newsData } = useContext(UserContext)
+    const { isLoggedIn, setIsLoggedIn, setNotificationRooms, currentUserVal, setCurrentUserVal, socket, newsData } = useContext(UserContext)
     const obj = {
         value: '',
         password: ''
@@ -34,6 +34,7 @@ const Login = () => {
         const response =await fetchCall('/api/loginData', data)
         if (response._id) {
             setData(obj)
+            setResponse('')
             loginSucessFunc(response)
         } else {
             setResponse(response)
@@ -41,7 +42,7 @@ const Login = () => {
     }
     const loginSucessFunc = async (currentUser) => {
         setCurrentUserVal(currentUser)
-        setResponse('Login Sucessfully')
+        setIsLoggedIn(true)
         console.log('LoggedIn User', currentUser, window)
         setCookie(currentUser._id, 2)
         const roomsCount = Object.keys(currentUser.newMessages).length
@@ -58,47 +59,39 @@ const Login = () => {
         setLoginClicked(true)
         setIsAdminLogin(true)
     }
-    return (
-        <div>
-            {
-                !currentUserVal.hasOwnProperty('fName') ? (
-                    <Row className='card bg my-1 d-flex flex-direction-column align-items-center justify-content-center '>
-                        {/* <Col md={7} className='login__bg'></Col> */}
-                        <Col md={5} className=''>
-                            <div>
-                                <Col className='d-flex justify-content-around my-2'>
-                                    <Button onClick={userLoginFunc}>User Login</Button>
-                                    <Button onClick={adminLoginFunc} variant='secondary'>Admin Login</Button>
-                                </Col>
-                                {
-                                    loginClicked && <Form style={{ width: '80%', maxWidth: 500 }} onSubmit={handleSubmit}>
-                                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                                            <Form.Label>Email address</Form.Label>
-                                            <Form.Control type="text" placeholder="Email or UserId" name='value' value={data.value} onChange={handleChange} />
-                                            <Form.Text className="text-muted">
-                                                We'll never share your email with anyone else.
-                                            </Form.Text>
-                                        </Form.Group>
-                                        <Form.Group className="mb-3" controlId="formBasicPassword">
-                                            <Form.Label>Password</Form.Label>
-                                            <Form.Control type="password" placeholder="Password" name='password' value={data.password} onChange={handleChange} />
-                                        </Form.Group>
-                                        <Button variant='primary' type='submit'>{isAdminLogin ? 'Admin Login': 'User Login'}</Button>
-                                        <h5> Status: {response} </h5>
-                                    </Form>
-                                }
-                                <div className='py-4'>
-                                    <p className='text-center fw-bolder'>
-                                        Don't have an account ? <Link to='/signup'>Raise a request</Link>
-                                    </p>
-                                    {/* <p className='text-center fw-bolder'>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></p> */}
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                ) : <MyProfile currentUserVal={currentUserVal} setCurrentUserVal={setCurrentUserVal} setResponse={setResponse} socket={socket} newsData={newsData}/>
-            }
-        </div>
+    return (<Row className='card bg my-1 d-flex flex-direction-column align-items-center justify-content-center '>
+        <Col md={5} className=''>
+            <div>
+                <Col className='d-flex justify-content-around my-2'>
+                    <Button onClick={userLoginFunc}>User Login</Button>
+                    <Button onClick={adminLoginFunc} variant='secondary'>Admin Login</Button>
+                </Col>
+                {
+                    loginClicked && <Form style={{ width: '80%', maxWidth: 500 }} onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                            <Form.Label>Email address</Form.Label>
+                            <Form.Control type="text" placeholder="Email or UserId" name='value' value={data.value} onChange={handleChange} />
+                            <Form.Text className="text-muted">
+                                We'll never share your email with anyone else.
+                            </Form.Text>
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" name='password' value={data.password} onChange={handleChange} />
+                        </Form.Group>
+                        <Button variant='primary' type='submit'>{isAdminLogin ? 'Admin Login' : 'User Login'}</Button>
+                        <h5> Status: {response} </h5>
+                    </Form>
+                }
+                <div className='py-4'>
+                    <p className='text-center fw-bolder'>
+                        Don't have an account ? <Link to='/signup'>Raise a request</Link>
+                    </p>
+                    {/* <p className='text-center fw-bolder'>Forgot password <NavLink to='/forgotpassword'>click here</NavLink></p> */}
+                </div>
+            </div>
+        </Col>
+    </Row>
     )
 }
 

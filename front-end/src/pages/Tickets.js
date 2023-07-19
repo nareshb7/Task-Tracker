@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import { UserContext } from '../App'
 import Loader from '../components/utils/loader/Loader'
 import './style/IssueList.css'
@@ -120,7 +119,7 @@ const Tickets = () => {
         {title:'Ticket Status', key:'', tdFormat: (val)=> <span>{issueStatusFunc(val.issueStatus)}</span>},
         {title:'Updated Date', key:'', tdFormat: (val)=> <span>{dateIndicator(val?.time) }</span>},
         {title:'Last Update', key:'', tdFormat: (val)=> <span>{dateIndicator(val.solutions.slice(-1)[0].updatedTime || val?.time)}</span>},
-        {title:'Image', key:'', tdFormat: (val)=> <span><img src={val.binaryData[0] || val.binaryData} className='img' alt='img' />{val.binaryData.length > 1 && 'more....'} </span>},
+        {title:'Image', key:'', tdFormat: (val)=> <span><img className='img' src={val.binaryData[0] || val.binaryData}  alt='img' />{val.binaryData.length > 1 && 'more....'} </span>},
         {title:'Edit/ Delete', key:'', tdFormat: (val)=> <><Button variant='warning' onClick={() => editFunc(val._id, val)} disabled={currentUserVal._id !== val?.developerId}>Edit <i className='fas fa-edit'></i></Button>
         <Button variant='danger' onClick={() => deleteFunc(val._id)} disabled={!currentUserVal.isAdmin} >Delete <i className='fas fa-trash'></i></Button></>},
     ]
