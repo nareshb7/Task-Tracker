@@ -2,24 +2,6 @@ import React, { Suspense, lazy, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { UserContext } from '../App'
 import Loader from '../components/utils/loader/Loader'
-// import AddData from './AddData'
-// import Description from '../components/issues/Description'
-// import Tickets from './Tickets'
-// import Home from './Home'
-// import Login from './Login'
-// import Signup from './Signup'
-// import AdminPage from './adminPage/AdminPage'
-// import UserUpdate from '../components/profile/UserUpdate'
-// import ForgotPassword from '../components/registration/ForgotPassword'
-// import MailVerification from '../components/utils/MailVerification'
-// import ChatBox from '../pages/chatBox/ChatBox'
-// import Dashboard from './dashboard/Dashboard'
-// import EmployeeStats from './employeeStats/EmployeeStats'
-// import ContactUs from './contactUs/ContactUs'
-// import ContactUsAdmin from './contactUs/ContactUsAdmin'
-// import RockPaperScissor from '../components/games/rockPaperScissor'
-// import MultiplicationGame from '../components/games/multiplication'
-// import NoRouteFound from '../components/utils/NoRouteFound'
 const MyProfile = lazy(()=> import('../pages/MyProfile'))
 const MailVerification = lazy(()=> import('../components/utils/MailVerification'))
 const ForgotPassword = lazy(()=> import('../components/registration/ForgotPassword'))
@@ -38,7 +20,6 @@ const Login = lazy(()=> import('./Login'))
 const Signup = lazy(()=> import('./Login'))
 const Dashboard = lazy(()=> import('./dashboard/Dashboard'))
 const EmployeeStats = lazy(()=> import('./employeeStats/EmployeeStats'))
-// const AddData = lazy(()=> import('./AddData'))
 const ActivityPage = lazy(()=> import('./activityPage/ActivityPage'))
 const AdminBotPage = lazy(()=> import('../components/bot/AdminBotPage'))
 const ClientStats = lazy(()=> import('./employeeStats/ClientStats'))

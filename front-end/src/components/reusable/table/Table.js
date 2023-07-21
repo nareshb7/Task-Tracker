@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useState } from 'react'
-import { data, headersData, defaultTdFormat } from './tableMockData'
 import './table.css'
-import TablePagination from './Pagination'
+import TablePagination from './Pagination.js'
 
 const TaskTable = memo((props) => {
     const {
@@ -14,7 +13,7 @@ const TaskTable = memo((props) => {
         pagination = false,
         paginationAlign = 'center',
         paginationClassName = 'table-pagination',
-        loader= {component: <div>Loading..</div>, loading:false},
+        loader = { component: <>Loading..</>, loading: false },
         ...args
     } = props
     const dt = tableData.map((val, idx) => {
@@ -37,7 +36,16 @@ const TaskTable = memo((props) => {
                     </select>
                 </th>
             }
-            default: return <th key={idx} onClick={header.onClick}><span>{header.title}</span></th>
+            default: return <th key={idx}><div onClick={header.onClick} className='table-thead'>
+                <span>{header.title} </span>
+                {
+                    header.sort && <div className='sort-fields'>
+                        <span onClick={() => header?.sort(header.key, 'asc')}> &and;</span>
+                        <span onClick={() => header?.sort(header.key, 'desc')}> &or;</span>
+                    </div>
+                }
+            </div>
+            </th>
         }
     }
     const renderBodyRow = (obj, idx) => {

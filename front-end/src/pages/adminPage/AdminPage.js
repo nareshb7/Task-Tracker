@@ -68,9 +68,7 @@ const AdminPage = () => {
         }
     }
 
-    const sortFunc = (value, header) => {
-        const type = value.target.value
-        const val = header.key
+    const sortFunc = (val,type ) => {
         let sortData = JSON.parse(JSON.stringify(users))
         if (type == 'asc') {
             sortData.sort((a, b) => {
@@ -213,20 +211,19 @@ const AdminPage = () => {
     const empTableHeaders = [
         { title: 'Sl. No', key: 'serialNo' },
         {
-            title: 'Name', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], key: '',
+            title: 'Name', key: 'fName', sort: sortFunc,
             tdFormat: (user) => <><span>{user.fName} {user.lName}</span><br />
                 <span style={{ color: '#888' }} >( {user.userId} )</span></>,
-            onClick: sortFunc
         },
-        { title: 'Email', key: 'email', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc },
-        { title: 'Mobile', key: 'mobile', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc },
-        { title: 'Role', key: 'designation', node: 'select', values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc },
+        { title: 'Email', key: 'email', sort: sortFunc },
+        { title: 'Mobile', key: 'mobile', sort: sortFunc },
+        { title: 'Role', key: 'designation', sort: sortFunc },
         {
             title: 'Profile Image', key: '',
             tdFormat: (user) => <div style={{ width: '100px', height: '100px', cursor: 'pointer', position: 'relative' }}>{user.status === 'Online' ? <GreenDot styles={statusIndicatorStyle} /> : <RedDot styles={statusIndicatorStyle} />}
                 <img onClick={() => showEmployeeData(user)} src={user.binaryData} alt='image' style={{ width: '100%', height: '100%' }} /></div>
         },
-        { title: 'Active User', key: '', node: 'select', onClick: sortFunc, values: [{ key: "Up", value: "asc" }, { key: "Down", value: 'desc' }], onClick: sortFunc, tdFormat: (user) => <span>{user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </span> },
+        { title: 'Active User', key: 'isActive', sort: sortFunc, tdFormat: (user) => <span>{user.isActive ? 'Yes' : 'No'}{user.isAdmin && ' (Admin)'} </span> },
         { title: 'Uploaded Issues', key: '', tdFormat: (user) => <Button onClick={() => uploadedIssuesList(user._id)}>Click Here</Button> },
         {
             title: 'Remove User', key: '', tdFormat: (user) => <><Button variant='info' disabled={currentUser.mobile == user.mobile} onClick={() => updateUser(user)}>Update</Button>

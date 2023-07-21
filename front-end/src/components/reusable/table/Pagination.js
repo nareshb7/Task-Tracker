@@ -26,11 +26,11 @@ const TablePagination = memo(({ tableData, setCurrentPageData, paginationAlign, 
         setCurrentPageIndex(currentPageIndex + 1)
     }
     const renderPageIndexes = (data)=> {
-        if (currentPageIndex == 0) return data.slice(0,5)
+        if (currentPageIndex == 0) return data.slice(0,4)
+        if (currentPageIndex == lastPage) return data.slice(-4)
         const startIndex = currentPageIndex > 2 ? currentPageIndex -2 : 0
         const endIndex = currentPageIndex < lastPage ? currentPageIndex + 2: currentPageIndex 
         const val = data.slice(startIndex, endIndex)
-        console.log('INDEXES', {data, currentPageIndex,val})
         return val
     }
     useEffect(() => {
@@ -39,11 +39,13 @@ const TablePagination = memo(({ tableData, setCurrentPageData, paginationAlign, 
     }, [pageSize, currentPageIndex, tableData])
     return (
         <div className={paginationClassName} style={{ justifyContent: paginationAlign }}>
-            <button className='prev-btn' disabled={currentPageIndex == 0} onClick={previousFunc} >Prev</button>
+            <button className='next-btn' disabled={currentPageIndex == 0} onClick={()=> setCurrentPageIndex(0)}>{`<<`}</button>
+            <button className='prev-btn' disabled={currentPageIndex == 0} onClick={previousFunc} >{ `< `}</button>
             {
                 renderPageIndexes(pagesLength).map((page, idx) => <span className={`${currentPageIndex == page && 'selected'}`} onClick={() => setCurrentPageIndex(page)} key={idx}>{page + 1}</span>)
             }
-            <button disabled={currentPageIndex == lastPage} className='next-btn' onClick={nextFunc}>Next</button>
+            <button disabled={currentPageIndex == lastPage} className='next-btn' onClick={nextFunc}>{`>`}</button>
+            <button disabled={currentPageIndex == lastPage} className='next-btn' onClick={()=> setCurrentPageIndex(lastPage)}>{`>>`}</button>
             {
                 defaultPageSize && <select onChange={handlePageSizeChange} className='table-pagesize-dropdown'>
                     {
@@ -51,6 +53,7 @@ const TablePagination = memo(({ tableData, setCurrentPageData, paginationAlign, 
                     }
                 </select>
             }
+            <span> {currentPageIndex+1} of {lastPage+1} Pages</span>
         </div>
     )
 })
