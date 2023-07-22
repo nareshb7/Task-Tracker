@@ -45,6 +45,8 @@ const io = new Server(server, {
 })
 
 const getLastMessagesFromRoom =async (room)=> {
+    const count =await Message.find({to: room}).count()
+    console.log('COUINT', count)
     let roomMessages =await Message.aggregate([
         {$match : {to: room}},
         {$group: {_id: '$date', messageByDate: {$push : '$$ROOT'}}}

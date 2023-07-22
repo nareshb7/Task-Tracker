@@ -39,10 +39,34 @@ export const dateIndicator = (date) => {
     return d
 }
 
+const formatMsz = (msz) => {
+    switch (msz.type) {
+        case 'application/pdf': {
+            return <span>{msz.content} <a target='_blank' href={msz.fileLink} download={msz.content} ><i className='fas fa-download' ></i></a></span>
+        }
+        case 'image/jpeg': {
+            return <div>
+                <div><img style={{ width: "70px", height: '70px' }} src={msz.fileLink} /></div>
+                <span>{msz.content} <a href={msz.fileLink} download={msz.content + '.jpeg'} ><i className='fas fa-download' ></i></a></span>
+            </div>
+        }
+        case 'CONTACT': {
+            const contact = JSON.parse(msz.content)
+            return <div>
+                <span>Name : {contact.name} </span>
+                <span>Phone: {contact.contact}</span>
+            </div>
+        }
+        default: return <span>{msz.content} <a href={msz.fileLink} download={msz.content + '.jpeg'} ><i className='fas fa-download' ></i></a></span>
+    }
+}
+
 const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const messageEndRef = useRef(null)
+    const scrollRef = useRef(null)
+    const initialMsz = useRef(null)
     const [showClientsList, setShowClientsList] = useState(false)
     const [clientsData, setClientsData] = useState([])
     const [searchClientsData, setSearchClientsData] = useState([])
@@ -51,9 +75,11 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
     const todayDate = getFormattedDate(new Date())
 
     socket.off('room-messages').on('room-messages', (roomMessages) => {
+        console.log('MESSAGES', roomMessages)
         setMessages(roomMessages)
     })
     const scrollToBottom = () => {
+        console.log('REF', messageEndRef.current)
         messageEndRef.current?.scrollIntoView({ behaviour: 'smooth' })
     }
 
@@ -143,28 +169,17 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             sendMessage(JSON.stringify(msz), 'CONTACT')
         }
     }
-    const formatMsz = (msz) => {
-        switch (msz.type) {
-            case 'application/pdf': {
-                return <span>{msz.content} <a target='_blank' href={msz.fileLink} download={msz.content} ><i className='fas fa-download' ></i></a></span>
-            }
-            case 'image/jpeg': {
-                return <div>
-                    <div><img style={{ width: "70px", height: '70px' }} src={msz.fileLink} /></div>
-                    <span>{msz.content} <a href={msz.fileLink} download={msz.content + '.jpeg'} ><i className='fas fa-download' ></i></a></span>
-                </div>
-            }
-            case 'CONTACT': {
-                const contact = JSON.parse(msz.content)
-                return <div>
-                    <span>Name : {contact.name} </span>
-                    <span>Phone: {contact.contact}</span>
-                </div>
-            }
-            default: return <span>{msz.content} <a href={msz.fileLink} download={msz.content + '.jpeg'} ><i className='fas fa-download' ></i></a></span>
+    const handleScroll = ()=> {
+        const idEl = document.getElementById('msz-box')
+        console.log('HANDLE-SCROLL', idEl)
+        const isTouchedTop = idEl.scrollTop < 10
+        if (isTouchedTop) {
+            setMessages([...messages, ...messages])
         }
-
     }
+    useEffect(()=> {
+        scrollToBottom()
+    }, [])
     useEffect(() => {
         getClientsList()
     }, [])
@@ -172,10 +187,17 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         setIsOptionsOpen(false)
         setShowClientsList(false)
     },[roomId])
+    useEffect(()=> {
+        const idEl = document.getElementById('msz-box')
+        idEl.addEventListener('scroll', handleScroll)
+        return ()=> {
+            idEl.removeEventListener('scroll', handleScroll)
+        }
+    }, [messages])
 
     return (<>
         {
-            opponent._id ? <div style={{ display: 'flex', width: '70%' }}>
+            opponent._id ? <div ref={scrollRef} style={{ display: 'flex', width: '70%' }}>
                 <div className='message-Box'>
                     <div className='messageBox-header'>
                         <span className='icon' onClick={() => setOpponent('')}> <i className='fas fa-arrow-left'></i> </span>
@@ -188,13 +210,13 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                             <i className='fas fa-ellipsis-v'> </i>
                         </span>
                     </div>
-                    <ScrollToBottom className='message-container message-body' >
+                    <div id='msz-box' className='message-container message-body' >
                         {
-                            messages.map((dayMsz) => (
-                                <div key={dayMsz._id} className='m-auto text-center'> <span className='p-1 fw-bolder' style={{ borderRadius: '8px', border: '1px solid #ccc', color: '#85807b' }}>{dateIndicator(dayMsz._id)}</span>
+                            messages.map((dayMsz, idx) => (
+                                <div key={dayMsz._id + Math.random()} className='m-auto text-center'> <span className='p-1 fw-bolder' style={{ borderRadius: '8px', border: '1px solid #ccc', color: '#85807b' }}>{dateIndicator(dayMsz._id)}</span>
                                     {
-                                        dayMsz.messageByDate.map((msz) => {
-                                            return <div key={msz._id} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>
+                                        dayMsz.messageByDate.map((msz, index) => {
+                                            return <div id={idx == index == 1 ? 'initialMsz': ''} key={msz._id+ Math.random()} ref={messageEndRef} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>
                                                 <div>
                                                     {
                                                         msz.type == 'message' ?
@@ -212,7 +234,8 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                                 </div>
                             ))
                         }
-                    </ScrollToBottom>
+                        {/* <div ref={messageEndRef} className='REF_ELEMENT'></div> */}
+                    </div>
                     {
                         isOptionsOpen && <div className='w-25'>
                             <ListGroup>
