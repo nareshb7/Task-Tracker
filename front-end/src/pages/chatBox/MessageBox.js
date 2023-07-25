@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
-import ScrollToBottom from 'react-scroll-to-bottom'
 import { fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
 import { COMPANY_NAME } from '../../components/utils/Constants'
+import { RenderMessages } from './MessageRender'
 
 export const lastSeenTimeFormat = (time) => {
     const val = new Date(time).toLocaleString()
@@ -39,34 +39,11 @@ export const dateIndicator = (date) => {
     return d
 }
 
-const formatMsz = (msz) => {
-    switch (msz.type) {
-        case 'application/pdf': {
-            return <span>{msz.content} <a target='_blank' href={msz.fileLink} download={msz.content} ><i className='fas fa-download' ></i></a></span>
-        }
-        case 'image/jpeg': {
-            return <div>
-                <div><img style={{ width: "70px", height: '70px' }} src={msz.fileLink} /></div>
-                <span>{msz.content} <a href={msz.fileLink} download={msz.content + '.jpeg'} ><i className='fas fa-download' ></i></a></span>
-            </div>
-        }
-        case 'CONTACT': {
-            const contact = JSON.parse(msz.content)
-            return <div>
-                <span>Name : {contact.name} </span>
-                <span>Phone: {contact.contact}</span>
-            </div>
-        }
-        default: return <span>{msz.content} <a href={msz.fileLink} download={msz.content + '.jpeg'} ><i className='fas fa-download' ></i></a></span>
-    }
-}
-
 const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
-    const messageEndRef = useRef(null)
     const scrollRef = useRef(null)
-    const initialMsz = useRef(null)
+    // const initialMsz = useRef(null)
     const [showClientsList, setShowClientsList] = useState(false)
     const [clientsData, setClientsData] = useState([])
     const [searchClientsData, setSearchClientsData] = useState([])
@@ -78,11 +55,6 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         console.log('MESSAGES', roomMessages)
         setMessages(roomMessages)
     })
-    const scrollToBottom = () => {
-        console.log('REF', messageEndRef.current)
-        messageEndRef.current?.scrollIntoView({ behaviour: 'smooth' })
-    }
-
     const sendMessage = (message, type = 'message', fileLink='') => {
         if (!message) return;
         const today = new Date()
@@ -111,9 +83,6 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             setClientsData(data)
             setSearchClientsData(data)
         }
-    }
-    const openClientsList = () => {
-
     }
     const handleDrag = (e, val) => {
         e.dataTransfer.setData('DragItem', JSON.stringify(val))
@@ -169,31 +138,17 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             sendMessage(JSON.stringify(msz), 'CONTACT')
         }
     }
-    const handleScroll = ()=> {
-        const idEl = document.getElementById('msz-box')
-        console.log('HANDLE-SCROLL', idEl)
-        const isTouchedTop = idEl.scrollTop < 10
-        if (isTouchedTop) {
-            setMessages([...messages, ...messages])
-        }
+    
+    const getLastMsz = (mainIndex, localIndex, mszId)=> {
+        console.log(messages, "LASTMSZ")
     }
-    useEffect(()=> {
-        scrollToBottom()
-    }, [])
     useEffect(() => {
         getClientsList()
     }, [])
     useEffect(()=> {
         setIsOptionsOpen(false)
         setShowClientsList(false)
-    },[roomId])
-    useEffect(()=> {
-        const idEl = document.getElementById('msz-box')
-        idEl.addEventListener('scroll', handleScroll)
-        return ()=> {
-            idEl.removeEventListener('scroll', handleScroll)
-        }
-    }, [messages])
+    },[roomId]) 
 
     return (<>
         {
@@ -210,37 +165,12 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                             <i className='fas fa-ellipsis-v'> </i>
                         </span>
                     </div>
-                    <div id='msz-box' className='message-container message-body' >
-                        {
-                            messages.map((dayMsz, idx) => (
-                                <div key={dayMsz._id + Math.random()} className='m-auto text-center'> <span className='p-1 fw-bolder' style={{ borderRadius: '8px', border: '1px solid #ccc', color: '#85807b' }}>{dateIndicator(dayMsz._id)}</span>
-                                    {
-                                        dayMsz.messageByDate.map((msz, index) => {
-                                            return <div id={idx == index == 1 ? 'initialMsz': ''} key={msz._id+ Math.random()} ref={messageEndRef} className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>
-                                                <div>
-                                                    {
-                                                        msz.type == 'message' ?
-                                                            <span onClick={() => deleteMessage(msz._id, msz.from.id == user._id)} className='message-text' >{msz.content} </span> :
-                                                            formatMsz(msz)
-                                                    }
-                                                </div>
-                                                <div>
-                                                    <span className='message-time'>{msz.time}</span>
-                                                    <span className='message-author'>{msz.from.id == user._id ? 'You' : opponent.fName}</span>
-                                                </div>
-                                            </div>
-                                        })
-                                    }
-                                </div>
-                            ))
-                        }
-                        {/* <div ref={messageEndRef} className='REF_ELEMENT'></div> */}
-                    </div>
+                    <RenderMessages messages={messages} opponent={opponent} user={user} deleteMessage={deleteMessage}/>
                     {
                         isOptionsOpen && <div className='w-25'>
                             <ListGroup>
                                 <ListGroupItem style={{ cursor: 'pointer' }} onClick={() => setShowClientsList(!showClientsList)}>Client Contacts</ListGroupItem>
-                                <ListGroupItem onClick={openClientsList}>
+                                <ListGroupItem>
                                     <input style={{ width: '5px', visibility: 'hidden' }} onChange={handleFileUpload} type='file' id='fileUploadOpt' />
                                     <label style={{ cursor: 'pointer' }} htmlFor='fileUploadOpt'> Files </label>
                                 </ListGroupItem>

@@ -1,6 +1,10 @@
 Do's : 
 -> Update infinte scroll for activity page and messages
 
+Dt: 25-07-23
+-> Table Sorting title and css updated
+-> Messagebox rendermessages seperated
+
 Dt: 19-07-23
 -> Updates routes with LazyLoading and suspense fallback dynamically
 -> Nav Time comp updated with useEffect

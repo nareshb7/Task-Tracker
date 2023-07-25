@@ -40,8 +40,8 @@ const TaskTable = memo((props) => {
                 <span>{header.title} </span>
                 {
                     header.sort && <div className='sort-fields'>
-                        <span onClick={() => header?.sort(header.key, 'asc')}> &and;</span>
-                        <span onClick={() => header?.sort(header.key, 'desc')}> &or;</span>
+                        <span title='Ascending order' onClick={() => header?.sort(header.key, 'asc')}> &and;</span>
+                        <span title='Descending order' onClick={() => header?.sort(header.key, 'desc')}> &or;</span>
                     </div>
                 }
             </div>
