@@ -48,14 +48,38 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
     const [clientsData, setClientsData] = useState([])
     const [searchClientsData, setSearchClientsData] = useState([])
     const [isOptionsOpen, setIsOptionsOpen] = useState(false)
-
+    const [lastMszId, setLastMszId] = useState('')
     const todayDate = getFormattedDate(new Date())
 
-    socket.off('room-messages').on('room-messages', (roomMessages) => {
-        console.log('MESSAGES', roomMessages)
-        setMessages(roomMessages)
+    socket.off('room-messages').on('room-messages', (roomMessages, room, LAST_MSZ) => {
+        console.log('MESSAGES', roomMessages, LAST_MSZ)
+        getLastMsz(roomMessages)
+        if (LAST_MSZ) {
+            const dates = roomMessages.map(val => val._id)
+            const formattedMsz = messages.map(val => {
+                if (dates.includes(val._id)) {
+                    const mszs = roomMessages.find(value => value._id == val._id)
+                    const idx = roomMessages.findIndex(value => value._id == val._id)
+                    val.messageByDate = [...mszs.messageByDate, ...val.messageByDate]
+                    roomMessages.splice(idx, 1)
+                }
+                return val
+            })
+            if (roomMessages.length) {
+                setMessages([...roomMessages, ...formattedMsz])
+            } else {
+                setMessages(formattedMsz)
+            }
+        } else setMessages(roomMessages)
     })
-    const sendMessage = (message, type = 'message', fileLink='') => {
+
+    const getLastMsz = (messages) => {
+        const lastObjId = messages.findLast(m => m)?.messageByDate.findLast(m => m)._id
+        console.log(messages, "LASTMSZ", lastObjId)
+        setLastMszId(lastObjId)
+    }
+
+    const sendMessage = (message, type = 'message', fileLink = '') => {
         if (!message) return;
         const today = new Date()
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes()
@@ -103,18 +127,18 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             setSearchClientsData(data)
         } else setSearchClientsData(clientsData)
     }
-    const uploadImage =async (file) => {
+    const uploadImage = async (file) => {
         const data = new FormData()
         data.append('file', file)
         data.append('upload_preset', 'jeibislh')
         try {
             let res = await fetch("https://api.cloudinary.com/v1_1/dachjilv2/image/upload", {
-                method:'post',
+                method: 'post',
                 body: data
             })
             let urlData = await res.json()
             return urlData.url
-        } catch(err){
+        } catch (err) {
         }
     }
     const handleFileUpload = async (e) => {
@@ -138,17 +162,15 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             sendMessage(JSON.stringify(msz), 'CONTACT')
         }
     }
-    
-    const getLastMsz = (mainIndex, localIndex, mszId)=> {
-        console.log(messages, "LASTMSZ")
-    }
+
     useEffect(() => {
         getClientsList()
     }, [])
-    useEffect(()=> {
+    useEffect(() => {
         setIsOptionsOpen(false)
         setShowClientsList(false)
-    },[roomId]) 
+        setMessages([])
+    }, [roomId])
 
     return (<>
         {
@@ -165,7 +187,15 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                             <i className='fas fa-ellipsis-v'> </i>
                         </span>
                     </div>
-                    <RenderMessages messages={messages} opponent={opponent} user={user} deleteMessage={deleteMessage}/>
+                    <RenderMessages
+                        socket={socket}
+                        room={roomId}
+                        messages={messages}
+                        opponent={opponent}
+                        user={user}
+                        deleteMessage={deleteMessage}
+                        lastMszId={lastMszId}
+                    />
                     {
                         isOptionsOpen && <div className='w-25'>
                             <ListGroup>
@@ -179,7 +209,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                         </div>
                     }
                     <div className='message-input'>
-                        <div className='plusIcon' onClick={() => {setIsOptionsOpen(!isOptionsOpen); setShowClientsList(false)}}><i className='fas fa-plus'></i></div>
+                        <div className='plusIcon' onClick={() => { setIsOptionsOpen(!isOptionsOpen); setShowClientsList(false) }}><i className='fas fa-plus'></i></div>
                         <input
                             type='text'
                             onDrop={handleOnDrop}

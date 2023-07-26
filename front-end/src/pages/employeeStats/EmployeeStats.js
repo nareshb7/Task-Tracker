@@ -127,11 +127,11 @@ const EmployeeStats = () => {
         <Col>
         <Row className='d-flex flex-column'>
         <span style={{ color: '#888' }} className='my-2'>Last LoggedIn Data</span>
-        <Col><span>Browser : </span><span>{state?.lastLoginData.browserName}</span></Col>
-        <Col><span>IP Address: </span><span>{state?.lastLoginData.ipAddress}</span></Col>
-        <Col><span>Login Time: </span><span>{new Date(state?.lastLoginData.loginTime).toLocaleString()}</span></Col>
-        <Col><span>Location: </span><span>{state?.lastLoginData.location.city}, {state?.lastLoginData.location.state} </span></Col>
-        <Col><span>Map: </span><a href={`https://www.latlong.net/c/?lat=${state?.lastLoginData.location.latitude}&long=${state?.lastLoginData.location.longitude}`} target='_blank'>Click here </a> (Approximate location)</Col>
+        <Col><span>Browser : </span><span>{state?.lastLoginData?.browserName}</span></Col>
+        <Col><span>IP Address: </span><span>{state?.lastLoginData?.ipAddress}</span></Col>
+        <Col><span>Login Time: </span><span>{new Date(state?.lastLoginData?.loginTime).toLocaleString()}</span></Col>
+        <Col><span>Location: </span><span>{state?.lastLoginData?.location.city}, {state?.lastLoginData?.location.state} </span></Col>
+        <Col><span>Map: </span><a href={`https://www.latlong.net/c/?lat=${state?.lastLoginData?.location.latitude}&long=${state?.lastLoginData.location.longitude}`} target='_blank'>Click here </a> (Approximate location)</Col>
         <Col></Col>
         </Row>
         </Col>

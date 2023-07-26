@@ -158,10 +158,26 @@ module.exports.addNewActivity = async (req, res) => {
     await ActivityModel.create({ ...payLoad })
         .then(resp => res.status(200).json(resp))
 }
+const limit = 100
+let skip = 0
+let userID =''
+
 const getActivityByDate = async (id) => {
+    const count = await ActivityModel.count({id})
+    if (userID != id) {
+        userID = id
+        skip = 0
+        console.log('ACTIVITY COUNT', count)
+    } else {
+        skip = skip + limit
+    }
+    if (skip > count) return [{_id: 'NO DATA AVAIALBLE',activityByDate: [{label:'No Content'}] }]
+    console.log('ACC_!', {skip, count, limit})
     const result = await ActivityModel.aggregate([
         { $match: { id } },
         { $sort: { createdAt: -1 } },
+        { $skip: skip},
+        { $limit: limit},
         { $group: { _id: '$date', activityByDate: { $push: '$$ROOT' } } },
         { $sort: { _id: -1 } }
     ])

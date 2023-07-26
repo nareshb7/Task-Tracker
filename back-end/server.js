@@ -44,11 +44,27 @@ const io = new Server(server, {
     }
 })
 
+let totalMszCount = ''
+const limit = 20
+let skip =0
+let roomID = ''
 const getLastMessagesFromRoom =async (room)=> {
     const count =await Message.find({to: room}).count()
-    console.log('COUINT', count)
+    if (roomID != room) {
+        roomID = room
+        totalMszCount =''
+    }
+    if(!totalMszCount || totalMszCount != count) {
+        totalMszCount = count
+        skip =totalMszCount
+    }
+    if(skip == 0 ) return []
+    skip = skip > limit ? skip - limit: 0
     let roomMessages =await Message.aggregate([
         {$match : {to: room}},
+        {$sort: {_id: 1}},
+        {$skip: skip},
+        {$limit: limit},
         {$group: {_id: '$date', messageByDate: {$push : '$$ROOT'}}}
     ])
     return roomMessages
@@ -75,6 +91,11 @@ io.on('connection',async (socket)=> {
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
         socket.emit('room-messages', roomMessages, room)
+    })
+    socket.on('get-last-mszs', async(room)=> {
+        let roomMessages = await getLastMessagesFromRoom(room)
+        roomMessages = sortRoomMessagesByDate(roomMessages)
+        socket.emit('room-messages', roomMessages, room, "LAST-MSZ")
     })
     socket.on('message-room', async (room, content, sender, time, date, opponentId , type, fileLink)=> {
         const newMessage =await Message.create({to: room, content,from : sender, time, date, type, fileLink})

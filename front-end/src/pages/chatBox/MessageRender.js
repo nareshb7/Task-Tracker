@@ -22,41 +22,29 @@ const formatMsz = (msz) => {
         default: return <span>{msz.content} <a href={msz.fileLink} download={msz.content + '.jpeg'} ><i className='fas fa-download' ></i></a></span>
     }
 }
-export const RenderMessages = memo(({ messages, opponent, user, deleteMessage }) => {
-    const [lastMszId, setLastMszId] = useState('')
+export const RenderMessages = memo(({ lastMszId, messages, opponent, user, deleteMessage, socket, room }) => {
     const messageEndRef = useRef(null)
-    const sampleRef= useRef(null)
-    const getLastMsz = () => {
-        const lastObjId = messages.findLast(m => m)?.messageByDate.findLast(m => m)._id
-        console.log(messages, "LASTMSZ", lastObjId)
-        setLastMszId(lastObjId)
-    }
+    const sampleRef = useRef(null)
     const scrollToBottom = () => {
-        console.log('REF', messageEndRef)
-        messageEndRef.current?.scrollIntoView({ behaviour: 'smooth' })
+        messageEndRef.current?.scrollIntoView({ behaviour: 'smooth', block: 'center', inline: 'center' })
     }
-    const handleScroll = ()=> {
+    const handleScroll = () => {
         const idEl = document.getElementById('msz-box')
-        console.log('HANDLE-SCROLL', idEl)
-        const isTouchedTop = idEl.scrollTop < 10
+        const isTouchedTop = idEl.scrollTop == 0
         if (isTouchedTop) {
-            // setMessages([...messages, ...messages])
+            socket.emit('get-last-mszs', room)
         }
     }
-    useEffect(()=> {
+    useEffect(() => {
         const idEl = document.getElementById('msz-box')
         idEl.addEventListener('scroll', handleScroll)
-        return ()=> {
+        return () => {
             idEl.removeEventListener('scroll', handleScroll)
         }
     }, [messages])
     useEffect(() => {
         scrollToBottom()
-    }, [messageEndRef.current])
-    useEffect(() => {
-        getLastMsz()
-    }, [messages])
-    
+    }, [lastMszId])
     return <div id='msz-box' className='message-container message-body' >
         {
             messages.map((dayMsz, idx) => (
@@ -66,7 +54,7 @@ export const RenderMessages = memo(({ messages, opponent, user, deleteMessage })
                             return <div
                                 id={idx == index == 1 ? 'initialMsz' : ''}
                                 key={msz._id + Math.random()}
-                                ref={lastMszId == msz._id ? messageEndRef: sampleRef}
+                                ref={lastMszId === msz._id ? messageEndRef : sampleRef}
                                 className={msz.from.id == user._id ? 'user-message' : 'opponent-message'}>
                                 <div>
                                     {
