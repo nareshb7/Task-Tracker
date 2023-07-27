@@ -1,5 +1,12 @@
 Do's : 
--> Update infinte scroll for activity page and messages
+-> update the devs based on time in chatbox -> in progress
+
+Dt: 27-07-2023
+-> Wrote a small logic in the server file to sort the users in chatbox
+
+Dt: 26-07-23
+-> Infinite scroll updated for messages and activity page
+-> 
 
 Dt: 25-07-23
 -> Table Sorting title and css updated

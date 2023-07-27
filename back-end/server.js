@@ -82,6 +82,9 @@ io.on('connection',async (socket)=> {
     console.log('connected', socket.id)
 
     socket.on('new-user', async()=> {
+        const rooms  = await Message.find({}, {to:1, _id: 0}).sort({_id : -1})
+        const latestIds = [...new Set(rooms.map(v => v.to))].filter(v => v.includes('63ebcf33b9e7c974480c71f3')).map(v=> v.split('63ebcf33b9e7c974480c71f3'))
+        console.log('ROOMS', latestIds)
         const members = await signUpModel.find()
         io.emit('new-user', members)
     })
