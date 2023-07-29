@@ -1,5 +1,11 @@
 Do's : 
--> update the devs based on time in chatbox -> in progress
+-> Design the notification alert for 3 secs like chrome notificaion
+
+Dt: 29-07-23
+-> Updates the users based on their latest messages 
+-> updated the opponent users list also based on their last message
+-> Updated online status based on payload in chatBox
+-> Created notification component for showing message notifiction
 
 Dt: 27-07-2023
 -> Wrote a small logic in the server file to sort the users in chatbox

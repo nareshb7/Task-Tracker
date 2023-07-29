@@ -21,9 +21,20 @@ const ChatBox = () => {
     const [employessList, setEmployeesList] = useState([])
     const [searchVal, setSearchVal] = useState('')
     const [loading, setLoading] = useState(false)
-    socket.off('new-user').on('new-user', (payload) => {
+    socket.off('new-user').on('new-user', (payload, id, otherPayload, otherId) => {
         setLoading(false)
-        setUsers(payload)
+        if (id === currentUserVal._id) {
+            setUsers(payload)
+        }
+        else if(otherId == currentUserVal._id) {
+            setUsers(otherPayload)
+        } else {
+            const updates = users.map(user => {
+                user.status = payload.find(v=> v._id === user._id).status
+                return user
+            })
+            setUsers(updates)
+        }
     })
 
     const getRoomId = (id1, id2) => {
@@ -38,7 +49,7 @@ const ChatBox = () => {
         const roomId = getRoomId(user._id, currentUserVal._id)
         setCurrentRoom(roomId)
         socket.emit('join-room', roomId, currentRoom)
-        socket.emit('new-user')
+        socket.emit('new-user', currentUserVal._id)
         currentUserVal.newMessages && delete currentUserVal.newMessages[roomId]
         setCurrentUserVal(currentUserVal)
         setSearchVal('')
@@ -60,7 +71,7 @@ const ChatBox = () => {
     }
     useEffect(() => {
         setLoading(true)
-        socket.emit('new-user')
+        socket.emit('new-user', currentUserVal._id)
         addActivity(currentUserVal, 'Chat page', `Visited Chat Page`)
         if (state?._id && currentUserVal?._id) {
             selectedUser(state, currentUserVal)

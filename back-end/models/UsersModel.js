@@ -95,4 +95,4 @@ const signinSchema = mongoose.Schema({
         require:true
     }
 }, { minimize: false, timestamps: true })
-module.exports.signUpModel = mongoose.model('UserData', signinSchema)
+module.exports.EmployeesList = mongoose.model('UserData', signinSchema)

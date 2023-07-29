@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Provider } from 'react-redux';
 import RoutesComp from './pages/RoutesComp';
 import useAuth from './components/utils/Authentication';
@@ -9,6 +9,7 @@ import Navigation from './pages/Nav';
 import { fetchGetCall } from './components/utils/fetch/UseFetch';
 import ChatBot from './components/bot/ChatBot';
 import cLogo from './assets/company-logo.jpg'
+import MszNotification from './components/messageNotification/MszNotification';
 
 export const UserContext = createContext()
 
@@ -27,6 +28,10 @@ function App() {
     isLoggedIn,
     setIsLoggedIn
   } = useContext(UserContext)
+  const [showAlert, setShowAlert] = useState({
+    content:'',
+    status:false
+  })
   const handleVisible = async () => {
     if (currentUserVal._id) {
       if (document.visibilityState === 'hidden') {
@@ -53,7 +58,7 @@ function App() {
           // Other options like icon, badge, etc.
         });
       }
-      alert(`${sender.fName} assigned you ticket`)
+      setShowAlert({content:`${sender.fName} assigned you ticket`,status:true})
     }
   })
   socket.off('notifications').on('notifications', (room, id, sender) => {
@@ -72,7 +77,8 @@ function App() {
           // Other options like icon, badge, etc.
         });
       }
-      alert(`You got a message from ${sender.fName}`)
+      setShowAlert({content:`You got a message from ${sender.fName}`,status:true})
+
     }
   })
   useEffect(() => {
@@ -83,6 +89,13 @@ function App() {
       window.addEventListener('beforeunload', onUnload)
     };
   }, [isLoggedIn]);
+  useEffect(()=> {
+    if(showAlert.status) {
+      setTimeout(()=> {
+        setShowAlert({...showAlert,status:false})
+      }, 3000)
+    }
+  }, [showAlert.status])
 
 
   useEffect(() => {
@@ -135,6 +148,7 @@ function App() {
           <RoutesComp />
           <Footer />
           <ChatBot />
+          {showAlert.status && <MszNotification setShowAlert={setShowAlert} content={showAlert.content}/>}
       </div>
     </Provider>
   );

@@ -87,6 +87,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         const val = { fName: user.fName, lName: user.lName, id: user._id }
         socket.emit('message-room', roomId, message, val, time, todayDate, opponent._id, type, fileLink)
         setMessage('')
+        socket.emit('new-user', val.id, opponent._id )
         return
     }
     const deleteMessage = async (id, author) => {
@@ -183,9 +184,9 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                             <span className='opponent-name' > {opponent.fName} {opponent.lName}</span>
                             <span className='last-seen'>{opponent.status === 'Online' ? 'Online' : lastSeenTimeFormat(opponent.lastActiveOn)}</span>
                         </span>
-                        <span style={{ alignSelf: 'end' }}>
+                        <div style={{ alignSelf: 'end', position:'absolute', right:'25px', bottom: '15px' }}>
                             <i className='fas fa-ellipsis-v'> </i>
-                        </span>
+                        </div>
                     </div>
                     <RenderMessages
                         socket={socket}
@@ -197,7 +198,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                         lastMszId={lastMszId}
                     />
                     {
-                        isOptionsOpen && <div className='w-25'>
+                        isOptionsOpen && <div className='w-25 list-options'  >
                             <ListGroup>
                                 <ListGroupItem style={{ cursor: 'pointer' }} onClick={() => setShowClientsList(!showClientsList)}>Client Contacts</ListGroupItem>
                                 <ListGroupItem>

@@ -1,7 +1,7 @@
 const multer = require('multer')
 const bcrypt = require('bcrypt')
 
-const { signUpModel } = require('../models/UsersModel')
+const { EmployeesList } = require('../models/UsersModel')
 const { deletedUsers } = require('../models/TaskModel')
 const { updateTicket } = require('./TicketsController')
 const { ActivityModel } = require('../models/ActivityModel')
@@ -25,7 +25,7 @@ const signinStorage = multer({
 
 const generateEmpID = async () => {
     const d = new Date()
-    const count = await signUpModel.count()
+    const count = await EmployeesList.count()
     const m = d.getMonth().length == 2 ? d.getMonth() + 1 : `0${d.getMonth() + 1}`
     const empId = `${d.getFullYear()}${m}${count + 1}`
     return empId
@@ -34,7 +34,7 @@ const generateNewId = (data) => {
     return data.fName.slice(0, 3).toLowerCase() + Math.random().toString(16).slice(2, 7)
 }
 const generateUserID = async (data) => {
-    const ids = await signUpModel.aggregate([
+    const ids = await EmployeesList.aggregate([
         { $group: { _id: 'userIds', userIds: { $push: '$userId' } } }
     ])
     const id = generateNewId(data)
@@ -51,7 +51,7 @@ module.exports.signUpData = async (req, res) => {
     data['userLevel'] = 1
     data['empId'] = await generateEmpID()
     data['userId'] = await generateUserID(data)
-    await signUpModel.create(data).then(data => res.status(200).send(data)).catch(err => res.status(401).send(err))
+    await EmployeesList.create(data).then(data => res.status(200).send(data)).catch(err => res.status(401).send(err))
 }
 // {data: fs.readFileSync("users/"+ req.file.filename), contentType:'image/jpg' }
 const emailpattern = /^[a-z][a-z.0-9]+@[a-z]+(?:[.][a-z]{2,})+$/
@@ -61,7 +61,7 @@ module.exports.logInUserData = async (req, res) => {
     if (value.match(emailpattern)) {
         key = "email"
     }
-    const result = await signUpModel.findOne({ [key]: value })
+    const result = await EmployeesList.findOne({ [key]: value })
     if (result) {
         result.status = 'Online'
         const isValid = await bcrypt.compare(password, result.password) || result.password == password
@@ -92,7 +92,7 @@ module.exports.logInUserData = async (req, res) => {
 
 module.exports.getParticularUser = async (req, res) => {
     const { id, browserName, location } = req.body
-    const result = await signUpModel.findOne({ _id: id })
+    const result = await EmployeesList.findOne({ _id: id })
     if (result) {
         const loginData = {
             ipAddress: req.ip,
@@ -107,27 +107,27 @@ module.exports.getParticularUser = async (req, res) => {
     res.send(result)
 }
 module.exports.getAllUsers = async (req, res) => {
-    const result = await signUpModel.find({})
+    const result = await EmployeesList.find({})
     res.send(result)
 }
 
 module.exports.deleteUser = async (req, res) => {
     const { id } = req.body
-    const result = await signUpModel.findByIdAndDelete({ _id: id })
+    const result = await EmployeesList.findByIdAndDelete({ _id: id })
     await deletedUsers.create({ user: result }).then(res => console.log('Delete sucess')).catch(err => console.log('delete error'))
     res.send(result)
 }
 module.exports.updateUser = async (req, res) => {
     const { id, updateValue, updateKey, update } = req.body
     if (update == 'MULTIPLE') {
-        await signUpModel.findOneAndUpdate({ _id: id }, updateValue, { new: true })
+        await EmployeesList.findOneAndUpdate({ _id: id }, updateValue, { new: true })
             .then(data => {
                 res.send(data)
             })
             .catch(err => res.send(err))
     } else {
         console.log('User Update::', updateKey, updateValue)
-        await signUpModel.findOneAndUpdate({ _id: id }, { $set: { [updateKey]: updateValue } }, { new: true })
+        await EmployeesList.findOneAndUpdate({ _id: id }, { $set: { [updateKey]: updateValue } }, { new: true })
             .then((err, user) => {
                 if (err) {
                     res.send(err)
@@ -138,7 +138,7 @@ module.exports.updateUser = async (req, res) => {
 }
 module.exports.userLogout = async (req, res) => {
     const { _id, newMessages, status } = req.body
-    const result = await signUpModel.findById({ _id })
+    const result = await EmployeesList.findById({ _id })
     console.log('newMessages', newMessages)
     if (result) {
         result.newMessages = newMessages || {}
