@@ -58,6 +58,7 @@ function App() {
           // Other options like icon, badge, etc.
         });
       }
+      document.title = `${sender.fName} assigned you ticket`
       setShowAlert({content:`${sender.fName} assigned you ticket`,status:true})
     }
   })
@@ -77,6 +78,7 @@ function App() {
           // Other options like icon, badge, etc.
         });
       }
+      document.title = 'You got a new message'
       setShowAlert({content:`You got a message from ${sender.fName}`,status:true})
 
     }

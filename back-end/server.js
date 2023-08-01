@@ -48,9 +48,9 @@ let totalMszCount = ''
 const limit = 20
 let skip = 0
 let roomID = ''
-const getLastMessagesFromRoom = async (room) => {
+const getLastMessagesFromRoom = async (room, isStart=null) => {
     const count = await Message.find({ to: room }).count()
-    if (roomID != room) {
+    if (roomID != room || isStart) {
         roomID = room
         totalMszCount = ''
     }
@@ -102,7 +102,7 @@ io.on('connection', async (socket) => {
     socket.on('join-room', async (room, previousRoom) => {
         socket.join(room)
         socket.leave(previousRoom)
-        let roomMessages = await getLastMessagesFromRoom(room)
+        let roomMessages = await getLastMessagesFromRoom(room, 'INITIAL')
         roomMessages = sortRoomMessagesByDate(roomMessages)
         socket.emit('room-messages', roomMessages, room)
     })

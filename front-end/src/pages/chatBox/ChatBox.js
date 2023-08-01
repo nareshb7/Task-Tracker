@@ -54,6 +54,7 @@ const ChatBox = () => {
         setCurrentUserVal(currentUserVal)
         setSearchVal('')
         setOpponent(user)
+        document.title = 'Task- Tracker'
         let totalMessage = Object.values(currentUserVal?.newMessages).length && Object.values(currentUserVal?.newMessages)?.reduce((a, b) => a + b)
         setTotalMessages(totalMessage)
         const roomsCount = Object.keys(currentUserVal?.newMessages).length
