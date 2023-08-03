@@ -28,7 +28,7 @@ const TaskTable = memo((props) => {
     const renderHeader = (header, idx) => {
         switch (header.node) {
             case 'select': {
-                return <th key={idx}><span>{header.title}</span>
+                return <th className='table-head' key={idx}><span>{header.title}</span>
                     <select onChange={(e) => header?.onClick(e, header)} name={header.key}>
                         {
                             header?.values?.map((opt, idx) => <option key={idx} value={opt?.value}>{opt?.key || opt}</option>)
@@ -49,7 +49,7 @@ const TaskTable = memo((props) => {
         }
     }
     const renderBodyRow = (obj, idx) => {
-        return <tr onClick={() => handleRowClick(obj)} key={idx} >
+        return <tr className='table-body' onClick={() => handleRowClick(obj)} key={idx} >
             {
                 headers.map((val1, index) => {
                     if (val1?.key == 'serialNo') {
@@ -70,7 +70,7 @@ const TaskTable = memo((props) => {
     return (<>
         <table className={className} {...args}>
             <thead className={tHeadClassName}>
-                <tr>
+                <tr className='table-header'>
                     {headers.map((header, idx) => renderHeader(header, idx))}
                 </tr>
             </thead>
