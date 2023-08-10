@@ -43,6 +43,7 @@ const Login = () => {
     const loginSucessFunc = async (currentUser) => {
         setCurrentUserVal(currentUser)
         setIsLoggedIn(true)
+        sessionStorage.setItem('userID', JSON.stringify(currentUser._id))
         console.log('LoggedIn User', currentUser, window)
         setCookie(currentUser._id, 2)
         const roomsCount = Object.keys(currentUser.newMessages).length

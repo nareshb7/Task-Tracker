@@ -10,6 +10,7 @@ const useAuth = () => {
         const location =await getLocationCoords()
         await axios.post('/api/getparticularuser', { id: userid, browserName, location })
             .then(data => {
+                sessionStorage.setItem('userID', JSON.stringify(data.data._id))
                 setCurrentUser(data.data)
                 setCookie(userid, 2)
                 addActivity(data.data, 'App page', `Reopened Application`)

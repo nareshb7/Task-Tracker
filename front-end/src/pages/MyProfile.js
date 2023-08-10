@@ -54,6 +54,7 @@ const MyProfile = () => {
     setCurrentUser({})
     setIsLoggedIn(false)
     setCurrentUserVal({})
+    sessionStorage.removeItem('userID')
     addActivity(currentUserVal, 'Logout page', `Logged Out`)
     await logoutFunc(currentUserVal)
     setCookie("63dab3b51d791ebc7821db51", 2)

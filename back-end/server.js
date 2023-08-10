@@ -27,10 +27,17 @@ mongoose.connect(process.env.MONGODB_URL)
     .catch(err => {
         console.log(`Error ${err}`)
     })
-
+app.use('/error', (req,res)=> {
+    res.status(400).json('You are not authenticated')
+})
+const paths = ['/getparticularuser', '/logout', '/loginData']
 const expressMiddleware = (req, res, next) => {
-    console.log('URL::', req.originalUrl)
-    next()
+    console.log('URL::', req?.url, req?.method, req?.headers?.authorization)
+    if (req?.headers?.authorization || paths.includes(req.url)) {
+        next()
+    }else {
+        res.redirect('/error')
+    }
 }
 
 app.use('/api', expressMiddleware, routes)

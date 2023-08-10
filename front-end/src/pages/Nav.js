@@ -19,6 +19,7 @@ const Navigation = () => {
         addActivity(currentUserVal, 'Nav page', `Logged out`)
         await logoutFunc(currentUserVal)
         setCookie("63dab3b51d791ebc7821db51", 2)
+        sessionStorage.removeItem('userID')
         setCurrentUserVal({})
         socket.emit('new-user')
         setIsLoggedIn(false)
