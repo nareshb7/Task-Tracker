@@ -31,7 +31,7 @@
 .table-thead {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 }
 .table-thead .sort-fields {
     display: flex;
@@ -39,4 +39,6 @@
 }
 .sort-fields span {
     cursor: pointer;
+    font-size: 8px;
+    padding: 0 4px;
 }

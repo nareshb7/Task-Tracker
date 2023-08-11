@@ -33,11 +33,11 @@ app.use('/error', (req,res)=> {
 const paths = ['/getparticularuser', '/logout', '/loginData']
 const expressMiddleware = (req, res, next) => {
     console.log('URL::', req?.url, req?.method, req?.headers?.authorization)
-    if (req?.headers?.authorization || paths.includes(req.url)) {
+    // if (req?.headers?.authorization || paths.includes(req.url)) {
         next()
-    }else {
-        res.redirect('/error')
-    }
+    // }else {
+    //     res.redirect('/error')
+    // }
 }
 
 app.use('/api', expressMiddleware, routes)
