@@ -7,10 +7,20 @@ const headers = {
     'Content-Type': 'application/json',
     'Authorization': getToken()
   }
-export const fetchCall =async (url,data)=> {
-    return await axios.post(url, data,{headers})
+
+export const fetchCall =async (url,data, options)=> {
+    return await axios.post(url, data,{...options, headers})
         .then(res => res.data)
         .catch(err => err.response.data)
+}
+export const fileUpload =async (url,data, options)=> {
+    return await axios.post(url, data,{headers: {'Content-Type': 'multipart/form-data'}})
+        .then(res => {
+            return {data: res.data, success: true}
+        })
+        .catch(err => {
+            return {error: err.response.data, success: false}
+        })
 }
 
 export const fetchPutCall = async (url,data)=> {
@@ -24,7 +34,7 @@ export const fetchGetCall = async (url, params) => {
         return {data: res.data, success: true, error:false}
     })
     .catch(err => {
-        return {error: err.response.data?.message, success: false, data: false}
+        return {error: err.response.data, success: false, data: false}
     })
 }
 export const fetchDeletecall = async (url, data) => {

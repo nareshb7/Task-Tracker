@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = Router()
-const { mailVerification, mailChangeReq, getmailchangeID, getQuote, contactusData, addContactUsData, getNews, clientUpdateSend} = require('../controllers/TaskControllers')
+const { mailVerification, mailChangeReq, getmailchangeID, getQuote, contactusData, addContactUsData, getNews, clientUpdateSend, uploadFile, uploadFileStorage, getFileFromDB} = require('../controllers/TaskControllers')
 const { setData, getData, addSolution, deleteSolution, updateSolution, uploadedIssues, getParticularSolution, issueStatus, getTicketIDs, getClientTickets} = require('../controllers/IssueController')
 const {signUpData, logInUserData, getParticularUser, getAllUsers, deleteUser, updateUser, userLogout, assignTicket, addNewActivity, getActivity} = require('../controllers/UserControllers')
 const { messages, deleteMessage } = require('../controllers/MessageController')
@@ -47,6 +47,8 @@ router.get('/getclientdata', getClientData)
 router.get('/getclienttickets', getClientTickets)
 router.post('/botRequest', botRequests)
 router.get('/getbotrequests', getBotRequest)
+router.post('/fileupload',uploadFileStorage.single('file') , uploadFile)
+router.get('/getFile', getFileFromDB )
 
 
 

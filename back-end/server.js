@@ -13,8 +13,10 @@ const server = http.createServer(app)
 const routes = require('./routers/TaskRouters')
 const Message = require('./models/MessageModel')
 const { EmployeesList } = require('./models/UsersModel')
-
-app.use(cors())
+const corsOptions = {
+    origin: 'http://192.16.10.28:3030',
+  };
+app.use(cors(corsOptions))
 app.set('trust proxy', true);
 app.use(bodyParser.json({ limit: '3mb' }));
 app.use(bodyParser.urlencoded({ limit: '3mb', extended: false }))
@@ -111,15 +113,17 @@ io.on('connection', async (socket) => {
         socket.leave(previousRoom)
         let roomMessages = await getLastMessagesFromRoom(room, 'INITIAL')
         roomMessages = sortRoomMessagesByDate(roomMessages)
-        socket.emit('room-messages', roomMessages, room)
+        socket.emit('room-messages', roomMessages)
     })
     socket.on('get-last-mszs', async (room) => {
         let roomMessages = await getLastMessagesFromRoom(room)
         roomMessages = sortRoomMessagesByDate(roomMessages)
-        socket.emit('room-messages', roomMessages, room, "LAST-MSZ")
+        if (roomMessages.length > 0) {
+            socket.emit('room-messages', roomMessages,"LAST-MSZ")
+        }
     })
-    socket.on('message-room', async (room, content, sender, time, date, opponentId, type, fileLink) => {
-        const newMessage = await Message.create({ to: room, content, from: sender, time, date, type, fileLink })
+    socket.on('message-room', async (room, content, sender, time, date, opponentId, type, fileID) => {
+        const newMessage = await Message.create({ to: room, content, from: sender, time, date, type, fileID })
         // await Message.deleteMany({})
         const userData = await EmployeesList.findById({ _id: opponentId })
         userData.newMessages[room] = (userData.newMessages[room] || 0) + 1

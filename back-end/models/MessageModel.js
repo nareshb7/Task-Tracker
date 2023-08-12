@@ -8,7 +8,7 @@ const messageSchema = new mongoose.Schema({
     date:String,
     time:String,
     type:String,
-    fileLink: String
+    fileID: String
 }, {minimize: false})
 const Message = mongoose.model('Message', messageSchema)
 module.exports = Message

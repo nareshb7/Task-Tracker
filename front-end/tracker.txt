@@ -1,6 +1,7 @@
 Do's : 
 -> Design the notification alert for 3 secs like chrome notificaion
 -> Add the authentiication for url
+-> upload files in mongodb for that create a controller in back-end
 
 Dt: 29-07-23
 -> Updates the users based on their latest messages 

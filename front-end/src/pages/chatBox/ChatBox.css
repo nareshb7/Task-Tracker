@@ -166,6 +166,34 @@
     font-weight: bold;
     font-size: 20px;
 }
+.imageWrapper {
+    position: relative;
+    margin-right: 10px;
+}
+.user-message .imageWrapper a {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+}
+.opponent-message .imageWrapper a {
+    position: absolute;
+    left: 78px;
+    bottom: 0;
+}
+.forward-modal {
+    height: 200px;
+    overflow: scroll;
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+.forward-modal .forward-modal-li {
+    padding-block: 7px;
+    margin-inline: 5px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    cursor: pointer;
+}
 @media screen and (max-width: 767px) {
     .chatBox-main {
         display: block;

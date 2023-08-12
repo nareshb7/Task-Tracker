@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
-import { fetchDeletecall, fetchGetCall } from '../../components/utils/fetch/UseFetch'
+import { fetchCall, fetchDeletecall, fetchGetCall, fileUpload } from '../../components/utils/fetch/UseFetch'
 import { COMPANY_NAME } from '../../components/utils/Constants'
 import { RenderMessages } from './MessageRender'
 
@@ -39,7 +39,7 @@ export const dateIndicator = (date) => {
     return d
 }
 
-const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) => {
+const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup, employessList }) => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const scrollRef = useRef(null)
@@ -51,7 +51,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
     const [lastMszId, setLastMszId] = useState('')
     const todayDate = getFormattedDate(new Date())
 
-    socket.off('room-messages').on('room-messages', (roomMessages, room, LAST_MSZ) => {
+    socket.off('room-messages').on('room-messages', (roomMessages, LAST_MSZ) => {
         console.log('MESSAGES', roomMessages, LAST_MSZ)
         getLastMsz(roomMessages)
         if (LAST_MSZ) {
@@ -79,18 +79,19 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         setLastMszId(lastObjId)
     }
 
-    const sendMessage = (message, type = 'message', fileLink = '') => {
+    const sendMessage = useCallback((message, type = 'message', fileID = '',roomId= roomId,  opponent= opponent) => {
         if (!message) return;
         const today = new Date()
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes()
         const time = today.getHours() + ':' + minutes;
         const val = { fName: user.fName, lName: user.lName, id: user._id }
-        socket.emit('message-room', roomId, message, val, time, todayDate, opponent._id, type, fileLink)
+        console.log('MESSAGE', message)
+        socket.emit('message-room', roomId, message, val, time, todayDate, opponent._id, type, fileID)
         setMessage('')
         socket.emit('new-user', val.id, opponent._id )
         return
-    }
-    const deleteMessage = async (id, author) => {
+    }, [roomId])
+    const deleteMessage = useCallback( async (id, author) => {
         if (author) {
             const res = window.confirm('Do u want to delete this message??')
             if (res) {
@@ -100,8 +101,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
         } else {
             alert("U can't delete others message")
         }
-
-    }
+    }, [roomId])
     const getClientsList = async () => {
         const { data, success } = await fetchGetCall('/api/getclientslist')
         if (success) {
@@ -128,33 +128,21 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             setSearchClientsData(data)
         } else setSearchClientsData(clientsData)
     }
-    const uploadImage = async (file) => {
-        const data = new FormData()
-        data.append('file', file)
-        data.append('upload_preset', 'jeibislh')
-        try {
-            let res = await fetch("https://api.cloudinary.com/v1_1/dachjilv2/image/upload", {
-                method: 'post',
-                body: data
-            })
-            let urlData = await res.json()
-            return urlData.url
-        } catch (err) {
-        }
-    }
     const handleFileUpload = async (e) => {
         console.log('FILE', e.target.files[0])
         const file = e.target.files[0]
-        const types = ['image/jpeg', 'application/pdf', 'application/x-zip-compressed', 'image/png']
-        if (types.includes(file.type)) {
-            if (file.size < 300000) {
-                const fileLink = await uploadImage(file)
-                console.log('CONVERTED', fileLink)
-                sendMessage(file.name, file.type, fileLink)
-            }
-            else alert('More than 300kb not allowed')
+        const data = new FormData()
+        data.append('file', file)
+        const resp = await fileUpload('/api/fileupload', {file}, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }})
+        if (resp.success) {
+            console.log('RESP', resp.data._id, file.name, file.type)
+            sendMessage(file.name, file.type, resp.data._id)
+        } else {
+            console.log('FILE ERRR', resp)
         }
-        else alert('This format is not supported to send')
     }
     const handleSendContact = (contact) => {
         const cnfrm = window.confirm(`Do u want to share ${contact.consultantName} contact?`)
@@ -163,6 +151,7 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
             sendMessage(JSON.stringify(msz), 'CONTACT')
         }
     }
+    
 
     useEffect(() => {
         getClientsList()
@@ -196,6 +185,8 @@ const MessageBox = ({ user, opponent, setOpponent, socket, roomId, imgPopup }) =
                         user={user}
                         deleteMessage={deleteMessage}
                         lastMszId={lastMszId}
+                        employessList={employessList}
+                        sendMessage={sendMessage}
                     />
                     {
                         isOptionsOpen && <div className='w-25 list-options'  >

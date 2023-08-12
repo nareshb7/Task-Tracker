@@ -125,6 +125,7 @@ const ChatBox = () => {
             setOpponent={setOpponent}
             roomId={currentRoom}
             opponent={opponent}
+            employessList={employessList}
             imgPopup={imgPopup} />
         }
         
