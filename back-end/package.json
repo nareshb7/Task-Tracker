@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node server.js",
     "devServer": "nodemon server.js",
-    "build": "npm i && npm build"
+    "build": "npm i"
   },
   "name": "task-tracker",
   "version": "4.0.0",
