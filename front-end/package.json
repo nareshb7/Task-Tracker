@@ -2,7 +2,7 @@
   "name": "front-end",
   "version": "4.1.0",
   "private": true,
-  "proxy": "http://localhost:4040",
+  "proxy": "https://task-tracker-one.onrender.com",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.16.5",
